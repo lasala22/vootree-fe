@@ -1,0 +1,8 @@
+
+.header{
+    width: 100%;
+    z-index: 10;
+    background-image: url('/screenshot_1716788088.png');
+    background-size:cover;
+    height: 300px;
+}
