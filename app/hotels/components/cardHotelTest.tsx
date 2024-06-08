@@ -3,7 +3,7 @@ import { List, Button, Card } from "antd";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Col, Rate, Row, Typography } from "antd";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 const gridStyle: React.CSSProperties = {
   width: "17%",
   textAlign: "center",

@@ -13,7 +13,7 @@ import {
   Select,
 } from "antd";
 import dayjs from "dayjs";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React from "react";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { RangePicker } = DatePicker;

@@ -6,12 +6,27 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
-import SearchBar from "../app/home/components/searchbar";
-import styles from "./style.module.css";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Navbar({ bg, searchbar, logo }) {
+  const [usename, setUsername] = useState();
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodeToken = jwtDecode(token);
+      const use = decodeToken.sub;
+      setUsername(use);
+    }
+  }, []);
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
   return (
     <header className={bg}>
       <Disclosure as="nav">
@@ -34,12 +49,7 @@ export default function Navbar({ bg, searchbar, logo }) {
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
                     <a href="/home">
-                      <Image
-                        src={`/${logo}`}
-                        width={150}
-                        height={0}
-                        alt="logo"
-                      />
+                      <Image src={logo} width={150} height={50} alt="logo" />
                     </a>
                   </div>
                   <div className="hidden sm:ml-6 sm:block pt-2 ">
@@ -77,19 +87,41 @@ export default function Navbar({ bg, searchbar, logo }) {
                         </Link>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className=" hover:bg-purple-950 hover:bg-opacity-40   py-2 px-2 rounded border flex text-sm"
-                    >
-                      <UserIcon className="h-5 w-5   mr-1" />
-                      Đăng nhập
-                    </button>
-                    <button
-                      type="button"
-                      className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
-                    >
-                      Đăng ký
-                    </button>
+                    {usename ? (
+                      <div className="flex items-center">
+                        <p className="  text-sm font-medium">
+                          Xin chào, {usename}
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={handleLogOut}
+                          className="bg-orange-700 hover:bg-orange-400  text-white ms-4   py-2 px-2 rounded flex text-sm"
+                        >
+                          Đăng Xuất
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between items-center">
+                        <Link href="/login">
+                          <button
+                            type="button"
+                            className=" hover:bg-purple-950 hover:bg-opacity-40 me-4 py-2 px-2 rounded border flex text-sm"
+                          >
+                            <UserIcon className="h-5 w-5   mr-1" />
+                            Đăng nhập
+                          </button>
+                        </Link>
+                        <Link href="/signup">
+                          <button
+                            type="button"
+                            className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
+                          >
+                            Đăng ký
+                          </button>
+                        </Link>
+                      </div>
+                    )}
                   </div>
                   {/* Profile dropdown */}
                 </div>

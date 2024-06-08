@@ -1,6 +1,6 @@
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Button, Col, Rate, Row, Typography } from "antd";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { useState } from "react";
 

@@ -6,7 +6,7 @@ import React from "react";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { RangePicker } = DatePicker;
 import dayjs from "dayjs";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
@@ -130,52 +130,110 @@ export default function Page() {
             </Row>
           </div>
         </div>
-        <div
-          style={{ width: "35%" }}
-          className="border p-5 rounded-lg shadow-lg"
-        >
-          <Row className="h-24 ">
-            <Col span={8}>
-              <Image
-                src="/static_images/cauvang-1654247842-9403-1654247849.jpg"
-                alt=""
-                layout="fill"
-              />
-            </Col>
-            <Col span={16} className="px-4">
-              <strong>Khach san A</strong>
-              <p>Deluxe sea view room</p>
-            </Col>
-          </Row>
-          <Divider />
-          <Row>
-            <Col span={12} className="flex justify-start items-center">
-              <Image src="/icon/check-in.png" width={30} height={30} alt="" />
-              <span className="font-bold ms-2">Ngày nhận phòng</span>
-            </Col>
-            <Col span={12} className="flex justify-end items-center">
-              <span className="font-bold">20/02/2024</span>
-            </Col>
-          </Row>
-          <Row className="mt-2">
-            <Col span={12} className="flex justify-start items-center">
-              <Image src="/icon/check-out.png" width={30} height={30} alt="" />
-              <span className="font-bold ms-2">Ngày trả phòng</span>
-            </Col>
-            <Col span={12} className="flex justify-end items-center">
-              <span className="font-bold">21/02/2024</span>
-            </Col>
-          </Row>
-          <Row className="mt-2">
-            <Col span={12} className="flex justify-start items-center">
-              <Image src="/icon/user.png" width={30} height={30} alt="" />
-              <span className="font-bold ms-2">Số lượng khách</span>
-            </Col>
-            <Col span={12} className="flex justify-end items-center">
-              <span className="font-bold">2 khách, 1 phòng</span>
-            </Col>
-          </Row>
-          <Divider />
+        <div style={{ width: "35%" }} className="">
+          <div className="border p-5 rounded-lg shadow-lg">
+            <Row className="h-24 ">
+              <Col span={8}>
+                <Image
+                  src="/static_images/cauvang-1654247842-9403-1654247849.jpg"
+                  alt=""
+                  layout="fill"
+                />
+              </Col>
+              <Col span={16} className="px-4">
+                <strong className="text-lg text-sky-600">
+                  Khach san A Khach san A Khach san A Khach san A
+                </strong>
+                <p className="font-semibold">Deluxe sea view room</p>
+              </Col>
+            </Row>
+            <Divider />
+            <Row>
+              <Col span={12} className="flex justify-start items-center">
+                <Image
+                  src="/icon/check-in (1).png"
+                  width={30}
+                  height={30}
+                  alt=""
+                />
+                <span className="font-semibold ms-2  text-stone-500">
+                  Ngày nhận phòng
+                </span>
+              </Col>
+              <Col span={12} className="flex justify-end items-center">
+                <span className="font-semibold  ">20/02/2024</span>
+              </Col>
+            </Row>
+            <Row className="mt-4">
+              <Col span={12} className="flex justify-start items-center">
+                <Image
+                  src="/icon/check-out (1).png"
+                  width={30}
+                  height={30}
+                  alt=""
+                />
+                <span className="font-semibold ms-2 text-stone-500">
+                  Ngày trả phòng
+                </span>
+              </Col>
+              <Col span={12} className="flex justify-end items-center">
+                <span className="font-semibold  0">21/02/2024</span>
+              </Col>
+            </Row>
+            <Row className="mt-4">
+              <Col span={12} className="flex justify-start items-center">
+                <Image src="/icon/user (2).png" width={30} height={30} alt="" />
+                <span className="font-semibold ms-2  text-stone-500">
+                  Số lượng khách
+                </span>
+              </Col>
+              <Col span={12} className="flex justify-end items-center">
+                <span className="font-semibold 0">2 khách, 1 phòng</span>
+              </Col>
+            </Row>
+            <Divider />
+            <Row>
+              <Col span={12} className="text-start">
+                <span className="font-semibold text-stone-500 ms-2">
+                  <span className="underline text-black font-bold">1</span>{" "}
+                  room(s) x{" "}
+                  <span className="underline text-black font-bold">1</span>{" "}
+                  night(s)
+                </span>
+              </Col>
+              <Col span={12} className="text-end">
+                <span className="font-bold">2.931.000 đ</span>
+              </Col>
+            </Row>
+            <Row className="mt-4">
+              <Col span={12} className="text-start">
+                <span className="font-semibold text-stone-500 ms-2">
+                  Tax & fee
+                </span>
+              </Col>
+              <Col span={12} className="text-end">
+                <span className="font-bold">120.000 đ</span>
+              </Col>
+            </Row>
+            <Divider />
+            <Row className="mt-4">
+              <Col span={12} className="text-start">
+                <span className="font-bold   ms-2">Tổng tiền</span>
+              </Col>
+              <Col span={12} className="text-end">
+                <span className="font-bold text-orange-600 ">1.200.000 đ</span>
+              </Col>
+            </Row>
+            <div className="w-full h-12 bg-neutral-200 mt-4 rounded-md flex items-center justify-center">
+              <Image src="/icon/call (1).png" width={30} height={30} alt="" />
+              <span className="text-sm font-semibold ms-2">
+                Gọi 1900 1234 để được hỗ trợ 24/7
+              </span>
+            </div>
+          </div>
+          <div className="border p-5 rounded-lg shadow-lg mt-5">
+            <div></div>
+          </div>
         </div>
       </div>
     </>

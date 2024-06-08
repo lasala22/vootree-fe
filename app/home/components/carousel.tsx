@@ -1,6 +1,6 @@
 import React from "react";
 import { Carousel } from "antd";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 const contentStyle: React.CSSProperties = {
   height: "500px",
@@ -12,7 +12,7 @@ export default function Carousell() {
   return (
     <Carousel
       autoplay
-      style={{ width: 1000, height: 500 }}
+      style={{ width: 1000, height: 300 }}
       className="rounded-lg"
     >
       <div>

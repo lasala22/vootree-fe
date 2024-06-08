@@ -1,7 +1,7 @@
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Button, Carousel, Col, Form, Input, Row } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import Carousell from "./components/carousel";
 import Card from "./components/city";
@@ -17,7 +17,7 @@ export default function Page() {
           backgroundImage: `url('/static_images/1700215562769-2f362de4d3cf5253829ed5a07c10c17b.webp')`,
         }}
       >
-        <div style={{ width: 1000, height: 500 }} className="rounded-lg">
+        <div style={{ width: 1000, height: 300 }} className="rounded-lg">
           <Carousell />
         </div>
       </div>

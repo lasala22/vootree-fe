@@ -7,7 +7,7 @@ import {
   GoogleOutlined,
   FacebookOutlined,
 } from "@ant-design/icons";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import axios from "axios";
 

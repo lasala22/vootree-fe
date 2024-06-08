@@ -15,7 +15,7 @@ import {
 import { GoogleOutlined, FacebookOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import dayjs from "dayjs";
 import axios from "axios";
 const { Option } = Select;

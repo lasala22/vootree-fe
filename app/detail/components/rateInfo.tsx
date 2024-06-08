@@ -1,5 +1,5 @@
 import { Col, Row, Tag } from "antd";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React from "react";
 
 export default function RateInfo({ data }) {

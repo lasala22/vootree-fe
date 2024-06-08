@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Card, Carousel, Col, Rate, Row } from "antd";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 const formatNumber = (number) => {
@@ -31,7 +31,7 @@ export default function CardHotel() {
             slidesToScroll={1}
             style={{ width: 1000, height: 360 }}
           >
-            {data.map((item) => (
+            {data.slice(0, 5).map((item) => (
               <Col md={12} lg={6} xs={24} key={item.id} className="mt-7">
                 <Link href={`/detail/${item.id}`}>
                   <Card
@@ -43,7 +43,7 @@ export default function CardHotel() {
                           .map((img) => img.path)
                           .slice(0, 1)}`}
                         width={240}
-                        height={30}
+                        height={150}
                         alt="title"
                       />
                     }

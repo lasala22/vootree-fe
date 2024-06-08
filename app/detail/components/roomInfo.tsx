@@ -1,8 +1,9 @@
 import { UserIcon } from "@heroicons/react/24/outline";
 import { Button, Card, Col, Row } from "antd";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React from "react";
 import RoomFacilities from "./roomFacilities";
+import { url } from "inspector";
 
 export default function RoomInfo({ data }) {
   const validateRoom = data?.rooms?.length > 0;
@@ -15,7 +16,14 @@ export default function RoomInfo({ data }) {
     });
   };
   return (
-    <div className="mx-52 border h-full p-5 shadow-lg">
+    <div
+      className="mx-52 border h-full p-5 shadow-lg"
+      style={{
+        backgroundImage:
+          "/static_images/simple-geometric-white-small-fresh-powerpoint-background_fd68981dc3__960_540.avif",
+        backgroundSize: "fill",
+      }}
+    >
       <strong className="text-lg">Các loại phòng của khách sạn A</strong>
       {validateRoom
         ? data.rooms.map((item) => (
@@ -100,7 +108,12 @@ export default function RoomInfo({ data }) {
                         style={{ width: "20%" }}
                         className="items-center text-start justify-center flex"
                       >
-                        <Button size="large" type="primary" danger>
+                        <Button
+                          size="large"
+                          type="primary"
+                          danger
+                          href={`/booking/${item.id}`}
+                        >
                           Chọn phòng
                         </Button>
                       </Card.Grid>
