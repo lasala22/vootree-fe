@@ -8,58 +8,6 @@ import Card from "./components/city";
 import CardHotel from "./components/card";
 import { useEffect, useState } from "react";
 
-const cityInfo = [
-  {
-    name: "DN",
-    image: "/static_images/cauvang-1654247842-9403-1654247849.jpg",
-    title: "Đà nẵng",
-    link: "/home",
-  },
-  {
-    name: "QN",
-    image: "/static_images/halongbay-3501.jpg.webp",
-    title: "Quảng Ninh",
-    link: "/home",
-  },
-  {
-    name: "HU",
-    image: "/static_images/hoi-an-1680591517857660432696.webp",
-    title: "Huế",
-    link: "/home",
-  },
-  {
-    name: "DL",
-    image: "/static_images/du-lich-Da-Lat-ivivu.jpg",
-    title: "Đà Lạt",
-    link: "/home",
-  },
-  {
-    name: "NT",
-    image: "/static_images/nhattrang3-16721128389061596602579.jpg",
-    title: "Nha Trang",
-    link: "/home",
-  },
-  {
-    name: "HCM",
-    image:
-      "/static_images/tao-da-de-tphcm-phat-trien-thanh-do-thi-thong-minh1517188897.jpg",
-    title: "Hồ Chí Minh",
-    link: "/home",
-  },
-  {
-    name: "HN",
-    image: "/static_images/gioi-thieu-ve-ha-noi-banner.jpg",
-    title: "Hà Nội",
-    link: "/home",
-  },
-  {
-    name: "PQ",
-    image: "/static_images/dulichPhuQuoc-1649392573-9234-1649405369.jpg",
-    title: "Phú Quốc",
-    link: "/home",
-  },
-];
-
 export default function Page() {
   return (
     <>
@@ -74,15 +22,7 @@ export default function Page() {
         </div>
       </div>
       <div className="mt-10 justify-center flex mx-3 my-3">
-        <Row gutter={24} className="w-4/5">
-          {cityInfo.map((item) => (
-            <Col md={12} lg={6} xs={24} key={item.name} className="mt-3">
-              <Link href={item.link} key={item.name} className="w-44 h-0">
-                <Card image={item.image} title={item.title} />
-              </Link>
-            </Col>
-          ))}
-        </Row>
+        <Card />
       </div>
       <div className="mt-10 justify-center items-center ">
         <h1 className="font-bold text-xl mx-40">
@@ -97,7 +37,12 @@ export default function Page() {
         <div className="w-11/12 h-28 bg-sky-500 gap-5 mt-7 rounded-lg justify-between items-center flex px-10 ">
           <div className="w-4/12 h-20 bg-white rounded-md inline-flex py-2 px-1 border-gray-950">
             <div className="me-2">
-              <Image src="/travel-bag.png" width={100} height={100} alt="" />
+              <Image
+                src="/icon/travel-bag.png"
+                width={100}
+                height={100}
+                alt=""
+              />
             </div>
             <div>
               <h3 className="text-sm font-bold">Đáp ứng mọi nhu cầu của bạn</h3>
@@ -109,7 +54,7 @@ export default function Page() {
           </div>
           <div className="w-4/12 h-20 bg-white rounded-md inline-flex py-2 px-1  border-gray-950">
             <div className="me-2">
-              <Image src="/search.png" width={100} height={100} alt="" />
+              <Image src="/icon/search.png" width={100} height={100} alt="" />
             </div>
             <div>
               <h3 className="text-sm font-bold">Tùy chọn đặt chỗ linh hoạt</h3>
@@ -122,7 +67,7 @@ export default function Page() {
           <div className="w-4/12 h-20 bg-white rounded-md inline-flex py-2 px-1 border-gray-950">
             <div className="me-2">
               <Image
-                src="/protected-shield.png"
+                src="/icon/protected-shield.png"
                 width={100}
                 height={100}
                 alt=""
