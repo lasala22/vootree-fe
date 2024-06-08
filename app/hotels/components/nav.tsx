@@ -8,7 +8,7 @@ import {
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import SearchBar from "../app/home/components/searchBarHomePage";
+import SearchBar from "../app/home/components/searchbar";
 import styles from "./style.module.css";
 
 export default function Navbar({ bg, searchbar, logo }) {
@@ -21,7 +21,7 @@ export default function Navbar({ bg, searchbar, logo }) {
               <div className="relative flex h-16 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   {/* Mobile menu button*/}
-                  <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:bg-opacity-85 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:bg-opacity-85 hover:  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="absolute -inset-0.5" />
                     <span className="sr-only">Open main menu</span>
                     {open ? (
@@ -46,13 +46,13 @@ export default function Navbar({ bg, searchbar, logo }) {
                     <div className="flex space-x-4">
                       <Link
                         href="/home"
-                        className="text-white hover:bg-gray-700 hover:bg-opacity-55  rounded-md px-3 py-2 text-sm font-medium"
+                        className="  hover:bg-gray-700 hover:bg-opacity-55  rounded-md px-3 py-2 text-sm font-medium"
                       >
                         Trang chủ
                       </Link>
                       <Link
                         href="/hotels"
-                        className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                        className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium"
                       >
                         Danh sách khách sạn
                       </Link>
@@ -65,30 +65,28 @@ export default function Navbar({ bg, searchbar, logo }) {
                       <div className="flex space-x-1">
                         <Link
                           href="/home"
-                          className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                          className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium"
                         >
                           Hợp tác với chúng tôi
                         </Link>
                         <Link
                           href="/booking"
-                          className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                          className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium"
                         >
                           Khách sạn đang đặt
                         </Link>
                       </div>
                     </div>
-                    <Link href="/login">
-                      <button
-                        type="button"
-                        className=" hover:bg-purple-950 hover:bg-opacity-40 text-white py-2 px-2 rounded border flex text-sm"
-                      >
-                        <UserIcon className="h-5 w-5 text-white mr-1" />
-                        Đăng nhập
-                      </button>
-                    </Link>
                     <button
                       type="button"
-                      className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white py-2 px-2 ps-4 pe-4 rounded flex text-sm"
+                      className=" hover:bg-purple-950 hover:bg-opacity-40   py-2 px-2 rounded border flex text-sm"
+                    >
+                      <UserIcon className="h-5 w-5   mr-1" />
+                      Đăng nhập
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
                     >
                       Đăng ký
                     </button>
@@ -103,25 +101,25 @@ export default function Navbar({ bg, searchbar, logo }) {
                 <DisclosureButton className="text-left">
                   <Link
                     href="/home"
-                    className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
+                    className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Trang chủ
                   </Link>
                   <Link
                     href="/hotels"
-                    className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
+                    className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Danh sách khách sạn
                   </Link>
                   <Link
                     href="/home"
-                    className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
+                    className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Hợp tác với chúng tôi
                   </Link>
                   <Link
                     href="/hotels"
-                    className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
+                    className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Khách sạn đang đặt
                   </Link>
@@ -132,7 +130,7 @@ export default function Navbar({ bg, searchbar, logo }) {
         )}
       </Disclosure>
 
-      {/* <div className="text-3xl items-center justify-center flex mt-6 font-bold text-white">
+      {/* <div className="text-3xl items-center justify-center flex mt-6 font-bold  ">
         <h1 className="items-center">
           From Southeast Asia to the World, All Yours.
         </h1>
