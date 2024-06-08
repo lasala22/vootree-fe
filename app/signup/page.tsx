@@ -5,6 +5,7 @@ import {
   Cascader,
   Checkbox,
   Col,
+  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -12,9 +13,11 @@ import {
   Select,
 } from "antd";
 import { GoogleOutlined, FacebookOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dayjs from "dayjs";
+import axios from "axios";
 const { Option } = Select;
 
 const formItemLayout = {
@@ -47,10 +50,29 @@ const tailFormItemLayout = {
     },
   },
 };
+
+const dateFormatList = ["DD/MM/YYYY", "DD-MM-YYYY"];
+
 export default function Page() {
   const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+  const [role, setRole] = useState("CUSTOMER");
+  const onFinish = async (values) => {
+    const newValues = { ...values, role };
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        newValues
+      );
+      if (response.data.success) {
+        console.log("success");
+      } else {
+        console.error(response.data.error);
+      }
+
+      console.log(newValues);
+    } catch (error) {
+      console.error(error);
+    }
   };
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -109,7 +131,7 @@ export default function Page() {
             <Input />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             name="firstname"
             label="First Name"
             rules={[
@@ -133,8 +155,7 @@ export default function Page() {
             ]}
           >
             <Input />
-          </Form.Item>
-
+          </Form.Item> */}
           <Form.Item
             name="email"
             label="E-mail"
@@ -190,8 +211,19 @@ export default function Page() {
           >
             <Input.Password />
           </Form.Item>
-
           <Form.Item
+            name="dob"
+            label="Date of birth"
+            rules={[
+              {
+                required: true,
+                message: "Please choose your birthday!",
+              },
+            ]}
+          >
+            <DatePicker format={dateFormatList} />
+          </Form.Item>
+          {/* <Form.Item
             name="phone"
             label="Phone Number"
             rules={[
@@ -207,9 +239,9 @@ export default function Page() {
                 width: "100%",
               }}
             />
-          </Form.Item>
+          </Form.Item> */}
 
-          <Form.Item
+          {/* <Form.Item
             name="gender"
             label="Gender"
             rules={[
@@ -224,35 +256,10 @@ export default function Page() {
               <Option value="female">Female</Option>
               <Option value="other">Other</Option>
             </Select>
-          </Form.Item>
-
-          {/* <Form.Item
-            label="Captcha"
-            extra="We must make sure that your are a human."
-          >
-            <Row gutter={8}>
-              <Col span={12}>
-                <Form.Item
-                  name="captcha"
-                  noStyle
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the captcha you got!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Button>Get captcha</Button>
-              </Col>
-            </Row>
           </Form.Item> */}
 
           <Form.Item
-            name="agreement"
+            // name="agreement"
             valuePropName="checked"
             rules={[
               {

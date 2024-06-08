@@ -33,7 +33,7 @@ export default function CardHotel() {
           >
             {data.map((item) => (
               <Col md={12} lg={6} xs={24} key={item.id} className="mt-7">
-                <Link href={`/detail/${item.id}`} key={item.id}>
+                <Link href={`/detail/${item.id}`}>
                   <Card
                     hoverable
                     style={{ width: 240 }}

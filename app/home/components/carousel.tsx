@@ -19,7 +19,7 @@ export default function Carousell() {
         <h3 style={contentStyle}>
           <Image
             className="rounded-lg"
-            src="/halongbay-3501.jpg.webp"
+            src="/static_images/halongbay-3501.jpg.webp"
             width={1000}
             height={300}
             alt=""
@@ -31,7 +31,7 @@ export default function Carousell() {
         <h3 style={contentStyle}>
           <Image
             className="rounded-lg"
-            src="/cauvang-1654247842-9403-1654247849.jpg"
+            src="/static_images/cauvang-1654247842-9403-1654247849.jpg"
             width={1000}
             height={300}
             alt=""

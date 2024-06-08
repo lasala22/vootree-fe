@@ -9,16 +9,29 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+
+import { useRouter } from "next/navigation";
 export default function Page() {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
-
+  const router = useRouter();
   // To disable submit button at the beginning.
   useEffect(() => {
     setClientReady(true);
   }, []);
-  const onFinish = (values) => {
-    console.log("Finish:", values);
+  const onFinish = async (values) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        values
+      );
+      localStorage.setItem("token", response.data.token);
+      router.push("/home");
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center ">

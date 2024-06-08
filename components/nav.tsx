@@ -10,8 +10,19 @@ import Image from "next/image";
 import Link from "next/link";
 import SearchBar from "../app/home/components/searchBarHomePage";
 import styles from "./style.module.css";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar({ bg, searchbar, logo }) {
+  const [usename, setUsername] = useState();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodeToken = jwtDecode(token);
+      const use = decodeToken.sub;
+      setUsername(use);
+    }
+  }, []);
   return (
     <header className={bg}>
       <Disclosure as="nav">
@@ -77,21 +88,25 @@ export default function Navbar({ bg, searchbar, logo }) {
                         </Link>
                       </div>
                     </div>
-                    <Link href="/login">
-                      <button
-                        type="button"
-                        className=" hover:bg-purple-950 hover:bg-opacity-40 text-white py-2 px-2 rounded border flex text-sm"
-                      >
-                        <UserIcon className="h-5 w-5 text-white mr-1" />
-                        Đăng nhập
-                      </button>
-                    </Link>
-                    <button
-                      type="button"
-                      className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white py-2 px-2 ps-4 pe-4 rounded flex text-sm"
-                    >
-                      Đăng ký
-                    </button>
+                    {usename ? (
+                      <p className="text-white">Xin chào, {usename}</p>
+                    ) : (
+                      <div>
+                        <button
+                          type="button"
+                          className=" hover:bg-purple-950 hover:bg-opacity-40   py-2 px-2 rounded border flex text-sm"
+                        >
+                          <UserIcon className="h-5 w-5   mr-1" />
+                          Đăng nhập
+                        </button>
+                        <button
+                          type="button"
+                          className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
+                        >
+                          Đăng ký
+                        </button>
+                      </div>
+                    )}
                   </div>
                   {/* Profile dropdown */}
                 </div>

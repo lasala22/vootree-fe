@@ -11,19 +11,19 @@ import { useEffect, useState } from "react";
 const cityInfo = [
   {
     name: "DN",
-    image: "/cauvang-1654247842-9403-1654247849.jpg",
+    image: "/static_images/cauvang-1654247842-9403-1654247849.jpg",
     title: "Đà nẵng",
     link: "/home",
   },
   {
     name: "QN",
-    image: "/halongbay-3501.jpg.webp",
+    image: "/static_images/halongbay-3501.jpg.webp",
     title: "Quảng Ninh",
     link: "/home",
   },
   {
     name: "HU",
-    image: "/hoi-an-1680591517857660432696.webp",
+    image: "/static_images/hoi-an-1680591517857660432696.webp",
     title: "Huế",
     link: "/home",
   },
