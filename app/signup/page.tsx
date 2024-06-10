@@ -56,6 +56,7 @@ const dateFormatList = ["DD/MM/YYYY", "DD-MM-YYYY"];
 export default function Page() {
   const [form] = Form.useForm();
   const [role, setRole] = useState("CUSTOMER");
+
   const onFinish = async (values) => {
     const newValues = { ...values, role };
     try {

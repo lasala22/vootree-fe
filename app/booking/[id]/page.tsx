@@ -1,13 +1,25 @@
 "use client";
 
-import { Button, Col, DatePicker, Divider, Form, GetProps, Row } from "antd";
+import {
+  Button,
+  Cascader,
+  Col,
+  DatePicker,
+  Divider,
+  Form,
+  GetProps,
+  InputNumber,
+  Row,
+  Select,
+} from "antd";
 
-import React from "react";
+import React, { useState } from "react";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { RangePicker } = DatePicker;
 import dayjs from "dayjs";
 import Image from "next/legacy/image";
 
+const { Option } = Select;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
   return current && current < dayjs().endOf("day");
@@ -16,9 +28,91 @@ const disabledDate: RangePickerProps["disabledDate"] = (current) => {
 type FieldType = {};
 
 export default function Page() {
+  const [isInputsVisible, setIsInputsVisible] = useState(false);
+  const [input1Value, setInput1Value] = useState<number | null>(null);
+  const [input2Value, setInput2Value] = useState<number | null>(null);
+
+  const handleSelectChange = (value: string) => {
+    setIsInputsVisible(value === "custom");
+  };
+
+  const handleInput1Change = (value: number | null) => {
+    setInput1Value(value);
+  };
+
+  const handleInput2Change = (value: number | null) => {
+    setInput2Value(value);
+  };
+
+  const handleSubmit = () => {
+    console.log("Input 1 Value:", input1Value);
+    console.log("Input 2 Value:", input2Value);
+  };
   return (
     <>
       <div className="mx-32 flex gap-5" style={{ height: "1000px" }}>
+        <Form onFinish={handleSubmit}>
+          <Form.Item label="Select Option">
+            <Form.Item label="Select Option">
+              <Select
+                defaultValue="default"
+                style={{ width: 300 }}
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        padding: 8,
+                      }}
+                    >
+                      <InputNumber
+                        value={input1Value}
+                        onChange={handleInput1Change}
+                        placeholder="Input 1"
+                        style={{ width: "100%", marginBottom: 8 }}
+                      />
+                      <InputNumber
+                        value={input2Value}
+                        onChange={handleInput2Change}
+                        placeholder="Input 2"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </>
+                )}
+              />
+            </Form.Item>
+          </Form.Item>
+
+          {isInputsVisible && (
+            <>
+              <Form.Item label="Input 1">
+                <InputNumber
+                  value={input1Value}
+                  onChange={handleInput1Change}
+                  placeholder="Enter value"
+                  style={{ width: 200 }}
+                />
+              </Form.Item>
+              <Form.Item label="Input 2">
+                <InputNumber
+                  value={input2Value}
+                  onChange={handleInput2Change}
+                  placeholder="Enter value"
+                  style={{ width: 200 }}
+                />
+              </Form.Item>
+            </>
+          )}
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
         <div
           style={{ width: "65%" }}
           className="border p-5 rounded-lg shadow-lg"

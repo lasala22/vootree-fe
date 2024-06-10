@@ -14,20 +14,23 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import Image from "next/legacy/image";
-import React from "react";
+import React, { useState } from "react";
+import provinces from "@/public/provinces.json";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { RangePicker } = DatePicker;
-
+const { Option } = Select;
+const provincesData = provinces.data.data;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
   return current && current < dayjs().endOf("day");
 };
 
-const filterOption = (
-  input: string,
-  option?: { label: string; value: string }
-) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-
+const filterOption = (input, option) => {
+  return (
+    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+    option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+  );
+};
 type FieldType = {
   search?: string;
   date?: string;
@@ -37,9 +40,12 @@ const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
   console.log("Success:", values);
 };
 
-export default function SearchBar() {
+export default function SearchBar({ setSearchValues }) {
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const onSearch = (value: string) => {
-    console.log("search:", value);
+    setSearchValues(value);
   };
   return (
     <>
@@ -53,24 +59,17 @@ export default function SearchBar() {
                   suffixIcon={<MapPinIcon className="h-6 w-6 text-gray-500" />}
                   showSearch
                   placeholder="Thành phố, khách sạn, điểm đến"
-                  optionFilterProp="children"
                   onSearch={onSearch}
+                  optionFilterProp="children"
+                  //loading={loading}
                   filterOption={filterOption}
-                  options={[
-                    {
-                      value: "jack",
-                      label: "Jack",
-                    },
-                    {
-                      value: "lucy",
-                      label: "Lucy",
-                    },
-                    {
-                      value: "tom",
-                      label: "Tom",
-                    },
-                  ]}
-                />
+                >
+                  {provincesData.map((location) => (
+                    <Option key={location.slug} value={location.slug}>
+                      {location.name}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
             <Col span={6}>

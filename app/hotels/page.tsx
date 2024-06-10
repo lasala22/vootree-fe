@@ -1,81 +1,31 @@
 "use client";
-import { Card, Layout, Slider } from "antd";
-import CardHotel from "./components/cardhotel";
 import { useEffect, useState } from "react";
-import PriceSlider from "./priceslider";
-import HotelListSider from "./components/sider";
-import Index from "./components/cardHotelTest";
+import Index from "./components/cardHotels";
 
-const gridStyle: React.CSSProperties = {
-  width: "17%",
-  textAlign: "center",
-  fontSize: "19px",
-};
-
-const hotelInfo = [
-  {
-    title: "Khách sạn A",
-    image: "/cauvang-1654247842-9403-1654247849.jpg",
-    address: "Đà Nẵng",
-    rate: 8.3,
-    price: 340000,
-    stars: 4,
-    description:
-      "Đây là khách sạn Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ",
-  },
-  {
-    title: "Khách sạn b",
-    image: "/cauvang-1654247842-9403-1654247849.jpg",
-    address: "Đà Nẵng",
-    rate: 8.3,
-    price: 340000,
-    stars: 4,
-    description:
-      "Đây là khách sạn Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ",
-  },
-  {
-    title: "Khách sạn c",
-    image: "/cauvang-1654247842-9403-1654247849.jpg",
-    address: "Đà Nẵng",
-    rate: 8.3,
-    price: 340000,
-    stars: 4,
-    description:
-      "Đây là khách sạn Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ",
-  },
-  {
-    title: "Khách sạn d",
-    image: "/cauvang-1654247842-9403-1654247849.jpg",
-    address: "Đà Nẵng",
-    rate: 8.3,
-    price: 340000,
-    stars: 4,
-    description:
-      "Đây là khách sạn Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ",
-  },
-  {
-    title: "Khách sạn e",
-    image: "/cauvang-1654247842-9403-1654247849.jpg",
-    address: "Đà Nẵng",
-    rate: 8.3,
-    price: 340000,
-    stars: 4,
-    description:
-      "Đây là khách sạn Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ Đây là khách sạ",
-  },
-];
+import StarsCheckBox from "./components/starsCheckBox";
+import PriceSlider from "./components/priceslider";
+import SearchBar from "./components/searchBar";
 
 export default function Page() {
-  const [data, setData] = useState([]);
-
+  const [checkedValues, setCheckedValues] = useState([]);
+  const [priceRange, setPriceRange] = useState([80000, 50000000]);
+  const [searchValues, setSearchValues] = useState([]);
   return (
-    <div className="flex">
-      <div className="w-1/4 px-10" style={{ height: 1000 }}>
-        <HotelListSider />
+    <>
+      <SearchBar setSearchValues={setSearchValues} />
+      <div className="flex mt-4">
+        <div className="w-1/4 px-10" style={{ height: 1000 }}>
+          <PriceSlider priceRange={priceRange} setPriceRange={setPriceRange} />
+          <StarsCheckBox setCheckedValues={setCheckedValues} />
+        </div>
+        <div className=" pe-10 w-3/4">
+          <Index
+            checkedValues={checkedValues}
+            priceRange={priceRange}
+            searchValues={searchValues}
+          />
+        </div>
       </div>
-      <div className=" pe-10 w-3/4">
-        <Index />
-      </div>
-    </div>
+    </>
   );
 }
