@@ -34,6 +34,8 @@ const filterOption = (input, option) => {
 type FieldType = {
   search?: string;
   date?: string;
+  guests?: number;
+  rooms?: number;
 };
 
 const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
@@ -81,7 +83,7 @@ export default function SearchBar({ setSearchValues }) {
               </Form.Item>
             </Col>
             <Col span={3}>
-              <Form.Item>
+              <Form.Item name="guests">
                 <Input
                   suffix={
                     <Image src="/icon/man.png" width={24} height={24} alt="" />
@@ -94,7 +96,7 @@ export default function SearchBar({ setSearchValues }) {
               </Form.Item>
             </Col>
             <Col span={3}>
-              <Form.Item>
+              <Form.Item name="rooms">
                 <Input
                   suffix={
                     <Image src="/icon/door.png" width={24} height={24} alt="" />

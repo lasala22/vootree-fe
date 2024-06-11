@@ -11,11 +11,12 @@ export default function RateInfo({ data }) {
       <div className="mt-4">
         <strong>Xếp hạng & Điểm đánh giá chung</strong>
         <div className="flex items-center">
-          <Tag color="#0384c6" className="w-12 h-8 text-lg text-center">
+          <Tag color="#0384c6" className="w-20 h-8 text-lg text-center">
             {data.ratings?.length > 0
               ? data.ratings.reduce((sum, rate) => sum + rate.rate, 0) /
                 data.ratings?.length
               : undefined}
+            {"/10"}
           </Tag>
           <p className="text-sm text-gray-500">
             Từ {data?.ratings?.length} đánh giá của khách đã ở
@@ -44,7 +45,9 @@ export default function RateInfo({ data }) {
                         height={20}
                         alt=""
                       />
-                      <p className="ms-2">9</p>
+                      <p className="ms-2 text-sky-600 font-semibold">
+                        {item.rate}
+                      </p>
                     </div>
                     <div className="mt-2">
                       <p className="">Ngày 20/02/2024</p>

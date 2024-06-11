@@ -98,10 +98,42 @@ const Index = ({ checkedValues, priceRange, searchValues }) => {
         })
       );
     }
-    if (Array.isArray(searchValues)) {
-      filteredData = filteredData.filter(
-        (item) => searchValues && item.city.toLowerCase().includes(searchValues)
-      );
+    if (searchValues) {
+      const { search, date, guests, rooms } = searchValues;
+
+      // Lọc theo search (thành phố, khách sạn, điểm đến)
+      if (search) {
+        filteredData = filteredData.filter((item) =>
+          item.city.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+
+      // Lọc theo date range (nếu có)
+      // if (date && Array.isArray(date) && date.length === 2) {
+      //   const [startDate, endDate] = date;
+      //   filteredData = filteredData.filter((item) =>
+      //     item.rooms.some((room) => {
+      //       const availableDates = room.availableDates || [];
+      //       return availableDates.some((availableDate) =>
+      //         dayjs(availableDate).isBetween(startDate, endDate, null, "[]")
+      //       );
+      //     })
+      //   );
+      // }
+
+      // Lọc theo số lượng khách (guests)
+      if (guests) {
+        filteredData = filteredData.filter((item) =>
+          item.rooms.some((room) => room.capacity <= guests)
+        );
+      }
+
+      // Lọc theo số lượng phòng (rooms)
+      if (rooms) {
+        filteredData = filteredData.filter(
+          (item) => item.rooms.length <= rooms
+        );
+      }
     }
     setVisibleData(filteredData.slice(0, pageSize));
   }, [checkedValues, priceRange, searchValues, data]);
