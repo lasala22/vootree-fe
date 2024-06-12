@@ -8,7 +8,7 @@ import {
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import SearchBar from "../app/home/components/searchBarHomePage";
+import SearchBar from "../app/(homepage)/home/components/searchBarHomePage";
 import styles from "./style.module.css";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
