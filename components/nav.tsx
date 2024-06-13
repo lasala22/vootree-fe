@@ -6,13 +6,11 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { jwtDecode } from "jwt-decode";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import SearchBar from "../app/(homepage)/home/components/searchBarHomePage";
-import styles from "./style.module.css";
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Navbar({ bg, searchbar, logo }) {
   const [usename, setUsername] = useState();
@@ -21,8 +19,10 @@ export default function Navbar({ bg, searchbar, logo }) {
     const token = localStorage.getItem("token");
     if (token) {
       const decodeToken = jwtDecode(token);
-      const use = decodeToken.sub;
-      setUsername(use);
+      if (decodeToken && decodeToken.roles[0] == "CUSTOMER") {
+        const use = decodeToken.sub;
+        setUsername(use);
+      }
     }
   }, []);
   const handleLogOut = () => {

@@ -19,8 +19,10 @@ export default function Navbar({ bg, searchbar, logo }) {
     const token = localStorage.getItem("token");
     if (token) {
       const decodeToken = jwtDecode(token);
-      const use = decodeToken.sub;
-      setUsername(use);
+      if (decodeToken && decodeToken.roles[0] == "CUSTOMER") {
+        const use = decodeToken.sub;
+        setUsername(use);
+      }
     }
   }, []);
   const handleLogOut = () => {

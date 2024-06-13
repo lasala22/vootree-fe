@@ -1,8 +1,10 @@
+"use client";
+
+import withAuth from "@/components/withAuth";
 import { Button } from "antd";
 import Link from "next/link";
-import React from "react";
 
-export default function homepage() {
+const Homepage = () => {
   return (
     <div>
       Partner Homepage
@@ -11,4 +13,8 @@ export default function homepage() {
       </Link>
     </div>
   );
-}
+};
+
+Homepage.displayName = "PartnerPage";
+
+export default withAuth(Homepage, "PARTNER");

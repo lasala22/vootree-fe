@@ -12,6 +12,7 @@ import Link from "next/link";
 import axios from "axios";
 
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 export default function Page() {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
@@ -27,12 +28,20 @@ export default function Page() {
         values
       );
       localStorage.setItem("token", response.data.token);
-      router.push("/home");
+
+      const decodeToken = jwtDecode(response.data.token);
+      const tokenRole = decodeToken.roles;
+      if (tokenRole[0] == "PARTNER") {
+        router.push("/partner/home");
+      } else if (tokenRole[0] == "CUSTOMER") {
+        router.push("/home");
+      }
       console.log(response);
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center ">
       <div className="flex items-center bg-blue-500 w-full p-4">
@@ -40,7 +49,7 @@ export default function Page() {
           <Image
             src="/logo_preview_rev_2.png"
             width={150}
-            height={0}
+            height={50}
             alt="logo"
           />
         </Link>

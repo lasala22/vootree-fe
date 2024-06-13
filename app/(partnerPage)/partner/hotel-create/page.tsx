@@ -1,29 +1,28 @@
 "use client";
-import React, { useState } from "react";
-import type { RadioChangeEvent } from "antd";
 import {
+  Button,
+  Checkbox,
+  Col,
+  ConfigProvider,
   Form,
   Input,
-  Button,
-  Steps,
-  message,
   InputNumber,
-  Row,
-  Col,
   Radio,
-  Segmented,
-  ConfigProvider,
   Rate,
+  Row,
+  Segmented,
   Select,
+  Steps,
   TimePicker,
-  Checkbox,
+  message,
 } from "antd";
-import FormItem from "antd/es/form/FormItem";
+import axios from "axios";
+import { format } from "date-fns";
+import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
-import dayjs from "dayjs";
-import { RadioGroup } from "@headlessui/react";
+import { useEffect, useState } from "react";
 
-const format = "HH:mm";
+const formats = "HH:mm";
 const { Step } = Steps;
 const { TextArea } = Input;
 const MultiStepForm = () => {
@@ -31,6 +30,24 @@ const MultiStepForm = () => {
   const [formData, setFormData] = useState({});
   const [form] = Form.useForm();
   const [facilities, setFacilities] = useState([]);
+  const [hotelFacilities, setHotelFacilities] = useState([]);
+  const [roomFacilities, setRoomFacilities] = useState([]);
+  const [userId, setUserId] = useState();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const decode = jwtDecode(token);
+    setUserId(decode?.user_id);
+
+    const getFacilities = async () => {
+      const response = await fetch("http://localhost:8080/api/facilities"); // API backend trả về toàn bộ giá trị
+      const allData = await response.json();
+      setHotelFacilities(
+        allData.filter((item: any) => item.facType === "HOTEL")
+      );
+      setRoomFacilities(allData.filter((item: any) => item.facType === "ROOM"));
+    };
+    getFacilities();
+  }, []);
 
   const next = () => {
     setCurrent(current + 1);
@@ -40,17 +57,64 @@ const MultiStepForm = () => {
     setCurrent(current - 1);
   };
 
-  const complete = () => {
-    message.success("Bạn đã đăng kí thành công!");
+  interface hotel {
+    hotelName: string;
+    address: string;
+    checkInTime: string;
+    checkOutTime: string;
+    city: string;
+    hotelDescription: string;
+    hotelPhoneNum: string;
+    hotelStars: number;
+    status: string;
+    accommodationType: object;
+    user: object;
+  }
+
+  const complete = async () => {
+    // const formatCheckInTime = formData.checkIn
+    const checkInTimeData = formData.checkIn;
+    const checkOutTimeData = formData.checkOut;
+    const formatCheckInTime = checkInTimeData.format("HH:mm:ss");
+    const formatCheckOutTime = checkOutTimeData.format("HH:mm:ss");
+    const accommodationTypeObject = { id: formData.propertyType };
+    const userObject = { id: userId };
+    const hotelFacilitiesObject = formData.facilities.map((num) => ({
+      id: num,
+    }));
+    console.log(hotelFacilitiesObject);
+
+    const filteredHotel = {
+      hotelName: formData.hotelName,
+      address: formData.address,
+      checkInTime: formatCheckInTime,
+      checkOutTime: formatCheckOutTime,
+      city: formData.city,
+      hotelDescription: formData.description,
+      hotelPhoneNum: formData.hotelPhoneNum,
+      hotelStars: formData.stars,
+      status: formData.status,
+      accommodationType: accommodationTypeObject,
+      user: userObject,
+      hotelFacilities: hotelFacilitiesObject,
+    };
+
+    console.log(filteredHotel);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/hotels",
+        filteredHotel
+      );
+      message.success("Bạn đã đăng kí thành công!");
+    } catch (error) {
+      console.error("Failed to submit data:", error);
+      message.error("Failed to submit data");
+    }
 
     console.log("Form Data:", formData);
   };
 
-  const theme = {
-    token: {
-      itemSelectedBg: "#00ff00", // Thay đổi màu nền của Segmented khi được chọn
-    },
-  };
   const status = "PENDING";
   const filterOption = (
     input: string,
@@ -93,7 +157,7 @@ const MultiStepForm = () => {
               // initialValues={{ propertyType: 1 }}
               onFinish={(values) => {
                 if (values.propertyType === undefined) {
-                  values.propertyType = 1;
+                  values.propertyType = { id: 1 };
                 }
                 if (values.stars === undefined) {
                   values.stars = 0;
@@ -118,6 +182,27 @@ const MultiStepForm = () => {
                       size="large"
                       placeholder="Ví dụ: Khách sạn Mường Thanh"
                     />
+                  </Form.Item>
+                </div>
+              </div>
+              <div className="mt-10">
+                <span className="text-lg font-bold">Số điện thoại</span>
+                <p className="font-semibold">
+                  Số điện thoại của khách sạn để khách hàng có thể liên lạc nếu
+                  cần thiết
+                </p>
+                <div className="border rounded-md p-2 mt-2">
+                  <Form.Item
+                    className="w-96"
+                    name="hotelPhoneNum"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Hãy nhập số điện thoại nhà của bạn!",
+                      },
+                    ]}
+                  >
+                    <InputNumber className="w-52" size="large" placeholder="" />
                   </Form.Item>
                 </div>
               </div>
@@ -360,7 +445,7 @@ const MultiStepForm = () => {
                       { required: true, message: "Vui lòng chọn thời gian!" },
                     ]}
                   >
-                    <TimePicker minuteStep={15} format={format} size="large" />
+                    <TimePicker minuteStep={15} format={formats} size="large" />
                   </Form.Item>
                   <Form.Item
                     name="checkOut"
@@ -373,7 +458,7 @@ const MultiStepForm = () => {
                       },
                     ]}
                   >
-                    <TimePicker minuteStep={15} format={format} size="large" />
+                    <TimePicker minuteStep={15} format={formats} size="large" />
                   </Form.Item>
                 </div>
               </div>
@@ -393,14 +478,15 @@ const MultiStepForm = () => {
                       },
                     ]}
                   >
-                    <Checkbox.Group
-                      options={[
-                        { label: "Wifi miễn phí", value: "wifi" },
-                        { label: "Bể bơi", value: "pool" },
-                        { label: "Đưa đón sân bay", value: "airport_shuttle" },
-                        { label: "Phòng gym", value: "gym" },
-                      ]}
-                    />
+                    <Checkbox.Group className="font-semibold">
+                      <Row gutter={[16, 16]}>
+                        {hotelFacilities.map((fac, index) => (
+                          <Col span={8} key={index}>
+                            <Checkbox value={fac.facId}>{fac.facName}</Checkbox>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Checkbox.Group>
                   </Form.Item>
                 </div>
               </div>
@@ -611,15 +697,15 @@ const MultiStepForm = () => {
                       { required: true, message: "Vui lòng chọn thông tin!" },
                     ]}
                   >
-                    <Checkbox.Group
-                      className="font-semibold"
-                      options={[
-                        { label: "Wifi miễn phí", value: "wifi" },
-                        { label: "Bể bơi", value: "pool" },
-                        { label: "Đưa đón sân bay", value: "airport_shuttle" },
-                        { label: "Phòng gym", value: "gym" },
-                      ]}
-                    />
+                    <Checkbox.Group className="font-semibold">
+                      <Row gutter={[16, 16]}>
+                        {roomFacilities.map((fac, index) => (
+                          <Col span={8} key={index}>
+                            <Checkbox value={fac.facId}>{fac.facName}</Checkbox>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Checkbox.Group>
                   </Form.Item>
                 </div>
               </div>
