@@ -1,25 +1,22 @@
 "use client";
 import React, { useState } from "react";
+import Forms_Room from "./components/form";
+import Tables_Room from "./components/table";
 
-import Forms from "./form";
-import Tables from "./table";
-
-export default function Homepage() {
+export default function Page() {
   const [selectedRow, setSelectedRow] = useState<any | null>(null);
 
   const handleRowSelect = (row: any) => {
     setSelectedRow(row);
   };
-
   return (
     <div>
       <div className="mt-10">
-        <Tables onRowSelect={handleRowSelect} />
+        <Tables_Room onRowSelect={handleRowSelect} />
       </div>
       <div className="mt-10 px-36">
-        <Forms selectedRow={selectedRow} />
+        <Forms_Room selectedRow={selectedRow} />
       </div>
-      <footer className=" mt-5 justify-center flex"> @Made by DaoHehe</footer>
     </div>
   );
 }
