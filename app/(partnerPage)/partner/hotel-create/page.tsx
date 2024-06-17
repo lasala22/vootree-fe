@@ -80,7 +80,10 @@ const MultiStepForm = () => {
     const accommodationTypeObject = { id: formData.propertyType };
     const userObject = { id: userId };
     const hotelFacilitiesObject = formData.facilities.map((num) => ({
-      id: num,
+      facilityId: num,
+    }));
+    const roomFacilitiesOject = formData.roomFacilities.map((num) => ({
+      facilityId: num,
     }));
     console.log(hotelFacilitiesObject);
 
@@ -94,9 +97,21 @@ const MultiStepForm = () => {
       hotelPhoneNum: formData.hotelPhoneNum,
       hotelStars: formData.stars,
       status: formData.status,
-      accommodationType: accommodationTypeObject,
-      user: userObject,
+      accommodationTypeId: formData.propertyType,
+      userId: userId,
       hotelFacilities: hotelFacilitiesObject,
+      rooms: [
+        {
+          capacity: formData.roomCapacity,
+          price: formData.roomPrice,
+          quantity: formData.roomQuantity,
+          roomSize: formData.roomSize,
+          description: formData.description,
+          serveBreakfast: formData.breakfast,
+          roomTypeId: formData.roomType,
+          roomFacilities: roomFacilitiesOject,
+        },
+      ],
     };
 
     console.log(filteredHotel);
@@ -587,15 +602,15 @@ const MultiStepForm = () => {
                       size="large"
                       options={[
                         {
-                          value: "DELUX",
+                          value: "1",
                           label: "Phòng Delux",
                         },
                         {
-                          value: "Default",
+                          value: "2",
                           label: "Phòng thường",
                         },
                         {
-                          value: "VIP",
+                          value: "3",
                           label: "Phòng VIP",
                         },
                       ]}
@@ -674,8 +689,8 @@ const MultiStepForm = () => {
                   </div>
                   <Form.Item className="mt-2" name="breakfast">
                     <Radio.Group size="large">
-                      <Radio.Button value={1}>Bao gồm bữa sáng</Radio.Button>
-                      <Radio.Button value={2}>
+                      <Radio.Button value={true}>Bao gồm bữa sáng</Radio.Button>
+                      <Radio.Button value={false}>
                         Không bao gồm bữa sáng
                       </Radio.Button>
                     </Radio.Group>
