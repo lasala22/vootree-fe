@@ -3,35 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { FormOutlined, SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-
-// const data: DataType[] = [
-//   {
-//     key: "1",
-//     name: "Muong Thanh Hotel",
-//     address: "123 Vung Tau, xuxuna,xuxuna",
-//     status: "Active",
-//   },
-//   {
-//     key: "2",
-//     name: "Muong Thanh Hotel",
-//     address: "123 Vung Tau, xuxuna,xuxuna",
-//     status: "Active",
-//   },
-//   {
-//     key: "3",
-//     name: "Muong Thanh Hotel",
-//     address: "123 Vung Tau, xuxuna,xuxuna",
-//     status: "Active",
-//   },
-//   {
-//     key: "4",
-//     name: "Muong Thanh Hotel",
-//     address: "123 Vung Tau, xuxuna,xuxuna",
-//     status: "Active",
-//   },
-// ];
 
 export default function Tables({
   onRowSelect,
@@ -48,17 +21,19 @@ export default function Tables({
     axios
       .get("http://localhost:8080/api/hotels")
       .then((response) => {
-        const fetchedData = response.data.map((item: any, index: number) => ({
-          key: item.id,
-          name: item.hotelName,
-          address: item.address,
-          status: item.status,
-          hotelStars: item.hotelStars,
-          hotelDescription: item.hotelDescription,
-          checkInTime: item.checkInTime,
-          checkOutTime: item.checkOutTime,
-          accommodationType: item.accommodationType.typeName,
-        }));
+        const fetchedData = response.data
+          .filter((item: any) => item.status === "ACTIVE")
+          .map((item: any, index: number) => ({
+            key: item.id,
+            name: item.hotelName,
+            address: item.address,
+            status: item.status,
+            hotelStars: item.hotelStars,
+            hotelDescription: item.hotelDescription,
+            checkInTime: item.checkInTime,
+            checkOutTime: item.checkOutTime,
+            accommodationType: item.accommodationType.typeName,
+          }));
         setData(fetchedData);
       })
       .catch((error) => {
@@ -188,6 +163,9 @@ export default function Tables({
       ...getColumnSearchProps("status"),
       sorter: (a, b) => a.status.length - b.status.length,
       sortDirections: ["descend", "ascend"],
+      render: (status: string) => (
+        <Tag color={status === "ACTIVE" ? "blue" : "red"}>{status}</Tag>
+      ),
     },
     {
       title: "",

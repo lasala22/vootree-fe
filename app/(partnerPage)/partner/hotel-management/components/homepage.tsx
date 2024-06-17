@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import Forms from "./form";
 import Tables from "./table";
+import { Row } from "antd";
 
 export default function Homepage() {
   const [selectedRow, setSelectedRow] = useState<any | null>(null);
@@ -12,7 +13,10 @@ export default function Homepage() {
   };
 
   return (
-    <div>
+    <div className="p-20">
+      <div>
+        <Row className="font-bold text-2xl">Trang quản lý phòng</Row>
+      </div>
       <div className="mt-10">
         <Tables onRowSelect={handleRowSelect} />
       </div>

@@ -4,15 +4,21 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
 } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import SearchBar from "../app/home/components/searchBarHomePage";
 import styles from "./style.module.css";
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useEffect, useState, Fragment } from "react";
+
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar({ searchbar, logo }) {
   const [usename, setUsername] = useState();
@@ -60,19 +66,65 @@ export default function Navbar({ searchbar, logo }) {
                     <div className="flex space-x-4">
                       <Link
                         href="/partner/home"
-                        className="text-white hover:bg-gray-700 hover:bg-opacity-55  rounded-md px-3 py-2 text-sm font-medium"
+                        className="text-white hover:bg-gray-700 hover:bg-opacity-55 rounded-md px-3 py-2 text-sm font-medium"
                       >
                         Trang chủ
                       </Link>
-                      <Link
-                        href="/partner/hotel-management"
-                        className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                      <Menu
+                        as="div"
+                        className="relative inline-block text-left"
                       >
-                        Quản lý khách sạn
-                      </Link>
+                        <div>
+                          <MenuButton className="inline-flex justify-center w-full rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 hover:bg-opacity-55">
+                            Quản lý chỗ nghỉ
+                          </MenuButton>
+                        </div>
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <MenuItems className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <div className="py-1">
+                              <MenuItem>
+                                {({ active }) => (
+                                  <Link
+                                    href="/partner/hotel-management"
+                                    className={`${
+                                      active
+                                        ? "bg-gray-100 text-gray-900"
+                                        : "text-gray-700"
+                                    } block px-4 py-2 text-sm`}
+                                  >
+                                    Quản lý khách sạn
+                                  </Link>
+                                )}
+                              </MenuItem>
+                              <MenuItem>
+                                {({ active }) => (
+                                  <Link
+                                    href="/partner/room-management"
+                                    className={`${
+                                      active
+                                        ? "bg-gray-100 text-gray-900"
+                                        : "text-gray-700"
+                                    } block px-4 py-2 text-sm`}
+                                  >
+                                    Quản lý phòng
+                                  </Link>
+                                )}
+                              </MenuItem>
+                            </div>
+                          </MenuItems>
+                        </Transition>
+                      </Menu>
                       <Link
-                        href="/partner/hotel-management"
-                        className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                        href="/partner/statistics"
+                        className="text-white hover:bg-gray-700 hover:bg-opacity-55 rounded-md px-3 py-2 text-sm font-medium"
                       >
                         Thống kê
                       </Link>
@@ -86,14 +138,14 @@ export default function Navbar({ searchbar, logo }) {
                     </div>
                     {usename ? (
                       <div className="flex items-center">
-                        <p className="text-white  text-sm font-medium">
+                        <p className="text-white text-sm font-medium">
                           Xin chào, {usename}
                         </p>
 
                         <button
                           type="button"
                           onClick={handleLogOut}
-                          className="bg-orange-700 hover:bg-orange-400  text-white ms-4   py-2 px-2 rounded flex text-sm"
+                          className="bg-orange-700 hover:bg-orange-400 text-white ms-4 py-2 px-2 rounded flex text-sm"
                         >
                           Đăng Xuất
                         </button>
@@ -103,16 +155,16 @@ export default function Navbar({ searchbar, logo }) {
                         <Link href="/login">
                           <button
                             type="button"
-                            className=" hover:bg-purple-950 hover:bg-opacity-40 text-white me-4   py-2 px-2 rounded border flex text-sm"
+                            className="hover:bg-purple-950 hover:bg-opacity-40 text-white me-4 py-2 px-2 rounded border flex text-sm"
                           >
-                            <UserIcon className="h-5 w-5   mr-1" />
+                            <UserIcon className="h-5 w-5 mr-1" />
                             Đăng nhập
                           </button>
                         </Link>
                         <Link href="/signup">
                           <button
                             type="button"
-                            className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
+                            className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white py-2 px-2 ps-4 pe-4 rounded flex text-sm"
                           >
                             Đăng ký
                           </button>
@@ -159,17 +211,7 @@ export default function Navbar({ searchbar, logo }) {
         )}
       </Disclosure>
 
-      {/* <div className="text-3xl items-center justify-center flex mt-6 font-bold text-white">
-        <h1 className="items-center">
-          From Southeast Asia to the World, All Yours.
-        </h1>
-      </div>
-      <hr className="max-w-4xl mx-auto justify-center mt-4 border" /> */}
-      {/* <div className="max-w-3xl h-56 bg-white mx-auto mt-6 border border-gray-400 rounded-lg ">
-        <SearchBar />
-      </div> */}
       {searchbar}
-      {/* <SearchBar /> */}
     </header>
   );
 }

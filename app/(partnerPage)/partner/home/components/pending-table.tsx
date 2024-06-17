@@ -9,10 +9,12 @@ import {
   Select,
   Button,
   Space,
+  Tag,
 } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { TrashIcon } from "@heroicons/react/24/outline";
 // const originData = [];
 // for (let i = 0; i < 100; i++) {
 //   originData.push({
@@ -88,8 +90,8 @@ const PendingTable = () => {
       try {
         const response = await axios.get("http://localhost:8080/api/hotels");
         const fetchedData = response.data
-          .filter((item) => item.status === "PENDING") // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
-          .map((item) => ({
+          .filter((item: { status: string }) => item.status === "PENDING") // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
+          .map((item: { id: { toString: () => any } }) => ({
             key: item.id.toString(),
             ...item,
           }));
@@ -104,23 +106,47 @@ const PendingTable = () => {
     const fetchRoomData = async () => {
       try {
         const response = await axios.get("http://localhost:8080/api/rooms");
-        const fetchedRoomData = response.data.reduce((acc, room) => {
-          const hotelId = room.hotel.id.toString();
-          if (!acc[hotelId]) {
-            acc[hotelId] = [];
-          }
-          acc[hotelId].push({
-            key: room.id.toString(),
-            roomNumber: room.id,
-            // roomType: room.roomType.typeName,
-            price: room.price,
-            capacity: room.capacity,
-            quantity: room.quantity,
-            roomSize: room.roomSize,
-          });
+        const fetchedRoomData = response.data.reduce(
+          (
+            acc: {
+              [x: string]: {
+                key: any;
+                roomNumber: any;
+                roomType: any;
+                price: any;
+                capacity: any;
+                quantity: any;
+                roomSize: any;
+              }[];
+            },
+            room: {
+              hotel: { id: { toString: () => any } };
+              id: { toString: () => any };
+              roomType: { typeName: any };
+              price: any;
+              capacity: any;
+              quantity: any;
+              roomSize: any;
+            }
+          ) => {
+            const hotelId = room.hotel.id.toString();
+            if (!acc[hotelId]) {
+              acc[hotelId] = [];
+            }
+            acc[hotelId].push({
+              key: room.id.toString(),
+              roomNumber: room.id,
+              roomType: room.roomType.typeName,
+              price: room.price,
+              capacity: room.capacity,
+              quantity: room.quantity,
+              roomSize: room.roomSize,
+            });
 
-          return acc;
-        }, {});
+            return acc;
+          },
+          {}
+        );
         setRoomsData(fetchedRoomData);
         // console.log( fetchedRoomData);
       } catch (error) {
@@ -132,8 +158,8 @@ const PendingTable = () => {
     fetchRoomData();
   }, []);
 
-  const isEditing = (record) => record.key === editingKey;
-  const edit = (record) => {
+  const isEditing = (record: { key: string }) => record.key === editingKey;
+  const edit = (record: { key: React.SetStateAction<string> }) => {
     form.setFieldsValue({
       hotelName: "",
       address: "",
@@ -150,7 +176,7 @@ const PendingTable = () => {
   const cancel = () => {
     setEditingKey("");
   };
-  const save = async (key) => {
+  const save = async (key: any) => {
     try {
       const row1 = await form.validateFields();
       const row = { ...row1, id: key };
@@ -187,17 +213,21 @@ const PendingTable = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+  const handleSearch = (
+    selectedKeys: React.SetStateAction<string>[],
+    confirm: () => void,
+    dataIndex: React.SetStateAction<string>
+  ) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
-  const handleReset = (clearFilters) => {
+  const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex) => ({
+  const getColumnSearchProps = (dataIndex: React.SetStateAction<string>) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -270,16 +300,19 @@ const PendingTable = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered) => (
+    filterIcon: (filtered: any) => (
       <SearchOutlined
         style={{
           color: filtered ? "#1677ff" : undefined,
         }}
       />
     ),
-    onFilter: (value, record) =>
+    onFilter: (
+      value: string,
+      record: { [x: string]: { toString: () => string } }
+    ) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
+    onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
@@ -306,7 +339,7 @@ const PendingTable = () => {
       title: "Index",
       dataIndex: "index",
       key: "index",
-      render: (text, record, index) => index + 1,
+      render: (text: any, record: any, index: number) => index + 1,
       width: "7%",
     },
     {
@@ -335,7 +368,10 @@ const PendingTable = () => {
       dataIndex: "hotelStars",
       width: "5%",
       editable: false,
-      ...getColumnSearchProps("hotelStars"),
+      //  ...getColumnSearchProps("hotelStars"),
+      sorter: (a: { hotelStars: number }, b: { hotelStars: number }) =>
+        a.hotelStars - b.hotelStars,
+      sortDirections: ["descend", "ascend"],
     },
     // {
     //   title: "Phone Number",
@@ -349,47 +385,39 @@ const PendingTable = () => {
       dataIndex: "checkInTime",
       width: "13%",
       editable: false,
-      ...getColumnSearchProps("checkInTime"),
+      //   ...getColumnSearchProps("checkInTime"),
     },
     {
       title: "Check Out Time",
       dataIndex: "checkOutTime",
       width: "13%",
       editable: false,
-      ...getColumnSearchProps("checkOutTime"),
+      // ...getColumnSearchProps("checkOutTime"),
     },
 
     {
       title: "Status",
       dataIndex: "status",
       width: "10%",
-      editable: true,
+      // editable: true,
+      render: (status: string) => (
+        <Tag color={status === "PENDING" ? "purple" : "red"}>{status}</Tag>
+      ),
     },
     {
       title: "",
       dataIndex: "operation",
-      render: (_, record) => {
+      render: (_: any, record: any) => {
         const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
+        return (
           <Typography.Link
-            disabled={editingKey !== ""}
+            //  disabled={editingKey !== ""}
             onClick={() => edit(record)}
           >
-            Edit
+            <span className="text-orange-600 flex">
+              <TrashIcon className="h-5 w-5 text-orange-600" />
+              Delete
+            </span>
           </Typography.Link>
         );
       },
@@ -401,7 +429,7 @@ const PendingTable = () => {
     }
     return {
       ...col,
-      onCell: (record) => ({
+      onCell: (record: any) => ({
         record,
         inputType: col.dataIndex === "age" ? "number" : "text",
         dataIndex: col.dataIndex,
@@ -425,7 +453,7 @@ const PendingTable = () => {
     // setData(newData);
     // console.log(newData);
   };
-  const expandedRowRender = (record) => {
+  const expandedRowRender = (record: { key: string | number }) => {
     const columns = [
       // {
       //   title: "Số phòng",
@@ -457,7 +485,7 @@ const PendingTable = () => {
         title: "Diện tích",
         dataIndex: "roomSize",
         key: "roomSize",
-        render: (text) => `${text} m²`,
+        render: (text: any) => `${text} m²`,
       },
     ];
     // Log dữ liệu dataSource
@@ -481,6 +509,7 @@ const PendingTable = () => {
         {/* Rest of your UI */}
       </Space>
       <Table
+        className="shadow-md"
         components={{
           body: {
             cell: EditableCell,

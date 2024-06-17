@@ -1,54 +1,48 @@
-import React, { useRef, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Input, Space, Table } from "antd";
+"use client";
+import { FormOutlined, SearchOutlined } from "@ant-design/icons";
+import type { InputRef, TableColumnType, TableColumnsType } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
-
-type DataIndex = keyof DataType;
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-];
-
-const ActiveTable = () => {
+export default function ActiveTable() {
+  const [data, setData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [selectedRow, setSelectedRow] = useState<any | null>(null);
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/hotels")
+      .then((response) => {
+        const fetchedData = response.data
+          .filter((item: any) => item.status === "ACTIVE")
+          .map((item: any, index: number) => ({
+            key: item.id,
+            name: item.hotelName,
+            address: item.address,
+            status: item.status,
+            hotelStars: item.hotelStars,
+            hotelDescription: item.hotelDescription,
+            checkInTime: item.checkInTime,
+            checkOutTime: item.checkOutTime,
+            accommodationType: item.accommodationType.typeName,
+          }));
+        setData(fetchedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   const handleSearch = (
     selectedKeys: string[],
     confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
+    dataIndex: string
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -60,9 +54,7 @@ const ActiveTable = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<DataType> => ({
+  const getColumnSearchProps = (dataIndex: string): TableColumnType<any> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -140,7 +132,21 @@ const ActiveTable = () => {
     },
   });
 
-  const columns: TableColumnsType<DataType> = [
+  const handleEdit = (record: any) => {
+    // router.push({
+    //   pathname: "/partner/home-management",
+    //   query: { id: record.key },
+    // });
+  };
+
+  const columns: TableColumnsType<any> = [
+    {
+      title: "Index",
+      dataIndex: "index",
+      key: "index",
+      render: (text: any, record: any, index: number) => index + 1,
+      width: "7%",
+    },
     {
       title: "Name",
       dataIndex: "name",
@@ -149,24 +155,44 @@ const ActiveTable = () => {
       ...getColumnSearchProps("name"),
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      width: "20%",
-    },
-    {
       title: "Address",
       dataIndex: "address",
       key: "address",
+      ...getColumnSearchProps("address"),
+      // sorter: (a, b) => a.address.length - b.address.length,
+      // sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => (
+        <Tag color={status === "ACTIVE" ? "blue" : "red"}>{status}</Tag>
+      ),
+    },
+    {
+      title: "",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <a onClick={() => handleEdit(record)} className="text-blue-500">
+            <FormOutlined /> <span>Edit</span>
+          </a>
+        </Space>
+      ),
     },
   ];
-
-  return <Table columns={columns} dataSource={data} />;
-};
-
-export default ActiveTable;
+  return (
+    <>
+      <div>
+        <div className="justify-center flex items-center">
+          <Table
+            className="w-full border shadow-md rounded-md"
+            columns={columns}
+            dataSource={data}
+          />
+        </div>
+      </div>
+    </>
+  );
+}

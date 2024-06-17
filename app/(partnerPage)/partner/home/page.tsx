@@ -54,6 +54,12 @@ const Homepage = () => {
               <ActiveTable />
             </div>
           </div>
+          <div className="mt-10">
+            <div>
+              <p className="font-semibold text-lg">Thông tin booking</p>
+            </div>
+            <div className="mt-5"></div>
+          </div>
         </div>
       </div>
     </>
