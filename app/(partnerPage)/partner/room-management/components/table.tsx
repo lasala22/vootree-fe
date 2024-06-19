@@ -216,6 +216,7 @@ export default function Tables({
             className="w-4/5 border shadow-md rounded-md"
             columns={columns}
             dataSource={data}
+            pagination={{ pageSize: 5 }}
           />
         </div>
       </div>

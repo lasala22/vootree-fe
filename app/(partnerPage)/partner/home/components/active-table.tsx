@@ -4,7 +4,7 @@ import type { InputRef, TableColumnType, TableColumnsType } from "antd";
 import { Button, Input, Space, Table, Tag } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function ActiveTable() {
@@ -14,7 +14,7 @@ export default function ActiveTable() {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
   const router = useRouter();
-
+  //const router = useRouter();
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotels")
@@ -132,11 +132,10 @@ export default function ActiveTable() {
     },
   });
 
-  const handleEdit = (record: any) => {
-    // router.push({
-    //   pathname: "/partner/home-management",
-    //   query: { id: record.key },
-    // });
+  const handleEdit = (record) => {
+    sessionStorage.setItem("selectedHotel", JSON.stringify(record));
+    // redirect("/partner/hotel-management");
+    router.push(`/partner/hotel-management`);
   };
 
   const columns: TableColumnsType<any> = [
@@ -159,8 +158,6 @@ export default function ActiveTable() {
       dataIndex: "address",
       key: "address",
       ...getColumnSearchProps("address"),
-      // sorter: (a, b) => a.address.length - b.address.length,
-      // sortDirections: ["descend", "ascend"],
     },
     {
       title: "Status",
@@ -190,6 +187,7 @@ export default function ActiveTable() {
             className="w-full border shadow-md rounded-md"
             columns={columns}
             dataSource={data}
+            pagination={{ pageSize: 5 }}
           />
         </div>
       </div>

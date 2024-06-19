@@ -4,8 +4,9 @@ import withAuth from "@/components/withAuth";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Row } from "antd";
 import Link from "next/link";
-import PendingTable from "./components/pending-table";
 import ActiveTable from "./components/active-table";
+import BookingView from "./components/booking-view";
+import PendingTable from "./components/pending-table";
 
 const Homepage = () => {
   return (
@@ -54,11 +55,13 @@ const Homepage = () => {
               <ActiveTable />
             </div>
           </div>
-          <div className="mt-10">
+          <div className="mt-10 h-96">
             <div>
               <p className="font-semibold text-lg">Thông tin booking</p>
             </div>
-            <div className="mt-5"></div>
+            <div className="mt-5 shadow-lg rounded-md p-5">
+              <BookingView />
+            </div>
           </div>
         </div>
       </div>

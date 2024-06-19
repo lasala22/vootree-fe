@@ -10,25 +10,23 @@ import {
   Button,
   Space,
   Tag,
+  message,
 } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { TrashIcon } from "@heroicons/react/24/outline";
-// const originData = [];
-// for (let i = 0; i < 100; i++) {
-//   originData.push({
-//     key: i.toString(),
-//     firstname: `Edward ${i}`,
-//     lastname: `Smith ${i}`,
-//     email: `edward${i}@example.com`,
-//     phoneNum: `123-456-789${i}`,
-//     gender: i % 2 === 0 ? "Male" : "Female",
-//     age: 32 + i,
-//     status: i % 2 === 0 ? "active" : "inactive",
-//   });
-// }
 
+const deleteRow = async (id) => {
+  try {
+    await axios.delete(`/api/data/${id}`);
+    message.success("Row deleted successfully");
+    fetchData(); // Refresh data after delete
+  } catch (error) {
+    message.error("Error deleting row");
+    console.error("Error deleting data", error);
+  }
+};
 const EditableCell = ({
   editing, // Xác định xem ô này có đang ở chế độ chỉnh sửa hay không
   dataIndex, // Tên thuộc tính của dữ liệu (ví dụ: 'name', 'age', 'address')
@@ -83,76 +81,86 @@ const PendingTable = () => {
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [roomsData, setRoomsData] = useState({});
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/hotels");
+      const fetchedData = response.data
+        .filter((item: { status: string }) => item.status === "PENDING") // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
+        .map((item: { id: { toString: () => any } }) => ({
+          key: item.id.toString(),
+          ...item,
+        }));
+      setData(fetchedData);
+      // console.log(fetchedData);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
 
-  useEffect(() => {
-    // Fetch hotels data from API
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/hotels");
-        const fetchedData = response.data
-          .filter((item: { status: string }) => item.status === "PENDING") // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
-          .map((item: { id: { toString: () => any } }) => ({
-            key: item.id.toString(),
-            ...item,
-          }));
-        setData(fetchedData);
-        // console.log(fetchedData);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-
-    // Fetch room data from API
-    const fetchRoomData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/rooms");
-        const fetchedRoomData = response.data.reduce(
-          (
-            acc: {
-              [x: string]: {
-                key: any;
-                roomNumber: any;
-                roomType: any;
-                price: any;
-                capacity: any;
-                quantity: any;
-                roomSize: any;
-              }[];
-            },
-            room: {
-              hotel: { id: { toString: () => any } };
-              id: { toString: () => any };
-              roomType: { typeName: any };
+  // Fetch room data from API
+  const fetchRoomData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/rooms");
+      const fetchedRoomData = response.data.reduce(
+        (
+          acc: {
+            [x: string]: {
+              key: any;
+              roomNumber: any;
+              roomType: any;
               price: any;
               capacity: any;
               quantity: any;
               roomSize: any;
-            }
-          ) => {
-            const hotelId = room.hotel.id.toString();
-            if (!acc[hotelId]) {
-              acc[hotelId] = [];
-            }
-            acc[hotelId].push({
-              key: room.id.toString(),
-              roomNumber: room.id,
-              roomType: room.roomType.typeName,
-              price: room.price,
-              capacity: room.capacity,
-              quantity: room.quantity,
-              roomSize: room.roomSize,
-            });
-
-            return acc;
+            }[];
           },
-          {}
-        );
-        setRoomsData(fetchedRoomData);
-        // console.log( fetchedRoomData);
-      } catch (error) {
-        console.error("Error fetching room data: ", error);
-      }
-    };
+          room: {
+            hotel: { id: { toString: () => any } };
+            id: { toString: () => any };
+            roomType: { typeName: any };
+            price: any;
+            capacity: any;
+            quantity: any;
+            roomSize: any;
+          }
+        ) => {
+          const hotelId = room.hotel.id.toString();
+          if (!acc[hotelId]) {
+            acc[hotelId] = [];
+          }
+          acc[hotelId].push({
+            key: room.id.toString(),
+            roomNumber: room.id,
+            roomType: room.roomType.typeName,
+            price: room.price,
+            capacity: room.capacity,
+            quantity: room.quantity,
+            roomSize: room.roomSize,
+          });
+
+          return acc;
+        },
+        {}
+      );
+      setRoomsData(fetchedRoomData);
+      // console.log( fetchedRoomData);
+    } catch (error) {
+      console.error("Error fetching room data: ", error);
+    }
+  };
+
+  const deleteRow = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/hotels/${id}`);
+      message.success("Row deleted successfully");
+      fetchData(); // Refresh data after delete
+    } catch (error) {
+      message.error("Error deleting row");
+      console.error("Error deleting data", error);
+    }
+  };
+  useEffect(() => {
+    // Fetch hotels data from API
 
     fetchData();
     fetchRoomData();
@@ -317,20 +325,6 @@ const PendingTable = () => {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text) =>
-    //   searchedColumn === dataIndex ? (
-    //     <Highlighter
-    //       highlightStyle={{
-    //         backgroundColor: "#ffc069",
-    //         padding: 0,
-    //       }}
-    //       searchWords={[searchText]}
-    //       autoEscape
-    //       textToHighlight={text ? text.toString() : ""}
-    //     />
-    //   ) : (
-    //     text
-    //   ),
   });
 
   //set columns
@@ -349,13 +343,6 @@ const PendingTable = () => {
       editable: false,
       ...getColumnSearchProps("hotelName"),
     },
-    // {
-    //   title: "Address",
-    //   dataIndex: "address",
-    //   width: "15%",
-    //   editable: false,
-    //   ...getColumnSearchProps("address"),
-    // },
     {
       title: "City",
       dataIndex: "city",
@@ -368,38 +355,27 @@ const PendingTable = () => {
       dataIndex: "hotelStars",
       width: "5%",
       editable: false,
-      //  ...getColumnSearchProps("hotelStars"),
       sorter: (a: { hotelStars: number }, b: { hotelStars: number }) =>
         a.hotelStars - b.hotelStars,
       sortDirections: ["descend", "ascend"],
     },
-    // {
-    //   title: "Phone Number",
-    //   dataIndex: "hotelPhoneNum",
-    //   width: "15%",
-    //   editable: false,
-    //   ...getColumnSearchProps("hotelPhoneNum"),
-    // },
     {
       title: "Check In Time",
       dataIndex: "checkInTime",
       width: "13%",
       editable: false,
-      //   ...getColumnSearchProps("checkInTime"),
     },
     {
       title: "Check Out Time",
       dataIndex: "checkOutTime",
       width: "13%",
       editable: false,
-      // ...getColumnSearchProps("checkOutTime"),
     },
 
     {
       title: "Status",
       dataIndex: "status",
       width: "10%",
-      // editable: true,
       render: (status: string) => (
         <Tag color={status === "PENDING" ? "purple" : "red"}>{status}</Tag>
       ),
@@ -407,20 +383,19 @@ const PendingTable = () => {
     {
       title: "",
       dataIndex: "operation",
-      render: (_: any, record: any) => {
-        const editable = isEditing(record);
-        return (
-          <Typography.Link
-            //  disabled={editingKey !== ""}
-            onClick={() => edit(record)}
-          >
-            <span className="text-orange-600 flex">
-              <TrashIcon className="h-5 w-5 text-orange-600" />
-              Delete
-            </span>
-          </Typography.Link>
-        );
-      },
+      render: (text, record) => (
+        <Popconfirm
+          title="Are you sure to delete this row?"
+          onConfirm={() => deleteRow(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button type="link" danger>
+            <TrashIcon className="text-orange-600 h-4 w-4" />
+            Delete
+          </Button>
+        </Popconfirm>
+      ),
     },
   ];
   const mergedColumns = columns.map((col) => {

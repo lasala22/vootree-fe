@@ -10,6 +10,7 @@ import { Rate } from "antd";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 const { Option } = Select;
 
 type FieldType = {
@@ -74,21 +75,29 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    // Lấy dữ liệu từ selectedRow và lưu vào sessionStorage khi selectedRow thay đổi
     if (selectedRow) {
+      sessionStorage.setItem("selectedHotel", JSON.stringify(selectedRow));
+    }
+
+    // Lấy dữ liệu từ sessionStorage và điền vào form
+    const sessionData = sessionStorage.getItem("selectedHotel");
+    if (sessionData) {
+      const parsedData = JSON.parse(sessionData);
       form.setFieldsValue({
-        propertyName: selectedRow.name,
-        address: selectedRow.address,
-        status: selectedRow.status,
-        stars: selectedRow.hotelStars,
-        checkIn: dayjs(selectedRow.checkInTime, "HH:mm"), // Chuyển đổi thành đối tượng dayjs hợp lệ
-        checkOut: dayjs(selectedRow.checkOutTime, "HH:mm"),
-        description: selectedRow.hotelDescription,
-        propertyType: selectedRow.accommodationType,
-        // Add other fields as needed
+        propertyName: parsedData.name,
+        address: parsedData.address,
+        status: parsedData.status,
+        stars: parsedData.hotelStars,
+        checkIn: dayjs(parsedData.checkInTime, "HH:mm"),
+        checkOut: dayjs(parsedData.checkOutTime, "HH:mm"),
+        description: parsedData.hotelDescription,
+        propertyType: parsedData.accommodationType,
       });
     }
+    console.log(sessionStorage.getItem("record"));
     console.log(selectedRow);
-  }, [selectedRow]);
+  }, [form, selectedRow]);
 
   return (
     <>
