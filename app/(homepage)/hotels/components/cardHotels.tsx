@@ -311,7 +311,7 @@ const Index = ({ checkedValues, priceRange, searchValues }) => {
                             alt=""
                           />
                         </div>
-                        {item.ratings.length > 0
+                        {item?.ratings?.length > 0
                           ? item.ratings.reduce(
                               (sum, rate) => sum + rate.rate,
                               0

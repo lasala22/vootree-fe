@@ -12,14 +12,6 @@ dayjs.extend(customParseFormat);
 
 const { RangePicker } = DatePicker;
 
-const range = (start: number, end: number) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
-
 // eslint-disable-next-line arrow-body-style
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
@@ -35,6 +27,11 @@ export default function SearchBar() {
   const onSearch = (value: string) => {
     console.log("search:", value);
   };
+
+  const onFinish = (values: any) => {
+    console.log(values);
+  };
+
   return (
     <>
       <div className="text-3xl items-center justify-center flex mt-6 font-bold text-white">
@@ -45,7 +42,7 @@ export default function SearchBar() {
       <hr className="max-w-4xl mx-auto justify-center mt-4 border" />
       <div className="max-w-3xl h-56 bg-white mx-auto mt-6 border border-gray-400 rounded-lg ">
         <div className="relative">
-          <Form className="mx-4 mt-3" layout="vertical">
+          <Form className="mx-4 mt-3" layout="vertical" onFinish={onFinish}>
             <FormItem label="Thành phố, địa điểm hoặc tên khách sạn:">
               <Select
                 size="large"

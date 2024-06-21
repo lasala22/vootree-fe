@@ -34,7 +34,13 @@ export default function Page() {
       if (tokenRole[0] == "PARTNER") {
         router.push("/partner/home");
       } else if (tokenRole[0] == "CUSTOMER") {
-        router.push("/home");
+        const redirectToBooking = localStorage.getItem("bookingInfo");
+        if (redirectToBooking) {
+          localStorage.removeItem("bookingInfo");
+          router.push(redirectToBooking);
+        } else {
+          router.push("/home");
+        }
       }
       console.log(response);
     } catch (error) {
