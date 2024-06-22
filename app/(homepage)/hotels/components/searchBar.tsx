@@ -113,7 +113,13 @@ export default function SearchBar() {
     }
 
     const queryString = params.toString();
-    const newUrl = `/hotels?${queryString}`;
+    let newUrl;
+
+    if (window.location.pathname.startsWith("/detail")) {
+      newUrl = `${window.location.pathname}?${queryString}`;
+    } else {
+      newUrl = `/hotels?${queryString}`;
+    }
 
     // Điều hướng đến URL mới và reload lại trang
     window.location.assign(newUrl);

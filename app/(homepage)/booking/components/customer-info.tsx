@@ -14,7 +14,7 @@ export default function CustomerInfo() {
               Họ và tên:
             </Col>
             <Col className="text-lg">
-              <strong> Nguyễn Văn A</strong>
+              <span className="font-semibold"> Nguyễn Văn A</span>
             </Col>
           </Row>
         </div>
@@ -24,7 +24,7 @@ export default function CustomerInfo() {
               Số điện thoại:
             </Col>
             <Col className="text-lg">
-              <strong> 0909090909</strong>
+              <span className="font-semibold"> 0909090909</span>
             </Col>
           </Row>
         </div>
@@ -34,7 +34,7 @@ export default function CustomerInfo() {
               Email:
             </Col>
             <Col className="text-lg">
-              <strong> vananguyen@gmail.com</strong>
+              <span className="font-semibold"> vananguyen@gmail.com</span>
             </Col>
           </Row>
         </div>

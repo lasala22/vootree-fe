@@ -33,9 +33,10 @@ export default function Page({ params }: { params: { id: string } }) {
     const roomsValue = searchParams.get("rooms");
     const fetchData = async () => {
       const response = await axios.get(
-        "http://localhost:8080/api/hotels/search",
+        `http://localhost:8080/api/hotels/${id}`,
         {
           params: {
+            id: id,
             city: searchValue,
             hotelName: searchValue,
             capacity: guestsValue,
@@ -46,11 +47,8 @@ export default function Page({ params }: { params: { id: string } }) {
         }
       ); // API backend trả về toàn bộ giá trị
       const allData = await response.data;
-      const hotelDetail = allData.find((item) => item.id === id);
-      if (!hotelDetail) {
-        message.error("no data");
-      }
-      setData(hotelDetail); // Lưu trữ toàn bộ dữ liệu
+
+      setData(allData); // Lưu trữ toàn bộ dữ liệu
     };
 
     fetchData();

@@ -1,31 +1,42 @@
 import { Col, Divider, Image, Row, message } from "antd";
 
 import React, { useEffect, useState } from "react";
-
+import dayjs from "dayjs";
 export default function BookingInfo({
-  daysCount,
-  rooms,
-  guests,
   roomData,
-  formattedStartDate,
-  formattedEndDate,
+  checkInValue,
+  checkOutValue,
+  setDaysCount,
 }) {
   const hotelName = roomData ? roomData?.hotel?.hotelName : "Không tồn tại";
   const roomType = roomData?.roomType?.typeName;
   const hotelImage = roomData?.hotel?.hotelImages[1]?.path;
   const roomPrice = roomData?.price;
   const capacity = roomData?.capacity;
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
+
   const [bookingPrice, setBookingPrice] = useState(0);
   const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+
   useEffect(() => {
-    const bookingPrice = rooms * roomPrice * daysCount;
-    const tax = (bookingPrice * 5) / 100;
-    const total = bookingPrice + tax;
-    setTotalPrice(total);
-    setTax(tax);
-    setBookingPrice(bookingPrice);
-  }, [rooms, roomPrice, daysCount]);
+    const formatCheckInDate = dayjs(checkInValue).format("DD/MM/YYYY");
+    const formatCheckOutDate = dayjs(checkOutValue).format("DD/MM/YYYY");
+    const count = dayjs(checkOutValue).diff(dayjs(checkInValue), "days");
+    setDaysCount(count);
+    setCheckInDate(formatCheckInDate);
+    setCheckOutDate(formatCheckOutDate);
+  }, [checkInValue, checkOutValue, setDaysCount]);
+
+  // useEffect(() => {
+  //   const bookingPrice = roomsValue * roomPrice * daysCount;
+  //   const tax = (bookingPrice * 5) / 100;
+  //   const total = bookingPrice + tax;
+  //   setTotalPrice(total);
+  //   setTax(tax);
+  //   setBookingPrice(bookingPrice);
+  // }, [rooms, roomPrice, daysCount]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -53,7 +64,7 @@ export default function BookingInfo({
           </span>
         </Col>
         <Col span={12} className="flex justify-end items-center">
-          <span className="font-semibold  ">{formattedStartDate}</span>
+          <span className="font-semibold  ">{checkInDate}</span>
         </Col>
       </Row>
       <Row className="mt-4">
@@ -64,7 +75,7 @@ export default function BookingInfo({
           </span>
         </Col>
         <Col span={12} className="flex justify-end items-center">
-          <span className="font-semibold  0">{formattedEndDate}</span>
+          <span className="font-semibold  0">{checkOutDate}</span>
         </Col>
       </Row>
       <Row className="mt-4">
