@@ -30,7 +30,7 @@ export default function Page() {
       localStorage.setItem("token", response.data.token);
 
       const decodeToken = jwtDecode(response.data.token);
-      const tokenRole = decodeToken.roles;
+      const tokenRole = decodeToken?.roles;
       if (tokenRole[0] == "PARTNER") {
         router.push("/partner/home");
       } else if (tokenRole[0] == "CUSTOMER") {

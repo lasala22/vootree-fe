@@ -100,7 +100,7 @@ const SignupPartner = () => {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center ">
       <div className="flex items-center bg-blue-500 w-full p-4">
-        <img className="h-40 w-auto" src={logoPreview2} alt="Your Company" />
+        {/* <img className="h-40 w-auto" src={logoPreview2} alt="Your Company" /> */}
       </div>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center mt-10">
         <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900">

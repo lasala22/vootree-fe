@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 export default function PriceInfo({
   roomData,
   rooms,
@@ -52,31 +53,37 @@ export default function PriceInfo({
     }).format(value);
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     const userId = checkToken();
     if (userId === null) {
       localStorage.setItem("bookingInfo", window.location.pathname);
       message.error("Bạn cần đăng nhập để truy cập.");
       router.push("/login");
     } else {
-      const bookingDate = dayjs().format("YYYY/MM/DD");
+      const bookingDate = dayjs().format("YYYY-MM-DD");
       const checkIn = checkInDate;
       const checkOut = checkOutDate;
-      if (checkIn === "") {
-        message.error("Vui lòng chọn ngày nhận phòng, ngày trả phòng");
-      } else {
-        const values = {
-          bookingDate: bookingDate,
-          checkInDate: checkIn,
-          checkOutDate: checkOut,
-          totalPrice: totalPrice,
-          status: "PENDING",
-          numOfRoom: rooms,
-          numOfGuest: guests,
-          userId: userId,
-          roomId: roomId,
-        };
-        console.log(values);
+      const values = {
+        bookingDate: bookingDate,
+        check_in_date: checkIn,
+        check_out_date: checkOut,
+        total_price: totalPrice,
+        //  status: "PENDING",
+        num_of_rooms: rooms,
+        num_of_guest: guests,
+        userId: userId,
+        roomId: roomId,
+      };
+      console.log(values);
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/bookings",
+          values
+        );
+        message.success("Bạn đã đăng kí thành công!");
+      } catch (error) {
+        console.error("Failed to submit data:", error);
+        message.error("Failed to submit data");
       }
     }
   };
