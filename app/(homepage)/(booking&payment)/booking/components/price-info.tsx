@@ -12,10 +12,14 @@ export default function PriceInfo({
   guests,
   checkInDate,
   checkOutDate,
+  fullName,
+  phoneNum,
+  email,
 }) {
   const roomType = roomData?.roomType?.typeName;
   const roomPrice = roomData?.price;
   const roomId = roomData?.id;
+  const hotelName = roomData ? roomData?.hotel?.hotelName : "Không tồn tại";
   const [price, setPrice] = useState(0);
   const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -57,7 +61,7 @@ export default function PriceInfo({
   const handleBooking = async () => {
     const userId = checkToken();
     if (userId === null) {
-      localStorage.setItem("bookingInfo", window.location.href);
+      localStorage.setItem("bookingHref", window.location.href);
       message.error("Bạn cần đăng nhập để truy cập.");
       router.push("/login");
     } else {
@@ -88,7 +92,23 @@ export default function PriceInfo({
             bookingId: response.data.id,
             userId: userId,
           };
-          console.log(paymentValues);
+          const paymentObject = {
+            amount: totalPrice.toString(),
+            bookingId: response.data.id,
+            userId: userId,
+            bookingDate: bookingDate,
+            check_in_date: checkIn,
+            check_out_date: checkOut,
+            total_price: totalPrice,
+            num_of_rooms: rooms,
+            num_of_guest: guests,
+            email: email,
+            fullName: fullName,
+            phoneNum: phoneNum,
+            hotelName: hotelName,
+            roomType: roomType,
+          };
+          localStorage.setItem("bookingInfo", JSON.stringify(paymentObject));
           const queryString = new URLSearchParams(paymentValues).toString();
           const payment = await axios.post(
             `http://localhost:8080/api/payment/create?${queryString}`

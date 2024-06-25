@@ -29,15 +29,6 @@ export default function BookingInfo({
     setCheckOutDate(formatCheckOutDate);
   }, [checkInValue, checkOutValue, setDaysCount]);
 
-  // useEffect(() => {
-  //   const bookingPrice = roomsValue * roomPrice * daysCount;
-  //   const tax = (bookingPrice * 5) / 100;
-  //   const total = bookingPrice + tax;
-  //   setTotalPrice(total);
-  //   setTax(tax);
-  //   setBookingPrice(bookingPrice);
-  // }, [rooms, roomPrice, daysCount]);
-
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",

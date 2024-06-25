@@ -116,7 +116,7 @@ export default function SearchBar() {
         style={{
           backgroundImage:
             'url("/static_images/5ec4a3b3713a93c2fbc44d60a54764fb.jpg")',
-          width: "1349px",
+          width: "auto",
           height: "350px",
           backgroundSize: "cover", // Optional: to cover the entire div
           backgroundPosition: "center",

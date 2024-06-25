@@ -36,7 +36,7 @@ export default function Page() {
       } else if (tokenRole[0] == "CUSTOMER") {
         const redirectToBooking = localStorage.getItem("bookingInfo");
         if (redirectToBooking) {
-          localStorage.removeItem("bookingInfo");
+          localStorage.removeItem("bookingHref");
           router.push(redirectToBooking);
         } else {
           router.push("/home");

@@ -9,7 +9,7 @@ export default function Layouts({ children }: { children: React.ReactNode }) {
       <Layout>
         <header>
           <Navbar bg={styles.header} logo="/logo_preview_rev_2.png" />
-          <div>
+          <div className="w-full">
             <SearchBar />
           </div>
         </header>

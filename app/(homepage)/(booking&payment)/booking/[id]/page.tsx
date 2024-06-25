@@ -5,6 +5,8 @@ import BookingInfo from "../components/booking-info";
 import CustomerInfo from "../components/customer-info";
 import PriceInfo from "../components/price-info";
 import SelectedInfo from "../components/selected-info";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export default function Page({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -12,9 +14,12 @@ export default function Page({ params }: { params: { id: string } }) {
   const [rooms, setRooms] = useState(1);
   const [guests, setGuests] = useState(2);
   const [roomData, setRoomData] = useState([]);
-
   const [checkInValue, setCheckInValue] = useState("");
   const [checkOutValue, setCheckOutValue] = useState("");
+  const [fullName, setFullName] = useState();
+  const [email, setEmail] = useState();
+  const [phoneNum, setPhoneNum] = useState();
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const checkInValue = searchParams.get("checkIn") || "";
@@ -35,6 +40,28 @@ export default function Page({ params }: { params: { id: string } }) {
     setGuests(guestToNum);
   }, [id]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decode = jwtDecode(token);
+      const userId = decode?.user_id;
+      const phoneNum = decode?.phoneNum;
+      const email = decode?.email;
+      const fetchAPI = async () => {
+        const response = await axios.get(
+          `http://localhost:8080/api/users/${userId}`
+        );
+        const data = response.data;
+        const firstName = data.firstName;
+        const lastName = data.lastName;
+        const fullName = firstName + " " + lastName;
+        setFullName(fullName);
+      };
+      fetchAPI();
+      setEmail(email);
+      setPhoneNum(phoneNum);
+    }
+  }, []);
   return (
     <>
       <div className="mx-32 flex gap-5">
@@ -42,7 +69,7 @@ export default function Page({ params }: { params: { id: string } }) {
           style={{ width: "65%" }}
           className="border p-5 rounded-lg shadow-lg"
         >
-          <CustomerInfo />
+          <CustomerInfo fullName={fullName} phoneNum={phoneNum} email={email} />
           <div className="rounded-sm shadow-sm border w-full p-5 mt-5">
             <PriceInfo
               roomData={roomData}
@@ -51,6 +78,9 @@ export default function Page({ params }: { params: { id: string } }) {
               guests={guests}
               checkInDate={checkInValue}
               checkOutDate={checkOutValue}
+              fullName={fullName}
+              phoneNum={phoneNum}
+              email={email}
             />
           </div>
         </div>

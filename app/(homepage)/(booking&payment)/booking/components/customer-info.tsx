@@ -3,32 +3,32 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 
-export default function CustomerInfo() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNum, setPhoneNum] = useState("");
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decode = jwtDecode(token);
-      const userId = decode?.user_id;
-      const phoneNum = decode?.phoneNum;
-      const email = decode?.email;
-      const fetchAPI = async () => {
-        const response = await axios.get(
-          `http://localhost:8080/api/users/${userId}`
-        );
-        const data = response.data;
-        const firstName = data.firstName;
-        const lastName = data.lastName;
-        const fullName = firstName + " " + lastName;
-        setFullName(fullName);
-      };
-      fetchAPI();
-      setEmail(email);
-      setPhoneNum(phoneNum);
-    }
-  }, []);
+export default function CustomerInfo({ phoneNum, email, fullName }) {
+  // const [fullName, setFullName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [phoneNum, setPhoneNum] = useState("");
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     const decode = jwtDecode(token);
+  //     const userId = decode?.user_id;
+  //     const phoneNum = decode?.phoneNum;
+  //     const email = decode?.email;
+  //     const fetchAPI = async () => {
+  //       const response = await axios.get(
+  //         `http://localhost:8080/api/users/${userId}`
+  //       );
+  //       const data = response.data;
+  //       const firstName = data.firstName;
+  //       const lastName = data.lastName;
+  //       const fullName = firstName + " " + lastName;
+  //       setFullName(fullName);
+  //     };
+  //     fetchAPI();
+  //     setEmail(email);
+  //     setPhoneNum(phoneNum);
+  //   }
+  // }, []);
 
   return (
     <>
