@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useState  } from "react";
 
 import Forms from "./form";
 import Tables from "./table";
@@ -9,10 +9,17 @@ import { PlusOutlined } from "@ant-design/icons";
 
 export default function Homepage() {
   const [selectedRow, setSelectedRow] = useState<any | null>(null);
+  const [reloadTable, setReloadTable] = useState(false);
+
+
 
   const handleRowSelect = (row: any) => {
     setSelectedRow(row);
   };
+
+  const handleFormSubmit = useCallback(() => {
+    setReloadTable((prev) => !prev); // Toggle the reloadTable state to trigger re-fetch in the Tables component
+  }, []);
 
   return (
     <div className="p-20">
@@ -41,10 +48,10 @@ export default function Homepage() {
         </Row>
       </div>
       <div className="mt-10">
-        <Tables onRowSelect={handleRowSelect} />
+        <Tables onRowSelect={handleRowSelect}  reloadTable={reloadTable} />
       </div>
       <div className="mt-10 px-36">
-        <Forms selectedRow={selectedRow} />
+        <Forms selectedRow={selectedRow} onFormSubmit={handleFormSubmit} />
       </div>
       <footer className=" mt-5 justify-center flex"> @Made by DaoHehe</footer>
     </div>

@@ -5,11 +5,14 @@ import { FormOutlined, SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Button, Input, Space, Table, Tag } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
+import { log } from "console";
 
 export default function Tables({
   onRowSelect,
+  reloadTable,
 }: {
   onRowSelect: (row: any) => void;
+  reloadTable: boolean;
 }) {
   const [data, setData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -27,19 +30,28 @@ export default function Tables({
             key: item.id,
             name: item.hotelName,
             address: item.address,
+            city: item.city,
+            hotelPhoneNum: item.hotelPhoneNum,
+
             status: item.status,
             hotelStars: item.hotelStars,
             hotelDescription: item.hotelDescription,
             checkInTime: item.checkInTime,
             checkOutTime: item.checkOutTime,
-            accommodationType: item.accommodationType.typeName,
+
+            accommodationType: item.accommodationType,
+            hotelFacilities: item.hotelFacilities,
+            userID: item.user.id,
           }));
+
+        console.log(fetchedData);
+
         setData(fetchedData);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [reloadTable]);
 
   const handleSearch = (
     selectedKeys: string[],
