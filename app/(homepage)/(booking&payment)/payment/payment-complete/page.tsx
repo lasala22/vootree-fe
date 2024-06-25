@@ -42,19 +42,15 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (paymentValues !== "") {
-        const fetch = async () => {
-          const param = new URLSearchParams(paymentValues).toString();
-          console.log(param);
-
-          const payment = await axios.post(
-            `http://localhost:8080/api/payment/save-payment?${param}`
-          );
-        };
-        fetch();
-      }
-    }, 5000);
+    const param = new URLSearchParams(paymentValues).toString();
+    if (param) {
+      const fetch = async () => {
+        const payment = await axios.post(
+          `http://localhost:8080/api/payment/save-payment?${param}`
+        );
+      };
+      fetch();
+    }
   }, [paymentValues]);
 
   const formatCurrency = (value) => {

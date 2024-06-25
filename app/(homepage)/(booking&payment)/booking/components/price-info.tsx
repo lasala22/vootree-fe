@@ -113,6 +113,7 @@ export default function PriceInfo({
           const payment = await axios.post(
             `http://localhost:8080/api/payment/create?${queryString}`
           );
+
           console.log(payment.data.data);
           if (payment.status === 200) {
             const paymentUrl = payment.data.data;
