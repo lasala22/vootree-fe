@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 export default function PriceInfo({
   roomData,
   rooms,
@@ -56,7 +57,7 @@ export default function PriceInfo({
   const handleBooking = async () => {
     const userId = checkToken();
     if (userId === null) {
-      localStorage.setItem("bookingInfo", window.location.pathname);
+      localStorage.setItem("bookingInfo", window.location.href);
       message.error("Bạn cần đăng nhập để truy cập.");
       router.push("/login");
     } else {
@@ -80,7 +81,25 @@ export default function PriceInfo({
           "http://localhost:8080/api/bookings",
           values
         );
-        message.success("Bạn đã đăng kí thành công!");
+        console.log(response.data.id);
+        if (response.status === 201) {
+          const paymentValues = {
+            amount: totalPrice.toString(),
+            bookingId: response.data.id,
+            userId: userId,
+          };
+          console.log(paymentValues);
+          const queryString = new URLSearchParams(paymentValues).toString();
+          const payment = await axios.post(
+            `http://localhost:8080/api/payment/create?${queryString}`
+          );
+          console.log(payment.data.data);
+          if (payment.status === 200) {
+            const paymentUrl = payment.data.data;
+            window.location.href = paymentUrl;
+          }
+          message.success("Bạn đã đăng kí thành công!");
+        }
       } catch (error) {
         console.error("Failed to submit data:", error);
         message.error("Failed to submit data");

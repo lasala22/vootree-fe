@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./style.module.css";
-import Navbar from "../hotels/components/nav";
-import SearchBar from "../hotels/components/searchBar";
+import Navbar from "../../hotels/components/nav";
+
+//import SearchBar from "../hotels/components/searchBar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
