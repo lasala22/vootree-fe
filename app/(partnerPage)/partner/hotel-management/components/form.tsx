@@ -1,33 +1,36 @@
 "use client";
-import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Col, Form, Input, Row } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Row } from "antd";
 import type { FormProps } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { message, Upload } from "antd";
 import type { UploadProps } from "antd";
-import { Select, Space } from "antd";
+import { Select } from "antd";
 import { Rate } from "antd";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 const { Option } = Select;
 
 type FieldType = {
+  key?: number;
   propertyName?: string;
-  propertyType?: string;
+  propertyType?: {};
   stars?: number;
   checkIn?: string;
   checkOut?: string;
-  address?: number;
+  address?: string; // Updated type to string
   description?: string;
-  facility?: string;
+  facility?: number[]; // Updated to array of numbers
   status?: string;
+
+  hotelPhoneNum: string;
+  city: string;
+  userID: number;
 };
 
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
+
 
 const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
   console.log("Failed:", errorInfo);
@@ -71,20 +74,57 @@ const handleChange = (value: string) => {
 };
 const format = "HH:mm";
 
-export default function Forms({ selectedRow }: { selectedRow: any }) {
+export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any, onFormSubmit: () => void }) {
   const [form] = Form.useForm();
+  const [facilities, setFacilities] = useState([]);
+  const [propertyTypes, setPropertyTypes] = useState<
+    { id: string; typeName: string }[]
+  >([]);
 
   useEffect(() => {
-    // Lấy dữ liệu từ selectedRow và lưu vào sessionStorage khi selectedRow thay đổi
+    // Fetch facilities from API
+    const fetchFacilities = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/facilities"); // Replace with your actual API endpoint
+        const data = await response.json();
+        const hotelFacilities = data.filter(
+          (facility: any) => facility.facType === "HOTEL"
+        );
+        setFacilities(hotelFacilities);
+        
+      } catch (error) {
+        console.error("Failed to fetch facilities:", error);
+      }
+    };
+
+    fetchFacilities();
+
+    // Fetch property types from API
+    const fetchPropertyTypes = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/accommodationTypes"
+        ); // Replace with your actual API endpoint
+        const data = await response.json();
+        setPropertyTypes(data);
+      } catch (error) {
+        console.error("Failed to fetch property types:", error);
+      }
+    };
+
+    fetchPropertyTypes();
+
+    // Save selectedRow to sessionStorage when it changes
     if (selectedRow) {
       sessionStorage.setItem("selectedHotel", JSON.stringify(selectedRow));
     }
 
-    // Lấy dữ liệu từ sessionStorage và điền vào form
+    // Populate form fields from sessionStorage
     const sessionData = sessionStorage.getItem("selectedHotel");
     if (sessionData) {
       const parsedData = JSON.parse(sessionData);
       form.setFieldsValue({
+        key: parsedData.key,
         propertyName: parsedData.name,
         address: parsedData.address,
         status: parsedData.status,
@@ -92,16 +132,113 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
         checkIn: dayjs(parsedData.checkInTime, "HH:mm"),
         checkOut: dayjs(parsedData.checkOutTime, "HH:mm"),
         description: parsedData.hotelDescription,
-        propertyType: parsedData.accommodationType,
+        propertyType: parsedData.accommodationType.id,
+        facility: parsedData.hotelFacilities.map((f: any) => f.facility.facId),
+
+        hotelPhoneNum: parsedData.hotelPhoneNum,
+        city: parsedData.city,
+        userID: parsedData.userID,
       });
     }
-    console.log(sessionStorage.getItem("record"));
-    console.log(selectedRow);
   }, [form, selectedRow]);
+
+  const citiesData = [
+    // Thành phố
+    "Hà Nội",
+    "Hồ Chí Minh",
+    "Hải Phòng",
+    "Đà Nẵng",
+    "Cần Thơ",
+    "Đà Lạt", // Thêm thành phố Đà Lạt vào đây
+    // Tỉnh
+    "Hà Giang",
+    "Cao Bằng",
+    "Lai Châu",
+    "Lào Cai",
+    "Tuyên Quang",
+    "Lạng Sơn",
+    "Bắc Kạn",
+    "Thái Nguyên",
+    "Phú Thọ",
+    "Yên Bái",
+    "Sơn La",
+    "Hòa Bình",
+    "Thái Bình",
+    "Quảng Ninh",
+    "Bắc Giang",
+    "Bắc Ninh",
+    "Hà Nam",
+    "Hưng Yên",
+    "Nam Định",
+    "Ninh Bình",
+    "Thanh Hóa",
+    "Nghệ An",
+    "Hà Tĩnh",
+    "Quảng Bình",
+    "Quảng Trị",
+    "Thừa Thiên Huế",
+    "Quảng Nam",
+    "Quảng Ngãi",
+    "Bình Định",
+    "Phú Yên",
+    "Khánh Hòa",
+    "Ninh Thuận",
+    "Bình Thuận",
+    "Kon Tum",
+    "Gia Lai",
+    "Đắk Lắk",
+    "Đắk Nông",
+    "Lâm Đồng",
+    "Bình Phước",
+    "Tây Ninh",
+    "Bình Dương",
+    "Đồng Nai",
+    "Vũng Tàu",
+    "Long An",
+    "Tiền Giang",
+    "Bến Tre",
+    "Trà Vinh",
+    "Vĩnh Long",
+    "Đồng Tháp",
+    "An Giang",
+    "Kiên Giang",
+    "Hậu Giang",
+    "Sóc Trăng",
+    "Bạc Liêu",
+    "Cà Mau",
+  ];
+
+
+  const onFinish = async (values: any) => {
+    // Change 'propertyName' to 'hotelName' in the values object
+    const updatedValues = {
+      ...values,
+      hotelDescription: values.description,
+      hotelStars: values.stars,
+      hotelName: values.propertyName, // Change 'propertyName' to 'hotelName'
+      accommodationTypeId: values.propertyType,
+      userId: values.userID,
+      status: 'PENDING', // Change status to 'PENDING',
+      hotelFacilities: values.facility,
+      checkIn: values.checkIn ? values.checkIn.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
+      checkOut: values.checkOut ? values.checkOut.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
+    };
+  console.log(updatedValues);
+  
+    try {
+      const response = await axios.put(`http://localhost:8080/api/hotels/partner/update/${values.key}`, updatedValues);
+      console.log('Update success:', response.data);
+      message.success('Update successful!');
+      onFormSubmit();
+    } catch (error) {
+      console.error('Update failed:', error);
+      message.error('Update failed!');
+    }
+  };
 
   return (
     <>
-      <Row gutter={24} className=" border rounded-md">
+      <Row gutter={24} className="border rounded-md">
         <Col span={12} className="">
           <Dragger {...props} className="h-full w-full">
             <p className="ant-upload-drag-icon">
@@ -122,7 +259,6 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
             name="basic"
             labelCol={{ span: 20 }}
             wrapperCol={{ span: 24 }}
-            // initialValues={{ remember: true }}
             initialValues={{
               status: selectedRow?.status || "", // Ensure initial value is set correctly
             }}
@@ -132,6 +268,14 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
             form={form}
           >
             <div className="mt-5"></div>
+            <Form.Item name="key" noStyle>
+              <Input type="hidden" />
+            </Form.Item>
+
+            <Form.Item name="userID" noStyle>
+              <Input type="hidden" />
+            </Form.Item>
+
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item<FieldType>
@@ -140,7 +284,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your property name !",
+                      message: "Please input your property name!",
                     },
                   ]}
                 >
@@ -156,7 +300,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your property type !",
+                      message: "Please input your property type!",
                     },
                   ]}
                 >
@@ -167,21 +311,13 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                     onChange={onChange}
                     onSearch={onSearch}
                     filterOption={filterOption}
-                    options={[
-                      {
-                        value: "1",
-                        label: "Hotel",
-                      },
-                      {
-                        value: "lucy",
-                        label: "Lucy",
-                      },
-                      {
-                        value: "tom",
-                        label: "Tom",
-                      },
-                    ]}
-                  />
+                  >
+                    {propertyTypes.map((type) => (
+                      <Option key={type.id} value={type.id}>
+                        {type.typeName}
+                      </Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>
@@ -193,7 +329,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your stars !",
+                      message: "Please input your stars!",
                     },
                   ]}
                 >
@@ -207,7 +343,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your check in time !",
+                      message: "Please input your check in time!",
                     },
                   ]}
                 >
@@ -224,7 +360,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your check out time !",
+                      message: "Please input your check out time!",
                     },
                   ]}
                 >
@@ -232,6 +368,74 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                     defaultValue={dayjs("12:30", format)}
                     format={format}
                   />
+                </Form.Item>
+              </Col>
+            </Row>
+            {/* city */}
+            {/* Code hiển thị Select Box */}
+            <Row gutter={24}>
+              <Col span={24}>
+                <Form.Item<FieldType>
+                  label="Thành phố / Tỉnh"
+                  name="city"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn thành phố hoặc tỉnh!",
+                    },
+                  ]}
+                >
+                  <Select
+                    showSearch
+                    placeholder="Chọn thành phố hoặc tỉnh"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option?.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {/* Tạo các Option cho Select Box */}
+                    <Option disabled key="thanhpho" className="fw-bold">
+                      Thành phố
+                    </Option>
+                    {citiesData
+                      .filter((city) =>
+                        [
+                          "Hà Nội",
+                          "Hồ Chí Minh",
+                          "Hải Phòng",
+                          "Đà Nẵng",
+                          "Cần Thơ",
+                          "Đà Lạt",
+                        ].includes(city)
+                      )
+                      .map((city) => (
+                        <Option key={city} value={city}>
+                          {city}
+                        </Option>
+                      ))}
+                    <Option disabled key="tinhtp" className="fw-bold">
+                      Tỉnh
+                    </Option>
+                    {citiesData
+                      .filter(
+                        (city) =>
+                          ![
+                            "Hà Nội",
+                            "Hồ Chí Minh",
+                            "Hải Phòng",
+                            "Đà Nẵng",
+                            "Cần Thơ",
+                            "Đà Lạt",
+                          ].includes(city)
+                      )
+                      .map((city) => (
+                        <Option key={city} value={city}>
+                          {city}
+                        </Option>
+                      ))}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>
@@ -253,6 +457,22 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
             </Row>
             <Row gutter={24}>
               <Col span={24}>
+                <Form.Item<FieldType>
+                  label="Phone"
+                  name="hotelPhoneNum"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your phone number hotel!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={24}>
                 <Form.Item label="Description" name="description">
                   <TextArea rows={4} />
                 </Form.Item>
@@ -261,16 +481,23 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item<FieldType>
-                  label=" Facility"
+                  label="Facility"
                   name="facility"
                   rules={[
                     {
                       required: true,
-                      message: "Please input your hotel facility !",
+                      message: "Please select your hotel facilities!",
                     },
                   ]}
                 >
-                  <Input />
+                  <Select
+                    mode="multiple"
+                    placeholder="Select facilities"
+                    options={facilities.map((facility) => ({
+                      label: facility.facName,
+                      value: facility.facId,
+                    }))}
+                  />
                 </Form.Item>
               </Col>
             </Row>
@@ -282,7 +509,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your status !",
+                      message: "Please input your status!",
                     },
                   ]}
                 >
@@ -301,7 +528,7 @@ export default function Forms({ selectedRow }: { selectedRow: any }) {
               <Button
                 type="primary"
                 htmlType="submit"
-                className=" mt-5 float-end"
+                className="mt-5 float-end"
               >
                 Update
               </Button>
