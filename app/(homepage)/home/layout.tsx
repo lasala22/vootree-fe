@@ -8,13 +8,12 @@ export default function Layouts({ children }: { children: React.ReactNode }) {
     <>
       <Layout>
         <header>
-          <Navbar
-            bg={styles.header}
-            searchbar={<SearchBar />}
-            logo="/logo_preview_rev_2.png"
-          />
+          <Navbar bg={styles.header} logo="/logo_preview_rev_2.png" />
+          <div>
+            <SearchBar />
+          </div>
         </header>
-        <div className="mt-44">{children}</div>
+        <div className="mt-36">{children}</div>
       </Layout>
     </>
   );

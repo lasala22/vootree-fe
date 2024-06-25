@@ -1,12 +1,14 @@
 "use client";
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import { Form, InputNumber, Select, DatePicker, Button } from "antd";
+import { Form, InputNumber, Select, DatePicker, Button, Image } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import type { GetProps } from "antd";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
+import { url } from "inspector";
+
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { Option } = Select;
 dayjs.extend(customParseFormat);
@@ -110,88 +112,101 @@ export default function SearchBar() {
 
   return (
     <>
-      <div className="text-3xl items-center justify-center flex mt-6 font-bold text-white">
-        <h1 className="items-center">
-          From Southeast Asia to the World, All Yours.
-        </h1>
-      </div>
-      <hr className="max-w-4xl mx-auto justify-center mt-4 border" />
-      <div className="max-w-3xl h-56 bg-white mx-auto mt-6 border border-gray-400 rounded-lg ">
-        <div className="relative">
-          <Form
-            form={form}
-            className="mx-4 mt-3"
-            layout="vertical"
-            onFinish={onFinish}
-          >
-            <Form.Item<FieldType>
-              label="Thành phố, địa điểm hoặc tên khách sạn:"
-              name="search"
+      <div
+        style={{
+          backgroundImage:
+            'url("/static_images/5ec4a3b3713a93c2fbc44d60a54764fb.jpg")',
+          width: "1349px",
+          height: "350px",
+          backgroundSize: "cover", // Optional: to cover the entire div
+          backgroundPosition: "center",
+          boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.5);",
+        }}
+      >
+        <p className="text-5xl font-bold text-white mx-12 pt-16">
+          Căn nhà hoàn hảo <br />
+          cho chuyến đi đặc biệt <br />
+        </p>
+        <p className="text-xl font-semibold text-white mx-16 pt-2">
+          Khám phá nhà nghỉ dưỡng thơ mộng khắp thế giới
+        </p>
+        <div className="max-w-3xl h-56 bg-white mx-auto mt-6 border-4 border-yellow-400 rounded-lg ">
+          <div className="relative">
+            <Form
+              form={form}
+              className="mx-4 mt-3"
+              layout="vertical"
+              onFinish={onFinish}
             >
-              <Select
-                size="large"
-                className=" font-normal"
-                suffixIcon={<MapPinIcon className="h-6 w-6 text-gray-500" />}
-                showSearch
-                placeholder="VD: Đà Lạt..., Khách sạn..."
-                optionFilterProp="children"
-                onSearch={onSearch}
-                filterOption={filterOption}
-              >
-                {" "}
-                {filteredOptions.map((item, index) => (
-                  <Option key={index} value={item}>
-                    {item}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <div className="justify-between flex">
               <Form.Item<FieldType>
-                label="Ngày nhận phòng, ngày trả phòng"
-                name="date"
+                label="Thành phố, địa điểm hoặc tên khách sạn:"
+                name="search"
               >
-                <RangePicker
+                <Select
                   size="large"
-                  className=" w-80"
-                  disabledDate={disabledDate}
-                />
-              </Form.Item>
-
-              <Form.Item<FieldType> label="Số lượng khách" name="guests">
-                <InputNumber
-                  size="large"
-                  className=" w-40"
-                  defaultValue={1}
-                  //   value={1}
-                  min={1}
-                  max={10}
-                />
-              </Form.Item>
-              <Form.Item<FieldType> label="Số lượng phòng" name="rooms">
-                <InputNumber
-                  size="large"
-                  className=" w-40 "
-                  defaultValue={1}
-                  // value={1}
-                  min={1}
-                  max={10}
-                />
-              </Form.Item>
-            </div>
-            <div className="items-center justify-center flex">
-              <Form.Item>
-                <Button
-                  size="large"
-                  className="w-56"
-                  type="primary"
-                  htmlType="submit"
+                  className=" font-normal"
+                  suffixIcon={<MapPinIcon className="h-6 w-6 text-gray-500" />}
+                  showSearch
+                  placeholder="VD: Đà Lạt..., Khách sạn..."
+                  optionFilterProp="children"
+                  onSearch={onSearch}
+                  filterOption={filterOption}
                 >
-                  Search
-                </Button>
+                  {" "}
+                  {filteredOptions.map((item, index) => (
+                    <Option key={index} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
-            </div>
-          </Form>
+              <div className="justify-between flex">
+                <Form.Item<FieldType>
+                  label="Ngày nhận phòng, ngày trả phòng"
+                  name="date"
+                >
+                  <RangePicker
+                    size="large"
+                    className=" w-80"
+                    disabledDate={disabledDate}
+                  />
+                </Form.Item>
+
+                <Form.Item<FieldType> label="Số lượng khách" name="guests">
+                  <InputNumber
+                    size="large"
+                    className=" w-40"
+                    defaultValue={1}
+                    //   value={1}
+                    min={1}
+                    max={10}
+                  />
+                </Form.Item>
+                <Form.Item<FieldType> label="Số lượng phòng" name="rooms">
+                  <InputNumber
+                    size="large"
+                    className=" w-40 "
+                    defaultValue={1}
+                    // value={1}
+                    min={1}
+                    max={10}
+                  />
+                </Form.Item>
+              </div>
+              <div className="items-center justify-center flex">
+                <Form.Item>
+                  <Button
+                    size="large"
+                    className="w-56"
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    Search
+                  </Button>
+                </Form.Item>
+              </div>
+            </Form>
+          </div>
         </div>
       </div>
     </>

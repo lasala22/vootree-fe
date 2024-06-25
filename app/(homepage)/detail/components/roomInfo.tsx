@@ -26,7 +26,7 @@ export default function RoomInfo({ data }) {
         backgroundSize: "fill",
       }}
     >
-      <strong className="text-lg">Các loại phòng của khách sạn A</strong>
+      <strong className="text-lg">Các loại phòng của {data.hotelName}</strong>
       {validateRoom
         ? data.rooms.map((item) => (
             <div className="border mt-2 p-4" key={item.roomId}>
@@ -38,7 +38,7 @@ export default function RoomInfo({ data }) {
                       .map((img) => img.path)
                       .slice(0, 1)}`}
                     width={300}
-                    height={200}
+                    height={235}
                     alt=""
                     className="rounded-lg"
                   />
