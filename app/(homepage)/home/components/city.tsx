@@ -58,7 +58,7 @@ const Card = () => {
   return (
     <Row gutter={24} className="w-4/5">
       {cityInfo.map((item) => (
-        <Col md={12} lg={6} xs={24} key={item.name} className="mt-3">
+        <Col md={12} lg={6} xs={24} key={item.name} className="mt-5">
           <Link href={item.link} className="w-44 h-0">
             <div className="relative w-full h-40 bg-cover bg-center rounded-lg shadow-md overflow-hidden hover:shadow-md hover:shadow-slate-500">
               <Image
@@ -77,7 +77,18 @@ const Card = () => {
                     fontSize: "large",
                   }}
                 >
-                  {item.title}
+                  <div className="flex">
+                    {item.title}
+                    <img
+                      src="/icon/co-viet-nam.webp"
+                      alt="Vietnam Flag"
+                      style={{
+                        width: "28px",
+                        height: "23px",
+                        marginLeft: "10px",
+                      }}
+                    />
+                  </div>
                 </Typography.Title>
               </div>
             </div>

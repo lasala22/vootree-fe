@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Navbar({ bg, searchbar, logo }) {
+export default function Navbar({ bg, logo }) {
   const [usename, setUsername] = useState();
   const router = useRouter();
   useEffect(() => {
@@ -173,8 +173,6 @@ export default function Navbar({ bg, searchbar, logo }) {
       {/* <div className="max-w-3xl h-56 bg-white mx-auto mt-6 border border-gray-400 rounded-lg ">
         <SearchBar />
       </div> */}
-      {searchbar}
-      {/* <SearchBar /> */}
     </header>
   );
 }

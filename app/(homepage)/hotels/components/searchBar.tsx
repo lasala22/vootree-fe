@@ -137,7 +137,7 @@ export default function SearchBar() {
             <Col span={8}>
               <Form.Item<FieldType> name="search">
                 <Select
-                  className="h-12 text-xl font-semibold"
+                  className="h-12 text-lg font-semibold"
                   suffixIcon={<MapPinIcon className="h-6 w-6 text-gray-500" />}
                   showSearch
                   placeholder="Thành phố, khách sạn, điểm đến"
@@ -148,7 +148,7 @@ export default function SearchBar() {
                 >
                   {filteredOptions.map((item, index) => (
                     <Option key={index} value={item}>
-                      <span className="font-semibold text-xl">{item}</span>
+                      <span className="font-semibold text-lg">{item}</span>
                     </Option>
                   ))}
                 </Select>
@@ -157,7 +157,7 @@ export default function SearchBar() {
             <Col span={6}>
               <Form.Item<FieldType> name="date">
                 <RangePicker
-                  className="font-semibold h-12 text-xl"
+                  className="font-semibold h-12 text-lg"
                   disabledDate={disabledDate}
                 />
               </Form.Item>
@@ -168,7 +168,7 @@ export default function SearchBar() {
                   suffix={
                     <Image src="/icon/man.png" width={24} height={24} alt="" />
                   }
-                  className="font-semibold h-12 text-xl w-full flex"
+                  className="font-semibold h-12 text-lg w-full flex"
                   // defaultValue={1}
                   min={1}
                   max={10}
@@ -181,7 +181,7 @@ export default function SearchBar() {
                   suffix={
                     <Image src="/icon/door.png" width={24} height={24} alt="" />
                   }
-                  className="font-semibold h-12 text-xl w-full flex"
+                  className="font-semibold h-12 text-lg w-full flex"
                   // defaultValue={1}
                   min={1}
                   max={10}
@@ -193,9 +193,9 @@ export default function SearchBar() {
                 <Button
                   htmlType="submit"
                   size="large"
-                  className="flex font-semibold h-12 text-xl"
+                  className="flex font-semibold h-12 text-lg"
                 >
-                  <MagnifyingGlassIcon className="h-8 w-8 " /> Tìm kiếm
+                  <MagnifyingGlassIcon className="h-7 w-7 " /> Tìm kiếm
                 </Button>
               </Form.Item>
             </Col>

@@ -29,10 +29,10 @@ export default function CardHotel() {
             arrows
             slidesToShow={4}
             slidesToScroll={1}
-            style={{ width: 1000, height: 360 }}
+            style={{ width: 1000, height: 400 }}
           >
             {data.slice(0, 5).map((item) => (
-              <Col md={12} lg={6} xs={24} key={item.id} className="mt-7">
+              <Col md={12} lg={6} xs={24} key={item.id} className="mt-3">
                 <Link href={`/detail/${item.id}`}>
                   <Card
                     hoverable

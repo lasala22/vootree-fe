@@ -91,7 +91,7 @@ export default function HotelInfo({ data }) {
       </div>
       <div className="m-5">
         <Row gutter={24}>
-          <Col span={12} className=" ">
+          <Col span={12}>
             <Image.PreviewGroup items={hotelImg}>
               <Image
                 src={`/hotelImg/${
