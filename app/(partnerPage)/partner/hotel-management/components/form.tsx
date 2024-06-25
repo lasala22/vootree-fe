@@ -74,7 +74,15 @@ const handleChange = (value: string) => {
 };
 const format = "HH:mm";
 
-export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any, onFormSubmit: () => void }) {
+export default function Forms({
+  selectedRow,
+  onFormSubmit,
+  isFormDisabled, // Accept the new prop
+}: {
+  selectedRow: any;
+  onFormSubmit: () => void;
+  isFormDisabled: boolean; // Accept the new prop
+}) {
   const [form] = Form.useForm();
   const [facilities, setFacilities] = useState([]);
   const [propertyTypes, setPropertyTypes] = useState<
@@ -220,8 +228,8 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
       userId: values.userID,
       status: 'PENDING', // Change status to 'PENDING',
       hotelFacilities: values.facility,
-      checkIn: values.checkIn ? values.checkIn.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
-      checkOut: values.checkOut ? values.checkOut.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
+      checkInTime: values.checkIn ? values.checkIn.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
+      checkOutTime: values.checkOut ? values.checkOut.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
     };
   console.log(updatedValues);
   
@@ -260,7 +268,9 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
             labelCol={{ span: 20 }}
             wrapperCol={{ span: 24 }}
             initialValues={{
-              status: selectedRow?.status || "", // Ensure initial value is set correctly
+              status: selectedRow?.status || "",
+              checkIn: dayjs("12:30", format),
+              checkOut: dayjs("14:30", format), // Ensure initial value is set correctly
             }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -288,7 +298,7 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                     },
                   ]}
                 >
-                  <Input />
+                  <Input  disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
@@ -311,6 +321,7 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                     onChange={onChange}
                     onSearch={onSearch}
                     filterOption={filterOption}
+                    disabled={isFormDisabled}
                   >
                     {propertyTypes.map((type) => (
                       <Option key={type.id} value={type.id}>
@@ -333,7 +344,7 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                     },
                   ]}
                 >
-                  <Rate />
+                  <Rate disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -348,8 +359,9 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                   ]}
                 >
                   <TimePicker
-                    defaultValue={dayjs("14:00", format)}
+                    
                     format={format}
+                    disabled={isFormDisabled}
                   />
                 </Form.Item>
               </Col>
@@ -365,8 +377,9 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                   ]}
                 >
                   <TimePicker
-                    defaultValue={dayjs("12:30", format)}
+                    
                     format={format}
+                    disabled={isFormDisabled}
                   />
                 </Form.Item>
               </Col>
@@ -394,6 +407,8 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
+
+                    disabled={isFormDisabled}
                   >
                     {/* Tạo các Option cho Select Box */}
                     <Option disabled key="thanhpho" className="fw-bold">
@@ -451,7 +466,7 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
@@ -467,14 +482,14 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item label="Description" name="description">
-                  <TextArea rows={4} />
+                  <TextArea rows={4} disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
@@ -497,6 +512,8 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                       label: facility.facName,
                       value: facility.facId,
                     }))}
+
+                    disabled={isFormDisabled}
                   />
                 </Form.Item>
               </Col>
@@ -513,7 +530,7 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                     },
                   ]}
                 >
-                  <Select style={{ width: 120 }} onChange={handleChange}>
+                  <Select style={{ width: 120 }} onChange={handleChange} disabled={isFormDisabled}>
                     <Option value="ACTIVE">Active</Option>
                     <Option value="PENDING">Pending</Option>
                   </Select>
@@ -529,6 +546,7 @@ export default function Forms({ selectedRow, onFormSubmit }: { selectedRow: any,
                 type="primary"
                 htmlType="submit"
                 className="mt-5 float-end"
+                disabled={isFormDisabled}
               >
                 Update
               </Button>
