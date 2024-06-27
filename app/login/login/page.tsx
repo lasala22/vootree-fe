@@ -49,30 +49,36 @@ export default function Page() {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center ">
-      <div className="flex items-center bg-blue-500 w-full p-4">
+    <div
+      className="flex min-h-full flex-1 flex-col justify-center"
+      style={{
+        backgroundImage: "url('/static_images/background-dep-bai-bien.jpg')",
+        // backgroundSize: "cover",
+        // backgroundRepeat: "no-repeat",
+        // backgroundPosition: "center",
+      }}
+    >
+      <div className="flex items-center bg-blue-900  p-4">
         <Link href="/home">
           <Image
             src="/logo_preview_rev_2.png"
-            width={150}
-            height={50}
+            width={200}
+            height={60}
             alt="logo"
           />
         </Link>
       </div>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center mt-10">
-        <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
-      </div>
-      <div className="mt-10 sm:mx-auto sm:w-full max-w-md">
+      <div className="mt-5 sm:mx-auto sm:w-full max-w-md rounded-md shadow-md  bg-white">
         <Form
           form={form}
           name="horizontal_login"
           layout="inline"
           onFinish={onFinish}
-          className="bg-white p-8 shadow-md rounded space-y-6"
+          className="bg-white p-10 shadow-md rounded space-y-5"
         >
+          <h2 className="text-2xl font-extrabold m-auto text-blue-900">
+            Sign in to your account
+          </h2>
           <div className="w-full">
             <label
               htmlFor="username"
@@ -92,6 +98,7 @@ export default function Page() {
             >
               <Input
                 id="username"
+                size="large"
                 prefix={<UserOutlined className="site-form-item-icon  " />}
                 placeholder="Username"
               />
@@ -117,6 +124,7 @@ export default function Page() {
               ]}
             >
               <Input.Password
+                size="large"
                 prefix={<LockOutlined className="site-form-item-icon " />}
                 type="password"
                 placeholder="Password"
@@ -129,7 +137,7 @@ export default function Page() {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <Link
-                  href="/signup"
+                  href="/login/signup"
                   className="font-semibold text-sky-500 hover:text-indigo-500"
                 >
                   Create account?
@@ -137,7 +145,7 @@ export default function Page() {
               </div>
               <div className="text-sm">
                 <a
-                  href="#"
+                  href="/login/forgot-pass"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot password?
@@ -153,7 +161,7 @@ export default function Page() {
                   type="primary"
                   htmlType="submit"
                   // className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="flex w-full  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   disabled={
                     !clientReady ||
                     !form.isFieldsTouched(true) ||

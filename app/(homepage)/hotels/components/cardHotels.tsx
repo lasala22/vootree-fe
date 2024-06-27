@@ -6,9 +6,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 const gridStyle: React.CSSProperties = {
-  width: "17%",
+  width: "168px",
   textAlign: "center",
-  fontSize: "19px",
+  fontSize: "15px",
+  fontWeight: "bold",
 };
 
 interface Room {
@@ -223,7 +224,7 @@ const Index = ({ checkedValues, priceRange }) => {
         <div>
           <Card className="h-30">
             <Card className="w-32 justify-center items-center flex">
-              <strong className="text-sky-600 text-lg">Sắp xếp</strong>
+              <strong className="text-sky-800 text-base">Sắp xếp</strong>
             </Card>
             <Card.Grid style={gridStyle}>Tất cả</Card.Grid>
             <Card.Grid

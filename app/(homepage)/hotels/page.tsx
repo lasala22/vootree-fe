@@ -5,6 +5,7 @@ import Index from "./components/cardHotels";
 import StarsCheckBox from "./components/starsCheckBox";
 import PriceSlider from "./components/priceslider";
 import SearchBar from "./components/searchBar";
+import FacilityCheckBox from "./components/facilityCheckBox";
 
 export default function Page() {
   const [checkedValues, setCheckedValues] = useState([]);
@@ -17,6 +18,7 @@ export default function Page() {
         <div className="w-1/4 px-10" style={{ height: 1000 }}>
           <PriceSlider priceRange={priceRange} setPriceRange={setPriceRange} />
           <StarsCheckBox setCheckedValues={setCheckedValues} />
+          <FacilityCheckBox setCheckedValues={setCheckedValues} />
         </div>
         <div className=" pe-10 w-3/4">
           <Index checkedValues={checkedValues} priceRange={priceRange} />

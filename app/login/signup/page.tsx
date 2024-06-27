@@ -66,7 +66,10 @@ export default function Page() {
       );
       if (response.data.success) {
         console.log("success");
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
       } else {
         console.error(response.data.error);
       }
