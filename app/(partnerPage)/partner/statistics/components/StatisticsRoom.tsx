@@ -158,6 +158,16 @@ const StatisticsRoom = () => {
         text: `Monthly Room Booking Statistics for the Year ${selectedYear}`,
       },
     },
+    scales: {
+      y: {
+        suggestedMin: 0, // Để trục y bắt đầu từ 0
+        beginAtZero: true, // Đảm bảo bắt đầu từ 0 nếu không có dữ liệu
+        ticks: {
+          stepSize: 1, // Đặt bước là 1 để chỉ hiển thị số nguyên trên trục y
+          precision: 0, // Số chữ số thập phân sẽ được hiển thị là 0
+        },
+      },
+    },
   };
 
   if (!roomBookingData) return <p>Loading...</p>; // Show loading message while data is fetching
