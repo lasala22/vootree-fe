@@ -10,40 +10,16 @@ import {
   Select,
   Table,
   Tag,
+  Button,
+  Space,
 } from "antd";
+import { message, Upload } from "antd";
+import axios from "axios";
+import TextArea from "antd/es/input/TextArea";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 const { Option } = Select;
 
-const columns = [
-  {
-    title: "Loại phòng",
-    dataIndex: "roomType",
-    key: "roomType",
-    render: (text, record) => <span>{record.roomType.typeName}</span>,
-  },
-  {
-    title: "Sức chứa",
-    dataIndex: "capacity",
-    key: "capacity",
-  },
-  {
-    title: "Giá",
-    dataIndex: "price",
-    key: "price",
-    render: (text) => <span>{text.toLocaleString()} VNĐ</span>,
-  },
-  {
-    title: "Dịch vụ ăn sáng",
-    dataIndex: "serveBreakfast",
-    key: "serveBreakfast",
-    render: (serveBreakfast) => (
-      <Tag color={serveBreakfast ? "green" : "red"}>
-        {serveBreakfast ? "Có" : "Không"}
-      </Tag>
-    ),
-  },
-];
 export default function RoomCreate() {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
@@ -51,26 +27,46 @@ export default function RoomCreate() {
   const [roomFacilities, setRoomFacilities] = useState([]);
   const [hotelNames, setHotelNames] = useState([]);
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const [propertyTypes, setPropertyTypes] = useState<
+    { id: string; typeName: string }[]
+  >([]);
+  const [hotelSelected, setHotelSelected] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    fetchData();
+    getFacilities();
+    fetchPropertyTypes();
+  }, []);
+
+  const fetchData = async () => {
+    try {
       const response = await fetch("http://localhost:8080/api/hotels");
       const allData = await response.json();
       setData(allData);
+    } catch (error) {
+      console.error("Failed to fetch hotels:", error);
+    }
+  };
 
-      const uniqueHotelNames = [
-        ...new Set(allData.map((item) => item.hotelName)),
-      ];
-      setHotelNames(uniqueHotelNames);
-    };
-    const getFacilities = async () => {
+  const getFacilities = async () => {
+    try {
       const response = await fetch("http://localhost:8080/api/facilities");
       const facData = await response.json();
       setRoomFacilities(facData.filter((item: any) => item.facType === "ROOM"));
-    };
-    getFacilities();
-    fetchData();
-  }, []);
+    } catch (error) {
+      console.error("Failed to fetch facilities:", error);
+    }
+  };
+
+  const fetchPropertyTypes = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/roomTypes");
+      const data = await response.json();
+      setPropertyTypes(data);
+    } catch (error) {
+      console.error("Failed to fetch property types:", error);
+    }
+  };
 
   useEffect(() => {
     if (!selectedHotel) {
@@ -78,9 +74,9 @@ export default function RoomCreate() {
       return;
     }
 
-    const selectedHotelData = data.find(
-      (hotel) => hotel.hotelName === selectedHotel
-    );
+    const selectedHotelData = data.find((hotel) => hotel.id === selectedHotel);
+    console.log(selectedHotelData);
+
     if (selectedHotelData) {
       setFilteredData(selectedHotelData.rooms);
     } else {
@@ -90,6 +86,7 @@ export default function RoomCreate() {
 
   const onChange = (value) => {
     setSelectedHotel(value);
+    setHotelSelected(true);
   };
 
   const columns = [
@@ -122,8 +119,49 @@ export default function RoomCreate() {
     },
   ];
 
-  const onFinish = () => {};
+  const onFinish = async (values) => {
+    // Lấy hotelId từ selectedHotel và thêm vào values
+    const hotelId = selectedHotel;
+    const updatedValues = {
+      ...values,
+      capacity: values.roomCapacity,
+      price: values.roomPrice,
+      quantity: values.roomQuantity,
+      // roomSize: values.roomSize,
+      roomTypeId: values.roomType,
+      // roomFacilities:values.roomFacilities,
+      status: "PENDING",
+      hotelId,
+    };
 
+    console.log("Form values:", updatedValues);
+
+    try {
+      // Gửi dữ liệu lên server
+      const response = await axios.post(
+        `http://localhost:8080/api/rooms/partner/create/${hotelId}`,
+        updatedValues
+      );
+
+      // Xử lý response từ server (nếu cần)
+      console.log("Server response:", response.data);
+      // Thực hiện fetch lại dữ liệu khách sạn đã chọn sau khi thêm phòng thành công
+     
+      // Reset form sau khi submit thành công (nếu cần)
+      form.resetFields();
+
+      // Hiển thị thông báo hoặc chuyển hướng (nếu cần)
+      // Ví dụ:
+      message.success("Đã thêm phòng thành công!");
+      fetchData();
+    } catch (error) {
+      console.error("Failed to add room:", error);
+      // Xử lý lỗi (nếu cần)
+      message.error("Đã xảy ra lỗi khi thêm phòng, vui lòng thử lại sau.");
+    }
+  };
+
+  
   return (
     <>
       <div className="p-20 px-40">
@@ -170,13 +208,13 @@ export default function RoomCreate() {
                 value={selectedHotel}
                 onChange={onChange}
               >
-                {hotelNames.map((hotelName) => (
-                  <Option key={hotelName} value={hotelName}>
-                    {hotelName}
+                {data.map((hotel) => (
+                  <Option key={hotel.id} value={hotel.id}>
+                    {hotel.hotelName}
                   </Option>
                 ))}
               </Select>
-              <Table dataSource={filteredData} columns={columns} />
+              <Table dataSource={filteredData} columns={columns} rowKey="id" />
             </div>
           </div>
           <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -198,23 +236,14 @@ export default function RoomCreate() {
                     showSearch
                     placeholder="Chọn tên lọa phòng"
                     optionFilterProp="children"
-                    //     filterOption={filterOption}
                     size="large"
-                    options={[
-                      {
-                        value: "1",
-                        label: "Phòng Delux",
-                      },
-                      {
-                        value: "2",
-                        label: "Phòng thường",
-                      },
-                      {
-                        value: "3",
-                        label: "Phòng VIP",
-                      },
-                    ]}
-                  />
+                  >
+                    {propertyTypes.map((type) => (
+                      <Option key={type.id} value={type.id}>
+                        {type.typeName}
+                      </Option>
+                    ))}
+                  </Select>
                 </Form.Item>
                 <Form.Item
                   className="mt-4 "
@@ -263,6 +292,9 @@ export default function RoomCreate() {
                     addonAfter="Vnđ"
                     min={80000}
                   />
+                </Form.Item>
+                <Form.Item label="Description" name="description">
+                  <TextArea rows={4} />
                 </Form.Item>
                 <div>
                   <strong>Số lượng phòng</strong>
@@ -314,8 +346,8 @@ export default function RoomCreate() {
                 >
                   <Checkbox.Group className="font-semibold">
                     <Row gutter={[16, 16]}>
-                      {roomFacilities.map((fac, index) => (
-                        <Col span={8} key={index}>
+                      {roomFacilities.map((fac) => (
+                        <Col span={8} key={fac.facId}>
                           <Checkbox value={fac.facId}>{fac.facName}</Checkbox>
                         </Col>
                       ))}
@@ -324,6 +356,18 @@ export default function RoomCreate() {
                 </Form.Item>
               </div>
             </div>
+            <Form.Item name="hotelId" style={{ display: "none" }}>
+              <input type="hidden" value={selectedHotel} />
+            </Form.Item>
+            <Form.Item className="mt-4">
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={!hotelSelected}
+              >
+                Submit
+              </Button>
+            </Form.Item>
           </Form>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { FormOutlined, SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Button, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
+import { log } from "console";
 
 // const data: DataType[] = [
 //   {
@@ -35,8 +36,10 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 
 export default function Tables({
   onRowSelect,
+  reloadTable,
 }: {
   onRowSelect: (row: any) => void;
+  reloadTable: boolean;
 }) {
   const [data, setData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -51,19 +54,26 @@ export default function Tables({
         const fetchedData = response.data.map((item: any, index: number) => ({
           key: item.id,
           name: item.hotel.hotelName,
-          typeName: item.roomType.typeName,
+          roomType: item.roomType,
+          typeName:item.roomType.typeName,
           price: item.price,
           capacity: item.capacity,
           quantity: item.quantity,
           roomSize: item.roomSize,
           description: item.description,
+          serveBreakfast: item.serveBreakfast,
+          hotelId: item.hotel.id,
+          roomFacilities: item.roomFacilities,
+          roomStatus: item.roomStatus,
         }));
         setData(fetchedData);
+        // console.log(fetchedData);
+        
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [reloadTable]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -160,7 +170,6 @@ export default function Tables({
 
   const handleEdit = (record: any) => {
     console.log(record);
-
     onRowSelect(record);
   };
 
@@ -192,6 +201,13 @@ export default function Tables({
       ...getColumnSearchProps("price"),
       sorter: (a, b) => parseFloat(a.price) - parseFloat(b.price),
       sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Status",
+      dataIndex: "roomStatus",
+      key: "roomStatus",
+      width: "10%",
+      ...getColumnSearchProps("roomStatus"),
     },
     {
       title: "",
