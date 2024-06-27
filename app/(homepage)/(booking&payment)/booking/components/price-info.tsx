@@ -20,6 +20,16 @@ export default function PriceInfo({
   const roomPrice = roomData?.price;
   const roomId = roomData?.id;
   const hotelName = roomData ? roomData?.hotel?.hotelName : "Không tồn tại";
+  const hotelPhoneNum = roomData
+    ? roomData?.hotel?.hotelPhoneNum
+    : "Không tồn tại";
+  const address = roomData ? roomData?.hotel?.address : "Không tồn tại";
+  const checkInTime = roomData ? roomData?.hotel?.checkInTime : "không tồn tại";
+  const checkOutTime = roomData
+    ? roomData?.hotel?.checkOutTime
+    : "không tồn tại";
+  const ownerEmail = roomData?.ownerEmail;
+
   const [price, setPrice] = useState(0);
   const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -101,12 +111,17 @@ export default function PriceInfo({
             check_out_date: checkOut,
             total_price: totalPrice,
             num_of_rooms: rooms,
-            num_of_guest: guests,
+            num_of_guests: guests,
             email: email,
             fullName: fullName,
             phoneNum: phoneNum,
             hotelName: hotelName,
             roomType: roomType,
+            address: address,
+            checkInTime: checkInTime,
+            checkOutTime: checkOutTime,
+            hotelPhoneNum: hotelPhoneNum,
+            ownerEmail: ownerEmail,
           };
           localStorage.setItem("bookingInfo", JSON.stringify(paymentObject));
           const queryString = new URLSearchParams(paymentValues).toString();
@@ -117,6 +132,7 @@ export default function PriceInfo({
           console.log(payment.data.data);
           if (payment.status === 200) {
             const paymentUrl = payment.data.data;
+            console.log(payment.data);
             window.location.href = paymentUrl;
           }
           message.success("Bạn đã đăng kí thành công!");

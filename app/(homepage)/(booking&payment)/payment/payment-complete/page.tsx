@@ -4,15 +4,22 @@ import axios from "axios";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 export default function Page() {
   const [paymentValues, setPaymentValues] = useState({});
   const [userInfo, setUserInfo] = useState({});
   const [bookingInfo, setBookingInfo] = useState({});
-
+  const [emailReceipt, setEmailReceipt] = useState({});
+  const [partnerEmail, setPartnerEmail] = useState();
   useEffect(() => {
     const localStorageValues = localStorage.getItem("bookingInfo");
     const data = JSON.parse(localStorageValues);
+    const fromDate = data.check_in_date;
+    const toDate = data.check_out_date;
+    const checkInDateFormat = dayjs(fromDate).format("DD/MM/YYYY");
+    const checkOutDateFormat = dayjs(toDate).format("DD/MM/YYYY");
+    console.log("Data", data);
     const paymentValues = {
       amount: data.amount,
       bookingId: data.bookingId,
@@ -26,20 +33,42 @@ export default function Page() {
     const bookingInfo = {
       hotelName: data.hotelName,
       roomType: data.roomType,
-      checkIn: data.check_in_date,
-      checkOut: data.check_out_date,
-      guests: data.num_of_guest,
+      checkIn: checkInDateFormat,
+      checkOut: checkOutDateFormat,
+      guests: data.num_of_guests,
       rooms: data.num_of_rooms,
       totalPrice: data.total_price,
     };
-    console.log(paymentValues);
+    const receiptInfo = {
+      hotelName: data.hotelName,
+      roomType: data.roomType,
+      cusEmail: "51542500a@gmail.com",
+      num_of_rooms: data.num_of_rooms,
+      num_of_guests: data.num_of_guests,
+      checkInDate: checkInDateFormat,
+      checkOutDate: checkOutDateFormat,
+      address: data.address,
+      hotelPhoneNum: data.hotelPhoneNum,
+      checkInTime: data.checkInTime,
+      checkOutTime: data.checkOutTime,
+      ownerEmail: "hvsd103@gmail.com",
+      cusFullName: data.fullName,
+      cusPhoneNum: data.phoneNum,
+    };
 
     console.log(data);
+    console.log(paymentValues);
+    console.log(data);
     console.log(bookingInfo);
+    console.log(receiptInfo);
+
+    setEmailReceipt(receiptInfo);
     setBookingInfo(bookingInfo);
     setPaymentValues(paymentValues);
     setUserInfo(userInfo);
   }, []);
+
+  useEffect(() => {});
 
   useEffect(() => {
     const param = new URLSearchParams(paymentValues).toString();
@@ -49,9 +78,23 @@ export default function Page() {
           `http://localhost:8080/api/payment/save-payment?${param}`
         );
       };
+      const emailReceiptSender = async () => {
+        const callAPI = await axios.post(
+          "http://localhost:8080/api/email-sender/send-receipt",
+          emailReceipt
+        );
+      };
+      const emailInfoSender = async () => {
+        const callAPI = await axios.post(
+          "http://localhost:8080/api/email-sender/send-info",
+          emailReceipt
+        );
+      };
+      emailInfoSender();
+      emailReceiptSender();
       fetch();
     }
-  }, [paymentValues]);
+  }, [paymentValues, emailReceipt]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("vi-VN", {
