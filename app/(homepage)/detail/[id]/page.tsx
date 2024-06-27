@@ -94,7 +94,7 @@ export default function Page({ params }: { params: { id: string } }) {
           id="part-1"
           style={{
             width: "100vw",
-            height: "950px",
+            height: "850px",
           }}
         >
           <HotelInfo data={data} />

@@ -5,8 +5,16 @@ import BookingInfo from "../components/booking-info";
 import CustomerInfo from "../components/customer-info";
 import PriceInfo from "../components/price-info";
 import SelectedInfo from "../components/selected-info";
+<<<<<<< Updated upstream
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+=======
+import {
+  ExceptionOutlined,
+  ReconciliationOutlined,
+  SolutionOutlined,
+} from "@ant-design/icons";
+>>>>>>> Stashed changes
 
 export default function Page({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -94,7 +102,29 @@ export default function Page({ params }: { params: { id: string } }) {
             />
           </div>
           <div className="border p-5 rounded-lg shadow-lg mt-5">
-            <div></div>
+            <div>
+              <p className="text-lg font-bold">
+                <ReconciliationOutlined /> Chính sách lưu trú
+              </p>
+              <p className="text-base font-bold mt-5">
+                <SolutionOutlined /> Giấy tờ bắt buộc
+              </p>
+              <p className="text-sm font-semibold mt-2 m-4">
+                Khi nhận phòng, bạn cần cung cấp CMND/CCCD. Các giấy tờ cần
+                thiết có thể ở dạng bản mềm.
+              </p>
+              <p className="text-base font-bold mt-5">
+                <ExceptionOutlined /> Bữa sáng bổ sung
+              </p>
+              <p className="text-sm font-semibold mt-2 m-4">
+                Cơ sở lưu trú sẽ thu VND 150,000/mỗi khách khi bạn đặt thêm bữa
+                sáng bổ sung.
+              </p>
+              <a href="" className="text-base font-bold m-4 text-blue-900">
+                Xem chi tiết
+              </a>
+            </div>
+            <br />
           </div>
         </div>
       </div>

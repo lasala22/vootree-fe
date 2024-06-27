@@ -44,26 +44,33 @@ interface HotelData {
   listRating: any[]; // Placeholder for any type
 }
 
-export default function HotelInfo({ data }) {
-  const [img, setImg] = useState([]);
-  const hotelImg =
-    data?.hotelImages?.length > 0
-      ? data.hotelImages.map((img) => `/hotelImg/${img.path}`)
-      : undefined;
+interface HotelInfoProps {
+  data: HotelData;
+}
+
+export default function HotelInfo({ data }: HotelInfoProps) {
+  const [img, setImg] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (data?.hotelImages?.length > 0) {
+      setImg(data.hotelImages.map((img) => `/hotelImg/${img.path}`));
+    }
+  }, [data]);
 
   const type = data.accommodationType?.typeName;
   const minPrice: number | undefined =
     data?.rooms?.length > 0
       ? data.rooms.reduce((min, room) => Math.min(min, room.price), Infinity)
       : undefined;
-  const formatNumber = (number) => {
+  const formatNumber = (number: number | undefined) => {
     return number?.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
       maximumFractionDigits: 0,
     });
   };
-  const stars = data.hotelStars * 1;
+  const stars = data.hotelStars;
+
   return (
     <div className="mx-40 mt-10 h-full shadow-lg rounded-xl">
       <div className="m-5 ">
@@ -92,13 +99,9 @@ export default function HotelInfo({ data }) {
       <div className="m-5">
         <Row gutter={24}>
           <Col span={12}>
-            <Image.PreviewGroup items={hotelImg}>
+            <Image.PreviewGroup>
               <Image
-                src={`/hotelImg/${
-                  data?.hotelImages?.length > 0
-                    ? data.hotelImages.map((img) => img.path).slice(0, 1)
-                    : undefined
-                }`}
+                src={img.length > 0 ? img[0] : ""}
                 width={580}
                 height={384}
                 alt=""
@@ -106,22 +109,20 @@ export default function HotelInfo({ data }) {
               />
             </Image.PreviewGroup>
           </Col>
-          <Col span={12} className=" h-48  ">
+          <Col span={12} className="h-48">
             <Row className="gap-4 justify-end">
               <Image.PreviewGroup>
-                {data?.hotelImages?.length > 0
-                  ? data.hotelImages.slice(0, 4).map((item) => (
-                      <Col key={item.id}>
-                        <Image
-                          src={`/hotelImg/${item.path}`}
-                          width={280}
-                          height={182}
-                          alt=""
-                          className="rounded-sm"
-                        />
-                      </Col>
-                    ))
-                  : undefined}
+                {img.slice(1, 5).map((path, index) => (
+                  <Col key={index}>
+                    <Image
+                      src={path}
+                      width={280}
+                      height={182}
+                      alt=""
+                      className="rounded-sm"
+                    />
+                  </Col>
+                ))}
               </Image.PreviewGroup>
             </Row>
           </Col>
@@ -131,14 +132,14 @@ export default function HotelInfo({ data }) {
         <Row className="justify-between">
           <div
             style={{ width: 580, height: 150 }}
-            className=" px-4 py-2 rounded-md border shadow-sm"
+            className="px-4 py-2 rounded-md border shadow-sm"
           >
             <strong>Thông tin khách sạn</strong>
             <p className="mt-2">{data.hotelDescription}</p>
           </div>
           <div
             style={{ width: 580, height: 150 }}
-            className=" px-4 py-2 rounded-md border shadow-sm"
+            className="px-4 py-2 rounded-md border shadow-sm"
           >
             <strong>Dịch vụ/Tiện ích chính</strong>
             <div>

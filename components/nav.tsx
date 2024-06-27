@@ -1,19 +1,23 @@
 "use client";
 
+import { UserOutlined } from "@ant-design/icons";
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Avatar, Menu } from "antd";
 import { jwtDecode } from "jwt-decode";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DownOutlined } from "@ant-design/icons";
+import { Dropdown, Space } from "antd";
 
 export default function Navbar({ bg, logo }) {
-  const [usename, setUsername] = useState();
+  const [username, setUsername] = useState();
   const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,8 +31,28 @@ export default function Navbar({ bg, logo }) {
   }, []);
   const handleLogOut = () => {
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push("/login/login");
   };
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="0">
+        <a href="/profile">
+          <a className=" font-semibold">Profile</a>
+        </a>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <button
+          type="button"
+          onClick={handleLogOut}
+          className="text-red-500 font-semibold"
+        >
+          Đăng Xuất
+        </button>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <header className={bg}>
       <Disclosure as="nav">
@@ -89,23 +113,28 @@ export default function Navbar({ bg, logo }) {
                         </Link>
                       </div>
                     </div>
-                    {usename ? (
-                      <div className="flex items-center">
-                        <p className="text-white  text-sm font-medium">
-                          Xin chào, {usename}
-                        </p>
-
-                        <button
-                          type="button"
-                          onClick={handleLogOut}
-                          className="bg-orange-700 hover:bg-orange-400  text-white ms-4   py-2 px-2 rounded flex text-sm"
-                        >
-                          Đăng Xuất
-                        </button>
+                    {username ? (
+                      <div className="flex items-center ">
+                        <Dropdown overlay={menu}>
+                          <Space wrap>
+                            <Avatar
+                              icon={<UserOutlined />}
+                              name={username}
+                              size="40"
+                              round={true}
+                              className="cursor-pointer"
+                              alt="User Avatar"
+                            />
+                            <span className="text-white text-sm font-medium mr-2">
+                              {username}
+                            </span>
+                            <DownOutlined />
+                          </Space>
+                        </Dropdown>
                       </div>
                     ) : (
                       <div className="flex justify-between items-center">
-                        <Link href="/login">
+                        <Link href="/login/login">
                           <button
                             type="button"
                             className=" hover:bg-purple-950 hover:bg-opacity-40 text-white me-4   py-2 px-2 rounded border flex text-sm"
@@ -114,7 +143,7 @@ export default function Navbar({ bg, logo }) {
                             Đăng nhập
                           </button>
                         </Link>
-                        <Link href="/signup">
+                        <Link href="/login/signup">
                           <button
                             type="button"
                             className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"

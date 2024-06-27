@@ -66,6 +66,10 @@ export default function Page() {
       );
       if (response.data.success) {
         console.log("success");
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
       } else {
         console.error(response.data.error);
       }
@@ -88,25 +92,31 @@ export default function Page() {
     </Form.Item>
   );
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center ">
-      <div className="flex items-center bg-blue-500 w-full p-4">
+    <div
+      className="flex min-h-full flex-1 flex-col justify-center "
+      style={{
+        backgroundImage: "url('/static_images/background-dep-bai-bien.jpg')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="flex items-center bg-blue-900 w-full p-5">
         <Link href="/home">
           <Image
             src="/logo_preview_rev_2.png"
-            width={150}
-            height={0}
+            width={160}
+            height={50}
             alt="logo"
           />
         </Link>
       </div>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center mt-10">
-        <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      <div className="mt-5 sm:mx-auto sm:w-full max-w-md rounded-md shadow-md  bg-white">
+        <h2 className="text-2xl font-extrabold mt-5 text-center text-blue-900 ">
           Create your account
         </h2>
-      </div>
-      <div className="mt-10 sm:mx-auto sm:w-full max-w-md ">
         <Form
-          className="bg-white p-8 shadow-md rounded space-y-6 "
+          className="bg-white m-10 shadow-md rounded "
           {...formItemLayout}
           form={form}
           name="register"
@@ -132,7 +142,7 @@ export default function Page() {
             <Input />
           </Form.Item>
 
-          {/* <Form.Item
+          <Form.Item
             name="firstname"
             label="First Name"
             rules={[
@@ -156,7 +166,7 @@ export default function Page() {
             ]}
           >
             <Input />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             name="email"
             label="E-mail"
@@ -212,7 +222,7 @@ export default function Page() {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             name="dob"
             label="Date of birth"
             rules={[
@@ -223,8 +233,8 @@ export default function Page() {
             ]}
           >
             <DatePicker format={dateFormatList} />
-          </Form.Item>
-          {/* <Form.Item
+          </Form.Item> */}
+          <Form.Item
             name="phone"
             label="Phone Number"
             rules={[
@@ -240,7 +250,7 @@ export default function Page() {
                 width: "100%",
               }}
             />
-          </Form.Item> */}
+          </Form.Item>
 
           {/* <Form.Item
             name="gender"
@@ -294,7 +304,7 @@ export default function Page() {
             <div className="flex justify-center">
               <Link
                 className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
-                href="/login"
+                href="/login/login"
                 style={{
                   background: "none",
                   border: "none",

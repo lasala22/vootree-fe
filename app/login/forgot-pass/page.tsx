@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Steps, message } from "antd";
 import axios from "axios";
+import Link from "next/link";
+import Image from "next/image";
 const { Step } = Steps;
 
 const ForgotPass = () => {
@@ -9,7 +11,7 @@ const ForgotPass = () => {
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
   const [emailValidated, setEmailValidated] = useState(false);
-  const [email, setEmail] = useState(""); // State để lưu trữ email từ form1
+  const [email, setEmail] = useState("");
 
   const next = () => {
     form1
@@ -22,7 +24,7 @@ const ForgotPass = () => {
           )
           .then((response) => {
             message.success("Gửi OTP thành công");
-            setEmailValidated(true); // Đánh dấu rằng email đã được xác nhận hợp lệ
+            setEmailValidated(true);
             setCurrent(current + 1);
           })
           .catch((error) => {
@@ -60,7 +62,7 @@ const ForgotPass = () => {
           name="step1"
           layout="vertical"
           initialValues={{ email: "" }}
-          className="bg-white p-8 shadow-md rounded space-y-6 mt-6"
+          className="space-y-6"
         >
           <Form.Item
             name="email"
@@ -79,7 +81,7 @@ const ForgotPass = () => {
             <Input className="rounded-md" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" onClick={next}>
+            <Button type="primary" onClick={next} className="w-full">
               Gửi OTP
             </Button>
           </Form.Item>
@@ -94,7 +96,7 @@ const ForgotPass = () => {
           name="step2"
           layout="vertical"
           onFinish={onFinish}
-          className="bg-white p-8 shadow-md rounded space-y-6 mt-6"
+          className="space-y-6"
         >
           <Form.Item
             name="newPassword"
@@ -146,7 +148,7 @@ const ForgotPass = () => {
             <Input className="rounded-md" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" className="w-full">
               Đặt lại Mật khẩu
             </Button>
           </Form.Item>
@@ -156,7 +158,6 @@ const ForgotPass = () => {
   ];
 
   const handleStepClick = (step) => {
-    // Kiểm tra nếu đang ở bước 1 và email chưa được xác nhận, không cho phép chuyển bước
     if (step === 1 && !emailValidated) {
       return;
     }
@@ -164,45 +165,65 @@ const ForgotPass = () => {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center mt-10">
-        <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Forgot Password
-        </h2>
-      </div>
-      <Steps current={current}>
-        {steps.map((item, index) => (
-          <Step
-            key={item.title}
-            title={item.title}
-            onClick={() => handleStepClick(index)}
+    <div
+      className="min-h-screen flex flex-col justify-center items-center"
+      style={{
+        backgroundImage: "url('/static_images/background-dep-bai-bien.jpg')",
+        // backgroundSize: "cover",
+        // backgroundRepeat: "no-repeat",
+        // backgroundPosition: "center",
+      }}
+    >
+      <div className="flex items-center bg-blue-900 w-full p-5 mb-10">
+        <Link href="/home">
+          <Image
+            src="/logo_preview_rev_2.png"
+            width={170}
+            height={50}
+            alt="logo"
           />
-        ))}
-      </Steps>
-      <div className="steps-content">{steps[current].content}</div>
-      <div className="w-full text-center mt-4">
-        <div className="text-sm">
-          <a
-            href="/"
-            className="font-semibold text-sky-500 hover:text-indigo-500"
-          >
-            Back to login?
-          </a>
+        </Link>
+      </div>
+      <div className="w-full max-w-md p-8 space-y-8 rounded  bg-white shadow-md">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900 mb-6">
+            Forgot Password
+          </h2>
         </div>
-        <div className="mt-2">
-          <a
-            href="#"
-            className="text-xs text-gray-600 hover:text-gray-800 mr-2"
-          >
-            Privacy Policy
-          </a>
-          <span className="text-gray-400">•</span>
-          <a
-            href="#"
-            className="text-xs text-gray-600 hover:text-gray-800 ml-2"
-          >
-            Terms of Service
-          </a>
+        <Steps current={current} direction="vertical" className="mb-6">
+          {steps.map((item, index) => (
+            <Step
+              key={item.title}
+              title={item.title}
+              onClick={() => handleStepClick(index)}
+            />
+          ))}
+        </Steps>
+        <div>{steps[current].content}</div>
+        <div className="text-center mt-4">
+          <div className="text-sm">
+            <Link
+              href="/login/login"
+              className="font-semibold text-sky-500 hover:text-indigo-500"
+            >
+              Back to login?
+            </Link>
+          </div>
+          <div className="mt-2">
+            <Link
+              href="#"
+              className="text-xs text-gray-600 hover:text-gray-800 mr-2"
+            >
+              Privacy Policy
+            </Link>
+            <span className="text-gray-400">•</span>
+            <Link
+              href="#"
+              className="text-xs text-gray-600 hover:text-gray-800 ml-2"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </div>

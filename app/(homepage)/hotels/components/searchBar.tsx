@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import provinces from "@/public/provinces.json";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
+import { BorderOutlined } from "@ant-design/icons";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -127,17 +128,17 @@ export default function SearchBar() {
   };
   return (
     <>
-      <div className="w-full p-4 h-20 bg-sky-600 flex justify-center sticky top-0 z-10 shadow-lg">
+      <div className="w-full p-4 h-20 bg-blue-900 flex justify-center sticky top-0 z-10 shadow-lg">
         <Row gutter={24} className="flex justify-center w-10/12">
           <Form
             form={form}
             className="flex justify-center w-full"
             onFinish={onFinish}
           >
-            <Col span={8}>
+            <Col span={7}>
               <Form.Item<FieldType> name="search">
                 <Select
-                  className="h-12 text-lg font-semibold"
+                  className="h-12 text-sm font-semibold"
                   suffixIcon={<MapPinIcon className="h-6 w-6 text-gray-500" />}
                   showSearch
                   placeholder="Thành phố, khách sạn, điểm đến"
@@ -148,7 +149,7 @@ export default function SearchBar() {
                 >
                   {filteredOptions.map((item, index) => (
                     <Option key={index} value={item}>
-                      <span className="font-semibold text-lg">{item}</span>
+                      <span className="font-semibold text-base">{item}</span>
                     </Option>
                   ))}
                 </Select>
@@ -157,45 +158,44 @@ export default function SearchBar() {
             <Col span={6}>
               <Form.Item<FieldType> name="date">
                 <RangePicker
-                  className="font-semibold h-12 text-lg"
+                  className="font-semibold h-12 text-2xl"
                   disabledDate={disabledDate}
                 />
               </Form.Item>
             </Col>
-            <Col span={3}>
+            <Col span={2}>
               <Form.Item name="guests">
                 <Input
                   suffix={
-                    <Image src="/icon/man.png" width={24} height={24} alt="" />
+                    <Image src="/icon/man.png" width={25} height={24} alt="" />
                   }
-                  className="font-semibold h-12 text-lg w-full flex"
+                  className="font-semibold h-12 text-lg "
                   // defaultValue={1}
                   min={1}
                   max={10}
                 />
               </Form.Item>
             </Col>
-            <Col span={3}>
+            <Col span={2}>
               <Form.Item name="rooms">
                 <Input
                   suffix={
                     <Image src="/icon/door.png" width={24} height={24} alt="" />
                   }
-                  className="font-semibold h-12 text-lg w-full flex"
+                  className="font-semibold h-12 text-lg "
                   // defaultValue={1}
                   min={1}
                   max={10}
                 />
               </Form.Item>
             </Col>
-            <Col span={4}>
+            <Col span={2}>
               <Form.Item>
                 <Button
                   htmlType="submit"
-                  size="large"
-                  className="flex font-semibold h-12 text-lg"
+                  className="font-semibold h-12 text-base"
                 >
-                  <MagnifyingGlassIcon className="h-7 w-7 " /> Tìm kiếm
+                  <MagnifyingGlassIcon className="h-5 w-5" /> Tìm kiếm
                 </Button>
               </Form.Item>
             </Col>
