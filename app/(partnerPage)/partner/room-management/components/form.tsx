@@ -6,24 +6,28 @@ import TextArea from "antd/es/input/TextArea";
 import { message, Upload } from "antd";
 import type { UploadProps } from "antd";
 import { Select, Space } from "antd";
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 const { Option } = Select;
 
 type FieldType = {
-  roomTypeName?: string;
-  roomQuantity?: string;
-  roomCapacity?: string;
-  roomSize?: string;
+  id?: number;
+  roomType?: {};
+  roomQuantity?: number;
+  roomCapacity?: number;
+  roomSize?: number;
   roomPrice?: number;
   description?: string;
-  roomFacility?: string;
+  roomFacilities?: number[];
   status?: string;
+  hotelID?: number;
+  serveBreakfast?: string;
+  roomStatus?: string;
 };
 
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
+// const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+//   console.log("Success:", values);
+// };
 
 const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
   console.log("Failed:", errorInfo);
@@ -49,26 +53,112 @@ const props: UploadProps = {
     console.log("Dropped files", e.dataTransfer.files);
   },
 };
+const onChange = (value: string) => {
+  console.log(`selected ${value}`);
+};
+
+const onSearch = (value: string) => {
+  console.log("search:", value);
+};
+const filterOption = (
+  input: string,
+  option?: { label: string; value: string }
+) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
 const handleChange = (value: string) => {
   console.log(`selected ${value}`);
 };
 
-export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
+export default function Forms_Room({
+  selectedRow,
+  onFormSubmit,
+  isFormDisabled, // Accept the new prop
+}: {
+  selectedRow: any;
+  onFormSubmit: () => void;
+  isFormDisabled: boolean; // Accept the new prop
+}) {
   const [form] = Form.useForm();
+  const [facilities, setFacilities] = useState([]);
+  const [propertyTypes, setPropertyTypes] = useState<
+    { id: string; typeName: string }[]
+  >([]);
   useEffect(() => {
+    // Fetch facilities from API
+    const fetchFacilities = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/facilities"); // Replace with your actual API endpoint
+        const data = await response.json();
+        const hotelFacilities = data.filter(
+          (facility: any) => facility.facType === "ROOM"
+        );
+        setFacilities(hotelFacilities);
+      } catch (error) {
+        console.error("Failed to fetch facilities:", error);
+      }
+    };
+
+    fetchFacilities();
+
+    // Fetch property types from API
+    const fetchPropertyTypes = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/roomTypes"
+        ); // Replace with your actual API endpoint
+        const data = await response.json();
+        setPropertyTypes(data);
+      } catch (error) {
+        console.error("Failed to fetch property types:", error);
+      }
+    };
+
+    fetchPropertyTypes();
+
     if (selectedRow) {
       form.setFieldsValue({
-        roomTypeName: selectedRow.typeName,
+        id: selectedRow.key,
+        roomType: selectedRow.roomType.id,
         roomQuantity: selectedRow.quantity,
         roomCapacity: selectedRow.capacity,
         roomSize: selectedRow.roomSize,
         roomPrice: selectedRow.price,
         description: selectedRow.description,
+        serveBreakfast: selectedRow.serveBreakfast,
+        hotelId: selectedRow.hotelId,
+        roomFacilities: selectedRow.roomFacilities.map(
+          (f: any) => f.facility.facId
+        ),
+        roomStatus:selectedRow.roomStatus
       });
     }
     console.log(selectedRow);
   }, [selectedRow]);
+
+
+
+  const onFinish = async (values: any) => {
+    // Change 'propertyName' to 'hotelName' in the values object
+    const updatedValues = {
+      ...values,
+      capacity: values.roomCapacity,
+      price: values.roomPrice,
+      quantity: values.roomQuantity,
+      roomTypeId: values.roomType,
+      status: "PENDING"
+    }; 
+  console.log(updatedValues);
+  
+    try {
+      const response = await axios.put(`http://localhost:8080/api/rooms/partner/update/${values.id}`, updatedValues);
+      console.log('Update success:', response.data);
+      message.success('Update successful!');
+      onFormSubmit();
+    } catch (error) {
+      console.error('Update failed:', error);
+      message.error('Update failed!');
+    }
+  };
   return (
     <>
       <Row gutter={24} className=" border rounded-md">
@@ -100,11 +190,17 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
             form={form}
           >
             <div className="mt-5"></div>
+            <Form.Item name="id" noStyle>
+              <Input type="hidden" />
+            </Form.Item>
+            <Form.Item name="hotelId" noStyle>
+              <Input type="hidden" />
+            </Form.Item>
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item<FieldType>
                   label="Room type name"
-                  name="roomTypeName"
+                  name="roomType"
                   rules={[
                     {
                       required: true,
@@ -112,7 +208,21 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                     },
                   ]}
                 >
-                  <Input />
+                  <Select
+                    showSearch
+                    placeholder="Select a property"
+                    optionFilterProp="children"
+                    onChange={onChange}
+                    onSearch={onSearch}
+                    filterOption={filterOption}
+                    disabled={isFormDisabled}
+                  >
+                    {propertyTypes.map((type) => (
+                      <Option key={type.id} value={type.id}>
+                        {type.typeName}
+                      </Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>
@@ -128,7 +238,7 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -142,7 +252,7 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -156,7 +266,7 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
@@ -174,19 +284,19 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                 >
                   <InputNumber
                     min={0}
-                    formatter={(value) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                    }
+                    // formatter={(value) =>
+                    //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    // }
                     addonAfter="VND"
                     style={{ width: "100%" }}
-                  />
+                    disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item label="Description" name="description">
-                  <TextArea rows={4} />
+                  <TextArea rows={4} disabled={isFormDisabled}/>
                 </Form.Item>
               </Col>
             </Row>
@@ -194,7 +304,7 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
               <Col span={24}>
                 <Form.Item<FieldType>
                   label="Room facility"
-                  name="roomFacility"
+                  name="roomFacilities"
                   rules={[
                     {
                       required: true,
@@ -202,7 +312,56 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                     },
                   ]}
                 >
-                  <Input />
+                  <Select
+                    mode="multiple"
+                    placeholder="Select facilities"
+                    options={facilities.map((facility) => ({
+                      label: facility.facName,
+                      value: facility.facId,
+                    }))}
+
+                    disabled={isFormDisabled}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item<FieldType>
+                  label="Serve Breakfast"
+                  name="serveBreakfast"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your Serve Breakfast!",
+                    },
+                  ]}
+                >
+                  <Select style={{ width: 120 }} onChange={handleChange} disabled={isFormDisabled}>
+                    <Option value={true}>Yes</Option>
+                    <Option value={false}>No</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item<FieldType>
+                  label="Status"
+                  name="roomStatus"
+                  rules={[
+                    {
+                      required: true,
+                      // message: "Please input your Serve Breakfast!",
+                    },
+                  ]}
+                >
+                  <Select style={{ width: 120 }} onChange={handleChange} disabled={isFormDisabled}>
+                    <Option value="ACTIVE">ACTIVE</Option>
+                    <Option value="INACTIVE">INACTIVE</Option>
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>
@@ -216,6 +375,7 @@ export default function Forms_Room({ selectedRow }: { selectedRow: any }) {
                 type="primary"
                 htmlType="submit"
                 className=" mt-5 float-end"
+                disabled={isFormDisabled}
               >
                 Submit
               </Button>
