@@ -1,33 +1,74 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-
-// Dữ liệu mẫu cho tổng doanh thu theo từng tháng trong các năm
-const revenueData = {
-  2022: [12000, 15000, 13000, 16000, 17000, 18000, 15000, 14000, 16000, 17000, 19000, 20000],
-  2023: [14000, 16000, 15000, 18000, 19000, 20000, 17000, 16000, 18000, 19000, 21000, 22000],
-  // Thêm các năm khác và dữ liệu tương ứng
-};
+import axios from 'axios';
 
 const StatisticsRevenue = () => {
-  const [selectedYear, setSelectedYear] = useState('2023'); // Năm mặc định ban đầu là 2023
+  const [selectedYear, setSelectedYear] = useState('');
+  const [chartData, setChartData] = useState({
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
+      {
+        label: 'Monthly Revenue',
+        data: [],
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      },
+    ],
+  });
+  const [years, setYears] = useState([]);
+
+  const fetchRevenueData = async (year) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/bookings');
+      const bookings = response.data;
+
+      // Filter bookings to include only those with status 'PAID'
+      const paidBookings = bookings.filter(booking => booking.status === 'PAID');
+
+      // Extract unique years from the bookings
+      const uniqueYears = Array.from(new Set(paidBookings.map(booking => new Date(booking.bookingDate).getFullYear())));
+      setYears(uniqueYears);
+
+      // Set the default selected year if it's not already set
+      if (!selectedYear && uniqueYears.length > 0) {
+        setSelectedYear(uniqueYears[0]);
+        year = uniqueYears[0]; // Use the first year as the default
+      }
+
+      if (year) {
+        // Process bookings to calculate monthly revenue for the selected year
+        const monthlyRevenue = Array(12).fill(0);
+        paidBookings.forEach(booking => {
+          const bookingYear = new Date(booking.bookingDate).getFullYear();
+          if (bookingYear === parseInt(year)) {
+            const bookingMonth = new Date(booking.bookingDate).getMonth();
+            monthlyRevenue[bookingMonth] += booking.totalPrice;
+          }
+        });
+
+        setChartData({
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+          datasets: [
+            {
+              label: 'Monthly Revenue',
+              data: monthlyRevenue,
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            },
+          ],
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching revenue data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRevenueData(selectedYear);
+  }, [selectedYear]);
 
   const handleChangeYear = (event) => {
     setSelectedYear(event.target.value);
   };
 
-  // Dữ liệu cho biểu đồ
-  const chartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    datasets: [
-      {
-        label: 'Monthly Revenue',
-        data: revenueData[selectedYear],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      },
-    ],
-  };
-
-  // Cấu hình biểu đồ
   const options = {
     responsive: true,
     plugins: {
@@ -47,9 +88,9 @@ const StatisticsRevenue = () => {
       <div>
         <label>Select Year:</label>
         <select value={selectedYear} onChange={handleChangeYear}>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          {/* Thêm các năm khác tương tự */}
+          {years.map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
         </select>
       </div>
       <div className='w-full'>

@@ -13,6 +13,7 @@ import {
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
+
 // const originData = [];
 // for (let i = 0; i < 100; i++) {
 //   originData.push({
@@ -46,7 +47,7 @@ const EditableCell = ({
     inputNode = (
       <Select>
         <Select.Option value="ACTIVE">ACTIVE</Select.Option>
-        <Select.Option value="INACTIVE">INACTIVE</Select.Option>
+        <Select.Option value="PENDING">PENDING</Select.Option>
       </Select>
     );
   } else {
@@ -76,75 +77,43 @@ const EditableCell = ({
   );
 };
 
-const Hotels = () => {
+const Roomcensorship = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
-  const [roomsData, setRoomsData] = useState({});
 
   useEffect(() => {
-    // Fetch hotels data from API
+    // Fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/hotels");
+        const response = await axios.get("http://localhost:8080/api/rooms");
         const fetchedData = response.data
-          .filter(
-            (item) => item.status === "ACTIVE" || item.status === "INACTIVE"
-          ) // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
-          .map((item) => ({
+          .filter((item) => item.status === "PENDING" && item.edit_status === "UPDATE") // Lọc các tài khoản có role là "CUSTOMER"
+          .map((item, index) => ({
             key: item.id.toString(),
+            capacity: item.capacity,
+            price: item.price,
+            quantity: item.quantity,
+            roomSize: item.roomSize,
+            typename: item.roomType.typeName,
+            serveBreakfast: item.serveBreakfast,
+            hotelName: item.hotel.hotelName,
+            roomFacilities: item.roomFacilities,
+            status: item.status,
             ...item,
           }));
         setData(fetchedData);
-        // console.log(fetchedData);
+        console.log(fetchedData);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     };
-
-    // Fetch room data from API
-    const fetchRoomData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/rooms");
-        const fetchedRoomData = response.data.reduce((acc, room) => {
-          const hotelId = room.hotel.id.toString();
-          if (!acc[hotelId]) {
-            acc[hotelId] = [];
-          }
-          acc[hotelId].push({
-            key: room.id.toString(),
-            roomNumber: room.id,
-            roomType: room.roomType.typeName,
-            price: room.price,
-            capacity: room.capacity,
-            quantity: room.quantity,
-            roomSize: room.roomSize,
-          });
-
-          return acc;
-        }, {});
-        setRoomsData(fetchedRoomData);
-        // console.log( fetchedRoomData);
-      } catch (error) {
-        console.error("Error fetching room data: ", error);
-      }
-    };
-
     fetchData();
-    fetchRoomData();
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
-      hotelName: "",
-      address: "",
-      city: "",
-      hotelStars: "",
-      hotelPhoneNum: "",
-      checkInTime: "",
-      checkOutTime: "",
-      status: "",
       ...record,
     });
     setEditingKey(record.key);
@@ -159,12 +128,9 @@ const Hotels = () => {
       console.log(row);
       console.log(
         `Saving data for key ${key} to:`,
-        `http://localhost:8080/api/hotels/staff/update/${key}`
+        `http://localhost:8080/api/accounts/update/${key}`
       );
-      await axios.put(
-        `http://localhost:8080/api/hotels/staff/update/${key}`,
-        row
-      );
+      await axios.put(`http://localhost:8080/api/rooms/staff/update/${key}`, row);
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -173,6 +139,7 @@ const Hotels = () => {
           ...item,
           ...row,
         });
+        console.log(newData);
         setData(newData);
         setEditingKey("");
       } else {
@@ -309,67 +276,96 @@ const Hotels = () => {
       dataIndex: "index",
       key: "index",
       render: (text, record, index) => index + 1,
-      width: "5%",
+      fixed: "left",
     },
     {
       title: "Hotel Name",
       dataIndex: "hotelName",
-      width: "15%",
+      fixed: "left",
       editable: false,
       ...getColumnSearchProps("hotelName"),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      width: "15%",
+      title: "RoomType",
+      dataIndex: "typename",
+      fixed: "left",
       editable: false,
-      ...getColumnSearchProps("address"),
+      ...getColumnSearchProps("roomType"),
     },
     {
-      title: "City",
-      dataIndex: "city",
-      width: "5%",
+      title: "Capacity",
+      dataIndex: "capacity",
+
       editable: false,
-      ...getColumnSearchProps("city"),
+      ...getColumnSearchProps("capacity"),
     },
     {
-      title: "Stars",
-      dataIndex: "hotelStars",
-      width: "5%",
+      title: "Quantity",
+      dataIndex: "quantity",
+
       editable: false,
-      ...getColumnSearchProps("hotelStars"),
+      ...getColumnSearchProps("quantity"),
     },
     {
-      title: "Phone Number",
-      dataIndex: "hotelPhoneNum",
-      width: "15%",
+      title: "Serve Breakfast",
+      dataIndex: "serveBreakfast",
+
       editable: false,
-      ...getColumnSearchProps("hotelPhoneNum"),
-    },
-    {
-      title: "checkInTime",
-      dataIndex: "checkInTime",
-      width: "10%",
-      editable: false,
-      ...getColumnSearchProps("checkInTime"),
-    },
-    {
-      title: "checkOutTime",
-      dataIndex: "checkOutTime",
-      width: "10%",
-      editable: false,
-      ...getColumnSearchProps("checkOutTime"),
+      filters: [
+        { text: "Yes", value: true },
+        { text: "No", value: false },
+      ],
+      onFilter: (value, record) => record.serveBreakfast === value,
+      render: (serveBreakfast) => (serveBreakfast ? "Yes" : "No"), // Correct rendering logic
     },
 
     {
+      title: "Room Size",
+      dataIndex: "roomSize",
+
+      editable: false,
+      ...getColumnSearchProps("roomSize"),
+      sorter: (a, b) => a.roomSize - b.roomSize,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+
+      editable: false,
+      ...getColumnSearchProps("price"),
+      render: (text) =>
+        new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(text),
+    },
+
+    {
+      title: "Room Facilities",
+      dataIndex: "roomFacilities",
+
+      editable: false,
+      //   ...getColumnSearchProps("roomFacilities", true),
+      render: (roomFacilities) =>
+        roomFacilities.map((facility) => facility.facility.facName).join(", "),
+    },
+    {
+      title: "Edit Status",
+      dataIndex: "edit_status",
+      
+      editable: false,
+    },
+    {
       title: "Status",
       dataIndex: "status",
-      width: "10%",
+      fixed: "right",
       editable: true,
     },
     {
       title: "operation",
       dataIndex: "operation",
+      fixed: "right",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
@@ -414,78 +410,24 @@ const Hotels = () => {
   });
 
   const clearFiltersAndSorters = () => {
-    // // Duyệt qua từng cột trong columns
-    // columns.forEach((column) => {
-    //   if (column.dataIndex) {
-    //     // Lấy đối tượng filterDropdownProps từ getColumnSearchProps
-    //     const { filterDropdownProps } = getColumnSearchProps(column.dataIndex);
-        
-    //     // Lấy clearFilters từ filterDropdownProps
-    //     const { clearFilters } = filterDropdownProps;
-        
-    //     // Gọi clearFilters để xóa bộ lọc của cột
-    //     clearFilters();
-    //   }
-    // });
-  
-    // Sau đó set lại searchText và searchedColumn về giá trị mặc định
+    // Xóa tất cả các filters
     setSearchText("");
     setSearchedColumn("");
-  };
-  
-  
-  
-  const expandedRowRender = (record) => {
-    const columns = [
-      // {
-      //   title: "Số phòng",
-      //   dataIndex: "roomNumber",
-      //   key: "roomNumber",
-      // },
-      {
-        title: "Loại phòng",
-        dataIndex: "roomType",
-        key: "roomType",
-      },
-      {
-        title: "Giá",
-        dataIndex: "price",
-        key: "price",
-        render: (text) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(text),
-      },
-      {
-        title: "Sức chứa",
-        dataIndex: "capacity",
-        key: "capacity",
-      },
 
-      {
-        title: "Số lượng",
-        dataIndex: "quantity",
-        key: "quantity",
-      },
-      {
-        title: "Diện tích",
-        dataIndex: "roomSize",
-        key: "roomSize",
-        render: (text) => `${text} m²`,
-      },
-    ];
-    // Log dữ liệu dataSource
-    console.log("Data source for expanded row:", roomsData[record.key]);
-    return (
-      <Table
-        columns={columns}
-        dataSource={roomsData[record.key]}
-        pagination={false}
-      />
-    );
+    // Xóa tất cả các sorters
+    // Cập nhật lại state của data để hiển thị lại dữ liệu gốc
+    // Lấy dữ liệu gốc
+    // let newData = [...originData];
+
+    // Cập nhật lại state của data để hiển thị lại dữ liệu gốc
+    // setData(newData);
+    // console.log(newData);
   };
 
   return (
     <Form form={form} component={false}>
       <Space style={{ marginBottom: 16 }}>
-        <Button onClick={clearFiltersAndSorters}>
+        <Button onClick={() => clearFiltersAndSorters()}>
           Clear filters and sorters
         </Button>
 
@@ -504,15 +446,12 @@ const Hotels = () => {
         pagination={{
           onChange: cancel,
         }}
-        expandable={{
-          expandedRowRender,
-          defaultExpandedRowKeys: ["0"],
-        }}
         scroll={{
+          x: 2000,
           y: 600,
         }}
       />
     </Form>
   );
 };
-export default Hotels;
+export default Roomcensorship;

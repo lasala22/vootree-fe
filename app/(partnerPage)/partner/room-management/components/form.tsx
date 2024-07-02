@@ -145,7 +145,7 @@ export default function Forms_Room({
       price: values.roomPrice,
       quantity: values.roomQuantity,
       roomTypeId: values.roomType,
-      status: "PENDING"
+      status: values.roomStatus,
     }; 
   console.log(updatedValues);
   

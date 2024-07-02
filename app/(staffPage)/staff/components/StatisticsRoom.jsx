@@ -1,63 +1,71 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import axios from 'axios';
 import 'chart.js/auto';
 
-const roomBookingData = {
-  2022: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    datasets: [
-      {
-        label: 'Single Room',
-        data: [30, 25, 20, 35, 40, 45, 50, 55, 60, 65, 70, 75],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Double Room',
-        data: [20, 30, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      },
-      {
-        label: 'Suite',
-        data: [10, 15, 10, 15, 20, 25, 20, 25, 30, 35, 40, 45],
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-      },
-      {
-        label: 'Delux',
-        data: [23, 15, 27, 24, 38, 39, 39, 34, 48, 35, 59, 55],
-        backgroundColor: 'rgba(75, 83, 192, 0.5)',
-      },
-    ],
-  },
-  2023: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    datasets: [
-      {
-        label: 'Single Room',
-        data: [40, 35, 30, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Double Room',
-        data: [30, 40, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      },
-      {
-        label: 'Suite',
-        data: [20, 25, 20, 25, 30, 35, 30, 35, 40, 45, 50, 55],
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-      },
-      {
-        label: 'Delux',
-        data: [23, 15, 27, 24, 38, 39, 39, 34, 48, 35, 59, 55],
-        backgroundColor: 'rgba(75, 83, 192, 0.5)',
-      },
-    ],
-  },
-};
-
 const StatisticsRoom = () => {
-  const [selectedYear, setSelectedYear] = useState('2023');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [roomBookingData, setRoomBookingData] = useState(null);
+  const [availableYears, setAvailableYears] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
+
+  useEffect(() => {
+    const fetchBookingData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/bookings');
+        const bookings = response.data;
+
+        // Get distinct years from booking dates
+        const years = [...new Set(bookings.map(booking => new Date(booking.bookingDate).getFullYear()))].sort();
+        setAvailableYears(years);
+
+        // Set selectedYear to current year if availableYears is set and selectedYear is not already set
+        if (years.length > 0 && !selectedYear) {
+          setSelectedYear(new Date().getUTCFullYear().toString());
+        }
+
+        // Get distinct room types from bookings
+        const types = [...new Set(bookings.map(booking => booking.roomType))];
+        setRoomTypes(types);
+
+        // Initialize room booking data structure
+        const roomData = {};
+
+        // Loop through bookings and populate roomData
+        bookings.forEach(booking => {
+          const bookingDate = new Date(booking.bookingDate);
+          const bookingYear = bookingDate.getFullYear();
+          const bookingMonth = bookingDate.getMonth(); // Month is zero-indexed
+
+          // Ensure the booking is within the selected year
+          if (bookingYear === parseInt(selectedYear)) {
+            if (!roomData[bookingYear]) {
+              roomData[bookingYear] = {
+                labels: Array.from({ length: 12 }, (_, index) => index + 1), // Labels for months
+                datasets: types.map(type => ({
+                  label: type,
+                  data: new Array(12).fill(0)
+                }))
+              };
+            }
+
+            // Increment the count for the corresponding room type and month
+            const roomTypeIndex = types.indexOf(booking.roomType);
+            if (roomTypeIndex !== -1) {
+              roomData[bookingYear].datasets[roomTypeIndex].data[bookingMonth]++;
+            }
+          }
+        });
+
+        // Update state with the processed room data
+        setRoomBookingData(roomData);
+      } catch (error) {
+        console.error('Error fetching booking data:', error);
+      }
+    };
+
+    fetchBookingData();
+  }, [selectedYear]); // Fetch data when selectedYear changes
 
   const handleChange = (event) => {
     setSelectedYear(event.target.value);
@@ -76,17 +84,23 @@ const StatisticsRoom = () => {
     },
   };
 
+  if (!roomBookingData) return <p>Loading...</p>; // Show loading message while data is fetching
+
   return (
     <div>
       <h2>Room Booking Statistics</h2>
       <select value={selectedYear} onChange={handleChange}>
-        <option value="2022">2022</option>
-        <option value="2023">2023</option>
+        {availableYears.map(year => (
+          <option key={year} value={year}>{year}</option>
+        ))}
       </select>
-      <div className='w-10/12 m-auto'>
-      <Bar data={roomBookingData[selectedYear]} options={options} />
-      </div>
-      
+      {roomBookingData[selectedYear] ? (
+        <div className='w-10/12 m-auto'>
+          <Bar data={roomBookingData[selectedYear]} options={options} />
+        </div>
+      ) : (
+        <p>No data available for the selected year</p>
+      )}
     </div>
   );
 };

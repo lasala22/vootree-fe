@@ -64,7 +64,7 @@ export default function Tables({
           serveBreakfast: item.serveBreakfast,
           hotelId: item.hotel.id,
           roomFacilities: item.roomFacilities,
-          roomStatus: item.roomStatus,
+          roomStatus: item.status,
         }));
         setData(fetchedData);
         // console.log(fetchedData);
