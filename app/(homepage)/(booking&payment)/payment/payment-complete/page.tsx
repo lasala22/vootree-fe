@@ -93,6 +93,7 @@ export default function Page() {
       emailInfoSender();
       emailReceiptSender();
       fetch();
+      localStorage.removeItem("bookingInfo");
     }
   }, [paymentValues, emailReceipt]);
 

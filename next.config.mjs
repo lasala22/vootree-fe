@@ -7,6 +7,8 @@ const nextConfig = {
         destination: '/partner/:path*',
       },
     ];
+  }, images: {
+    domains: ['localhost'],
   },};
 
 export default nextConfig;

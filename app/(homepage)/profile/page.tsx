@@ -7,9 +7,9 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import MyProfile from "./MyProfile";
-import NewPass from "./NewPass";
-import HistoryBooking from "./HistoryBooking";
+import MyProfile from "./components/MyProfile";
+import NewPass from "./components/NewPass";
+import HistoryBooking from "./components/HistoryBooking";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -145,9 +145,7 @@ const SidebarProfile = () => {
         style={{
           textAlign: "center",
         }}
-      >
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      ></Footer>
     </Layout>
   );
 };

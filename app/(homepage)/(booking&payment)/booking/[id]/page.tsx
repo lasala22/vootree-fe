@@ -5,16 +5,13 @@ import BookingInfo from "../components/booking-info";
 import CustomerInfo from "../components/customer-info";
 import PriceInfo from "../components/price-info";
 import SelectedInfo from "../components/selected-info";
-<<<<<<< Updated upstream
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-=======
 import {
   ExceptionOutlined,
   ReconciliationOutlined,
   SolutionOutlined,
 } from "@ant-design/icons";
->>>>>>> Stashed changes
 
 export default function Page({ params }: { params: { id: string } }) {
   const id = params.id;

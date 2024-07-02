@@ -95,6 +95,7 @@ export default function PriceInfo({
           "http://localhost:8080/api/bookings",
           values
         );
+        console.log(roomId);
         console.log(response.data.id);
         if (response.status === 201) {
           const paymentValues = {

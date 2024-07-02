@@ -30,8 +30,6 @@ type FieldType = {
   userID: number;
 };
 
-
-
 const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
@@ -99,7 +97,6 @@ export default function Forms({
           (facility: any) => facility.facType === "HOTEL"
         );
         setFacilities(hotelFacilities);
-        
       } catch (error) {
         console.error("Failed to fetch facilities:", error);
       }
@@ -141,7 +138,9 @@ export default function Forms({
         checkOut: dayjs(parsedData.checkOutTime, "HH:mm"),
         description: parsedData.hotelDescription,
         propertyType: parsedData.accommodationType.id,
-        facility: parsedData.hotelFacilities.map((f: any) => f.facility.facId),
+        facility: parsedData?.hotelFacilities?.map(
+          (f: any) => f.facility.facId
+        ),
 
         hotelPhoneNum: parsedData.hotelPhoneNum,
         city: parsedData.city,
@@ -216,7 +215,6 @@ export default function Forms({
     "Cà Mau",
   ];
 
-
   const onFinish = async (values: any) => {
     // Change 'propertyName' to 'hotelName' in the values object
     const updatedValues = {
@@ -226,21 +224,28 @@ export default function Forms({
       hotelName: values.propertyName, // Change 'propertyName' to 'hotelName'
       accommodationTypeId: values.propertyType,
       userId: values.userID,
-      status: 'PENDING', // Change status to 'PENDING',
+      status: "PENDING", // Change status to 'PENDING',
       hotelFacilities: values.facility,
-      checkInTime: values.checkIn ? values.checkIn.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
-      checkOutTime: values.checkOut ? values.checkOut.format('HH:mm:ss') : undefined, // Convert to string format 'HH:mm'
+      checkInTime: values.checkIn
+        ? values.checkIn.format("HH:mm:ss")
+        : undefined, // Convert to string format 'HH:mm'
+      checkOutTime: values.checkOut
+        ? values.checkOut.format("HH:mm:ss")
+        : undefined, // Convert to string format 'HH:mm'
     };
-  console.log(updatedValues);
-  
+    console.log(updatedValues);
+
     try {
-      const response = await axios.put(`http://localhost:8080/api/hotels/partner/update/${values.key}`, updatedValues);
-      console.log('Update success:', response.data);
-      message.success('Update successful!');
+      const response = await axios.put(
+        `http://localhost:8080/api/hotels/partner/update/${values.key}`,
+        updatedValues
+      );
+      console.log("Update success:", response.data);
+      message.success("Update successful!");
       onFormSubmit();
     } catch (error) {
-      console.error('Update failed:', error);
-      message.error('Update failed!');
+      console.error("Update failed:", error);
+      message.error("Update failed!");
     }
   };
 
@@ -298,7 +303,7 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <Input  disabled={isFormDisabled}/>
+                  <Input disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
             </Row>
@@ -344,7 +349,7 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <Rate disabled={isFormDisabled}/>
+                  <Rate disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -358,11 +363,7 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <TimePicker
-                    
-                    format={format}
-                    disabled={isFormDisabled}
-                  />
+                  <TimePicker format={format} disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -376,11 +377,7 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <TimePicker
-                    
-                    format={format}
-                    disabled={isFormDisabled}
-                  />
+                  <TimePicker format={format} disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
             </Row>
@@ -407,7 +404,6 @@ export default function Forms({
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
-
                     disabled={isFormDisabled}
                   >
                     {/* Tạo các Option cho Select Box */}
@@ -466,7 +462,7 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <Input disabled={isFormDisabled}/>
+                  <Input disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
             </Row>
@@ -482,14 +478,14 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <Input disabled={isFormDisabled}/>
+                  <Input disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item label="Description" name="description">
-                  <TextArea rows={4} disabled={isFormDisabled}/>
+                  <TextArea rows={4} disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
             </Row>
@@ -512,7 +508,6 @@ export default function Forms({
                       label: facility.facName,
                       value: facility.facId,
                     }))}
-
                     disabled={isFormDisabled}
                   />
                 </Form.Item>
@@ -530,7 +525,11 @@ export default function Forms({
                     },
                   ]}
                 >
-                  <Select style={{ width: 120 }} onChange={handleChange} disabled={isFormDisabled}>
+                  <Select
+                    style={{ width: 120 }}
+                    onChange={handleChange}
+                    disabled={isFormDisabled}
+                  >
                     <Option value="ACTIVE">Active</Option>
                     <Option value="PENDING">Pending</Option>
                   </Select>

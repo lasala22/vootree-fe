@@ -37,7 +37,7 @@ export default function Navbar({ searchbar, logo }) {
   }, []);
   const handleLogOut = () => {
     localStorage.removeItem("token");
-    router.push("/login/login");
+    router.push("/login");
   };
   const menu = (
     <Menu>
@@ -56,6 +56,7 @@ export default function Navbar({ searchbar, logo }) {
         </button>
       </Menu.Item>
     </Menu>
+  );
   return (
     <header className="bg-sky-600">
       <Disclosure as="nav">

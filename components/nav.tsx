@@ -31,15 +31,17 @@ export default function Navbar({ bg, logo }) {
   }, []);
   const handleLogOut = () => {
     localStorage.removeItem("token");
-    router.push("/login/login");
+    router.push("/login");
   };
 
   const menu = (
     <Menu>
       <Menu.Item key="0">
-        <a href="/profile">
-          <a className=" font-semibold">Profile</a>
-        </a>
+        <Link href="/profile">
+          <Link href="/profile" className=" font-semibold">
+            Profile
+          </Link>
+        </Link>
       </Menu.Item>
       <Menu.Item key="1">
         <button
@@ -74,9 +76,9 @@ export default function Navbar({ bg, logo }) {
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
-                    <a href="/home">
+                    <Link href="/home">
                       <Image src={logo} width={150} height={50} alt="logo" />
-                    </a>
+                    </Link>
                   </div>
                   <div className="hidden sm:ml-6 sm:block pt-2 ">
                     <div className="flex space-x-4">
@@ -100,7 +102,7 @@ export default function Navbar({ bg, logo }) {
                     <div className="hidden sm:ml-6 sm:block ">
                       <div className="flex space-x-1">
                         <Link
-                          href="/home"
+                          href="/partner/signup"
                           className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                         >
                           Hợp tác với chúng tôi
@@ -122,19 +124,20 @@ export default function Navbar({ bg, logo }) {
                               name={username}
                               size="40"
                               round={true}
-                              className="cursor-pointer"
+                              //className="cursor-pointer"
                               alt="User Avatar"
                             />
                             <span className="text-white text-sm font-medium mr-2">
                               {username}
                             </span>
-                            <DownOutlined />
+
+                            {/* <DownOutlined /> */}
                           </Space>
                         </Dropdown>
                       </div>
                     ) : (
                       <div className="flex justify-between items-center">
-                        <Link href="/login/login">
+                        <Link href="/login">
                           <button
                             type="button"
                             className=" hover:bg-purple-950 hover:bg-opacity-40 text-white me-4   py-2 px-2 rounded border flex text-sm"
@@ -143,7 +146,7 @@ export default function Navbar({ bg, logo }) {
                             Đăng nhập
                           </button>
                         </Link>
-                        <Link href="/login/signup">
+                        <Link href="/signup">
                           <button
                             type="button"
                             className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"

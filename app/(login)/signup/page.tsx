@@ -66,10 +66,6 @@ export default function Page() {
       );
       if (response.data.success) {
         console.log("success");
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
       } else {
         console.error(response.data.error);
       }
@@ -304,7 +300,7 @@ export default function Page() {
             <div className="flex justify-center">
               <Link
                 className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
-                href="/login/login"
+                href="/login"
                 style={{
                   background: "none",
                   border: "none",

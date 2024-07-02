@@ -165,16 +165,8 @@ const ForgotPass = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col justify-center items-center"
-      style={{
-        backgroundImage: "url('/static_images/background-dep-bai-bien.jpg')",
-        // backgroundSize: "cover",
-        // backgroundRepeat: "no-repeat",
-        // backgroundPosition: "center",
-      }}
-    >
-      <div className="flex items-center bg-blue-900 w-full p-5 mb-10">
+    <>
+      <div className="flex items-center bg-blue-900 w-full p-5 ">
         <Link href="/home">
           <Image
             src="/logo_preview_rev_2.png"
@@ -184,49 +176,59 @@ const ForgotPass = () => {
           />
         </Link>
       </div>
-      <div className="w-full max-w-md p-8 space-y-8 rounded  bg-white shadow-md">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900 mb-6">
-            Forgot Password
-          </h2>
-        </div>
-        <Steps current={current} direction="vertical" className="mb-6">
-          {steps.map((item, index) => (
-            <Step
-              key={item.title}
-              title={item.title}
-              onClick={() => handleStepClick(index)}
-            />
-          ))}
-        </Steps>
-        <div>{steps[current].content}</div>
-        <div className="text-center mt-4">
-          <div className="text-sm">
-            <Link
-              href="/login/login"
-              className="font-semibold text-sky-500 hover:text-indigo-500"
-            >
-              Back to login?
-            </Link>
+      <div
+        className="min-h-screen flex flex-col justify-center items-center"
+        style={{
+          backgroundImage: "url('/static_images/background-dep-bai-bien.jpg')",
+          // backgroundSize: "cover",
+          // backgroundRepeat: "no-repeat",
+          // backgroundPosition: "center",
+        }}
+      >
+        <div className="w-full max-w-md p-8 space-y-8 rounded  bg-white shadow-md">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold leading-9 tracking-tight text-gray-900 mb-6">
+              Forgot Password
+            </h2>
           </div>
-          <div className="mt-2">
-            <Link
-              href="#"
-              className="text-xs text-gray-600 hover:text-gray-800 mr-2"
-            >
-              Privacy Policy
-            </Link>
-            <span className="text-gray-400">•</span>
-            <Link
-              href="#"
-              className="text-xs text-gray-600 hover:text-gray-800 ml-2"
-            >
-              Terms of Service
-            </Link>
+          <Steps current={current} className="mb-6">
+            {steps.map((item, index) => (
+              <Step
+                key={item.title}
+                title={item.title}
+                onClick={() => handleStepClick(index)}
+              />
+            ))}
+          </Steps>
+          <div>{steps[current].content}</div>
+          <div className="text-center mt-4">
+            <div className="text-sm">
+              <Link
+                href="/login"
+                className="font-semibold text-sky-500 hover:text-indigo-500"
+              >
+                Back to login?
+              </Link>
+            </div>
+            <div className="mt-2">
+              <Link
+                href="#"
+                className="text-xs text-gray-600 hover:text-gray-800 mr-2"
+              >
+                Privacy Policy
+              </Link>
+              <span className="text-gray-400">•</span>
+              <Link
+                href="#"
+                className="text-xs text-gray-600 hover:text-gray-800 ml-2"
+              >
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

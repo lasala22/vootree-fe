@@ -16,6 +16,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import moment from "moment";
 import { jwtDecode } from "jwt-decode";
+import Image from "next/legacy/image";
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -224,7 +225,7 @@ const MyProfile = () => {
   // xu ly hinh
   const [loading, setLoading] = useState(false);
 
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     if (tokenKey) {
@@ -290,12 +291,14 @@ const MyProfile = () => {
                 onChange={handleChange}
               >
                 {imageUrl ? (
-                  <img
+                  <Image
                     src={imageUrl}
                     alt="avatar"
-                    style={{
-                      width: "100%",
-                    }}
+                    height={100}
+                    width={100}
+                    // style={{
+                    //   width: "100%",
+                    // }}
                   />
                 ) : (
                   uploadButton
