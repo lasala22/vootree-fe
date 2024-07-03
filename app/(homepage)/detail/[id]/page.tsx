@@ -94,7 +94,7 @@ export default function Page({ params }: { params: { id: string } }) {
           id="part-1"
           style={{
             width: "100vw",
-            height: "850px",
+            // height: "850px",
           }}
         >
           <HotelInfo data={data} />
@@ -103,7 +103,7 @@ export default function Page({ params }: { params: { id: string } }) {
           id="part-2"
           style={{
             width: "100vw",
-            height: "150vh",
+            //     height: "150vh",
           }}
           className="mt-10 "
         >

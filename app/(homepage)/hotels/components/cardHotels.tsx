@@ -1,5 +1,16 @@
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import { Button, Card, Col, List, Rate, Row, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Empty,
+  List,
+  Rate,
+  Row,
+  Spin,
+  Typography,
+  message,
+} from "antd";
 import axios from "axios";
 import Image from "next/legacy/image";
 import Link from "next/link";
@@ -55,14 +66,15 @@ interface HotelData {
 
 const Index = ({ checkedValues, priceRange }) => {
   const [data, setData] = useState<HotelData | null>(null); // Lưu trữ dữ liệu bài đăng
-  const [visibleData, setVisibleData] = useState([]); // Lưu trữ dữ liệu hiển thị
+  const [visibleData, setVisibleData] = useState<HotelData[]>([]); // Lưu trữ dữ liệu hiển thị
   const [loading, setLoading] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true); // Flag kiểm tra còn dữ liệu
   const pageSize = 10; // Số lượng dữ liệu hiển thị mỗi trang
   const [sortType, setSortType] = useState("");
   const [rooms, setRooms] = useState([]);
-  const router = useRouter();
-  const { query } = router;
+  //const router = useRouter();
+  const [isData, setIsData] = useState(true);
+  //const { query } = router;
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const searchValue = searchParams.get("search");
@@ -71,10 +83,9 @@ const Index = ({ checkedValues, priceRange }) => {
     const guestsValue = searchParams.get("guests");
     const roomsValue = searchParams.get("rooms");
 
-    try {
-      const fetchData = async () => {
-        setLoading(true);
-        // const response = await axios.get("http://localhost:8080/api/hotels");
+    const fetchData = async () => {
+      setLoading(true);
+      try {
         const response = await axios.get(
           "http://localhost:8080/api/hotels/search",
           {
@@ -88,20 +99,26 @@ const Index = ({ checkedValues, priceRange }) => {
             },
           }
         ); // API backend trả về toàn bộ giá trị
-        // const searchData = response2.data;
-        const allData = await response.data;
-        setData(allData); // Lưu trữ toàn bộ dữ liệu
-        setRooms(allData.rooms);
-        setVisibleData(allData.slice(0, pageSize)); // Hiển thị 10 giá trị đầu tiên
-        setHasMoreData(allData.length > pageSize); // Kiểm tra còn dữ liệu
-        setLoading(false);
-      };
-      fetchData();
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
 
+        const allData = await response.data;
+        if (allData.length === 0) {
+          setIsData(false);
+        } else {
+          setIsData(true);
+          setData(allData); // Lưu trữ toàn bộ dữ liệu
+          setRooms(allData.rooms);
+          setVisibleData(allData.slice(0, pageSize)); // Hiển thị 10 giá trị đầu tiên
+          setHasMoreData(allData.length > pageSize); // Kiểm tra còn dữ liệu
+        }
+      } catch (error) {
+        message.error("Không tìm thấy khách sạn phù hợp");
+        setIsData(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   useEffect(() => {
     if (!data || data.length === 0) {
       return; // Bỏ qua việc lọc nếu data null hoặc rỗng
@@ -254,98 +271,99 @@ const Index = ({ checkedValues, priceRange }) => {
           </Card>
         </div>
         <div className="mt-3 p-3 justify-between ">
-          <List
-            dataSource={visibleData}
-            renderItem={(item) => (
-              <List.Item key={item.id}>
-                <Link
-                  href={{
-                    pathname: `/detail/${item.id}`,
-                    query: {
-                      ...Object.fromEntries(
-                        new URLSearchParams(window.location.search)
-                      ),
-                    },
-                  }}
-                  className="w-full"
-                >
-                  <Row
-                    gutter={24}
-                    className="p-3 border h-56 hover:shadow-md rounded-md"
+          {isData ? (
+            <List
+              dataSource={visibleData}
+              renderItem={(item) => (
+                <List.Item key={item.id}>
+                  <Link
+                    href={{
+                      pathname: `/detail/${item.id}`,
+                      query: {
+                        ...Object.fromEntries(
+                          new URLSearchParams(window.location.search)
+                        ),
+                      },
+                    }}
+                    className="w-full"
                   >
-                    <Col span={6} className="">
-                      <Image
-                        src={`/hotelImg/${item.hotelImages
-                          .map((img) => img.path)
-                          .slice(0, 1)}`}
-                        layout="fill"
-                        alt=""
-                        className="rounded-l-sm"
-                      />
-                    </Col>
-                    <Col span={13} className=" pt-2">
-                      <Typography.Title level={4}>
-                        {item.hotelName}
-                      </Typography.Title>
-                      <Typography.Paragraph className="flex">
-                        <MapPinIcon className="h-6 w-6 text-sky-600 flex" />
-                        {item.address}
-                      </Typography.Paragraph>
-                      <Rate disabled defaultValue={item.hotelStars} />
-                      <Typography.Paragraph
-                        className="mt-2"
-                        //   ellipsis={
-                        //     ellipsis ? { rows: 3, expandable: true, symbol: "more" } : false
-                        //   }
-                      >
-                        {item.hotelDescription}
-                      </Typography.Paragraph>
-                    </Col>
-                    <Col span={5} className=" justify-end pt-2">
-                      <Typography.Paragraph className="text-sky-700 font-bold flex gap-1 text-lg justify-end">
-                        <div>
-                          <Image
-                            src="/icon/paper-plane.png"
-                            width={25}
-                            height={20}
-                            alt=""
-                          />
+                    <Row
+                      gutter={24}
+                      className="p-3 border h-56 hover:shadow-md rounded-md"
+                    >
+                      <Col span={6} className="">
+                        <Image
+                          src={`/hotelImg/${item.hotelImages
+                            .map((img) => img.path)
+                            .slice(0, 1)}`}
+                          layout="fill"
+                          alt=""
+                          className="rounded-l-sm"
+                        />
+                      </Col>
+                      <Col span={13} className=" pt-2">
+                        <Typography.Title level={4}>
+                          {item.hotelName}
+                        </Typography.Title>
+                        <Typography.Paragraph className="flex">
+                          <MapPinIcon className="h-6 w-6 text-sky-600 flex" />
+                          {item.address}
+                        </Typography.Paragraph>
+                        <Rate disabled defaultValue={item.hotelStars} />
+                        <Typography.Paragraph className="mt-2">
+                          {item.hotelDescription}
+                        </Typography.Paragraph>
+                      </Col>
+                      <Col span={5} className=" justify-end pt-2">
+                        <Typography.Paragraph className="text-sky-700 font-bold flex gap-1 text-lg justify-end">
+                          <div>
+                            <Image
+                              src="/icon/paper-plane.png"
+                              width={25}
+                              height={20}
+                              alt=""
+                            />
+                          </div>
+                          {item?.ratings?.length > 0
+                            ? (
+                                item.ratings.reduce(
+                                  (sum, rate) => sum + rate.rate,
+                                  0
+                                ) / item.ratings.length
+                              ).toFixed(1)
+                            : ""}
+                        </Typography.Paragraph>
+                        <div className="justify-end items-end block mt-16 text-end">
+                          <Typography.Paragraph
+                            type="danger"
+                            className="font-bold text-xl"
+                          >
+                            {formatNumber(
+                              item.rooms.reduce(
+                                (min, room) => Math.min(min, room.price),
+                                Infinity
+                              )
+                            )}
+                          </Typography.Paragraph>
+                          <Typography.Paragraph className="-mt-5 text-xs">
+                            Chưa bao gồm thuế và phí
+                          </Typography.Paragraph>
                         </div>
-                        {item?.ratings?.length > 0
-                          ? item.ratings.reduce(
-                              (sum, rate) => sum + rate.rate,
-                              0
-                            ) / item.ratings.length
-                          : ""}
-                      </Typography.Paragraph>
-                      <div className="justify-end items-end block mt-16 text-end">
-                        <Typography.Paragraph
-                          type="danger"
-                          className="font-bold text-xl"
-                        >
-                          {formatNumber(
-                            item.rooms.reduce(
-                              (min, room) => Math.min(min, room.price),
-                              Infinity
-                            )
-                          )}
-                        </Typography.Paragraph>
-                        <Typography.Paragraph className="-mt-5 text-xs">
-                          Chưa bao gồm thuế và phí
-                        </Typography.Paragraph>
-                      </div>
-                      <div className="justify-end items-end flex">
-                        <Button type="primary" danger>
-                          Chọn phòng
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Link>
-              </List.Item>
-            )}
-            loading={loading}
-          />
+                        <div className="justify-end items-end flex">
+                          <Button type="primary" danger>
+                            Chọn phòng
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Link>
+                </List.Item>
+              )}
+              loading={loading}
+            />
+          ) : (
+            <Empty description="Không tìm thấy khách sạn " />
+          )}
           {hasMoreData && (
             <Button type="primary" onClick={handleLoadMore} loading={loading}>
               Load More

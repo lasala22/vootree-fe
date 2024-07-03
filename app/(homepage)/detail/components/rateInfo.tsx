@@ -25,8 +25,10 @@ export default function RateInfo({ data }) {
         <div className="flex items-center">
           <Tag color="#0384c6" className="w-20 h-8 text-lg text-center">
             {data.ratings?.length > 0
-              ? data.ratings.reduce((sum, rate) => sum + rate.rate, 0) /
-                data.ratings?.length
+              ? (
+                  data.ratings.reduce((sum, rate) => sum + rate.rate, 0) /
+                  data.ratings?.length
+                ).toFixed(1)
               : undefined}
             {"/10"}
           </Tag>

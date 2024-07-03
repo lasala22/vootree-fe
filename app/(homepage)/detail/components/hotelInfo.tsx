@@ -72,7 +72,7 @@ export default function HotelInfo({ data }: HotelInfoProps) {
   const stars = data.hotelStars;
 
   return (
-    <div className="mx-40 mt-10 h-full shadow-lg rounded-xl">
+    <div className="mx-40 mt-10 h-full shadow-lg rounded-xl pb-3">
       <div className="m-5 ">
         <Row gutter={24}>
           <Col span={19}>

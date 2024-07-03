@@ -37,8 +37,8 @@ export default function Navbar({ bg, logo }) {
   const menu = (
     <Menu>
       <Menu.Item key="0">
-        <Link href="/profile">
-          <Link href="/profile" className=" font-semibold">
+        <Link href="/profile" prefetch>
+          <Link href="/profile" prefetch className=" font-semibold">
             Profile
           </Link>
         </Link>
@@ -76,13 +76,14 @@ export default function Navbar({ bg, logo }) {
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
-                    <Link href="/home">
+                    <Link href="/home" prefetch>
                       <Image src={logo} width={150} height={50} alt="logo" />
                     </Link>
                   </div>
                   <div className="hidden sm:ml-6 sm:block pt-2 ">
                     <div className="flex space-x-4">
                       <Link
+                        prefetch
                         href="/home"
                         className="text-white hover:bg-gray-700 hover:bg-opacity-55  rounded-md px-3 py-2 text-sm font-medium"
                       >
@@ -102,12 +103,14 @@ export default function Navbar({ bg, logo }) {
                     <div className="hidden sm:ml-6 sm:block ">
                       <div className="flex space-x-1">
                         <Link
+                          prefetch
                           href="/partner/signup"
                           className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                         >
                           Hợp tác với chúng tôi
                         </Link>
                         <Link
+                          prefetch
                           href="/booking"
                           className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                         >
@@ -137,7 +140,7 @@ export default function Navbar({ bg, logo }) {
                       </div>
                     ) : (
                       <div className="flex justify-between items-center">
-                        <Link href="/login">
+                        <Link href="/login" prefetch>
                           <button
                             type="button"
                             className=" hover:bg-purple-950 hover:bg-opacity-40 text-white me-4   py-2 px-2 rounded border flex text-sm"
@@ -146,7 +149,7 @@ export default function Navbar({ bg, logo }) {
                             Đăng nhập
                           </button>
                         </Link>
-                        <Link href="/signup">
+                        <Link href="/signup" prefetch>
                           <button
                             type="button"
                             className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
@@ -171,24 +174,24 @@ export default function Navbar({ bg, logo }) {
                   >
                     Trang chủ
                   </Link>
-                  <Link
+                  {/* <Link
                     href="/hotels"
                     className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Danh sách khách sạn
-                  </Link>
+                  </Link> */}
                   <Link
                     href="/home"
                     className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Hợp tác với chúng tôi
                   </Link>
-                  <Link
+                  {/* <Link
                     href="/hotels"
                     className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Khách sạn đang đặt
-                  </Link>
+                  </Link> */}
                 </DisclosureButton>
               </div>
             </DisclosurePanel>
