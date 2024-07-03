@@ -22,52 +22,37 @@ import Hotels from "@/app/(staffPage)/staff/components/Hotels";
 import StatisticsHotel from "@/app/(staffPage)/staff/components/StatisticsHotel";
 import StatisticsRoom from "@/app/(staffPage)/staff/components/StatisticsRoom";
 import StatisticsRevenue from "@/app/(staffPage)/staff/components/StatisticsRevenue";
-
+import Roomcensorship from "@/app/(staffPage)/staff/components/Roomcensorship";
 const { Header, Content, Footer, Sider } = Layout;
-// function getItem(label: any, key: any, icon: any, children: any) {
-//   return {
-//     key,
-//     icon,
-//     children,
-//     label,
-//   };
-// }
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  };
+}
 const items = [
-  { label: "Dashboard", key: "dashboard1", icon: <AppstoreOutlined /> },
-  { label: "Profile", key: "profile1", icon: <UserOutlined /> },
-  {
-    label: "User management",
-    key: "user1",
-    icon: <TeamOutlined />,
-    children: [
-      { label: "Customer", key: "customer1" },
-      { label: "Partner", key: "partner1" },
-    ],
-  },
-  {
-    label: "Hotel management",
-    key: "hotelmanagement1",
-    icon: <HomeOutlined />,
-    children: [
-      { label: "Hotels", key: "hotel1" },
-      { label: "Bookings", key: "booking1" },
-    ],
-  },
-  {
-    label: "Hotel censorship",
-    key: "hotelcensorship1",
-    icon: <CheckSquareOutlined />,
-  },
-  {
-    label: "Statistics",
-    key: "statistics1",
-    icon: <PieChartOutlined />,
-    children: [
-      { label: "Hotels", key: "hotelstatistics" },
-      { label: "Rooms", key: "roomstatistics" },
-      { label: "Revenue", key: "revenuetatistics" },
-    ],
-  },
+  getItem("Dashboard", "dashboard1", <AppstoreOutlined />),
+  getItem("Profile", "profile1", <UserOutlined />),
+  getItem("User management", "user1", <TeamOutlined />, [
+    getItem("Customer", "customer1"),
+    getItem("Partner", "partner1"),
+  ]),
+  getItem("Hotel management", "hotelmanagement1", <HomeOutlined />, [
+    getItem("Hotels", "hotel1"),
+    getItem("Bookings", "booking1"),
+  ]),
+  getItem("Censorship", "censorship1", <CheckSquareOutlined />, [
+    getItem("Hotels censorship", "hotelcensorship1"),
+    getItem("Rooms censorship", "roomcensorship1"),
+  ]),
+  // getItem("Hotel censorship", "hotelcensorship1", <CheckSquareOutlined />),
+  getItem("Statistics", "statistics1", <PieChartOutlined />, [
+    getItem("Hotels", "hotelstatistics"),
+    getItem("Rooms", "roomstatistics"),
+    getItem("Revenue", "revenuetatistics"),
+  ]),
 ];
 
 const Sidebar2 = () => {
@@ -126,6 +111,8 @@ const Sidebar2 = () => {
         return <Bookings />;
       case "hotelcensorship1":
         return <Hotelcensorship />;
+      case "roomcensorship1":
+        return <Roomcensorship />;
       case "hotelstatistics":
         return <StatisticsHotel />;
       case "roomstatistics":
