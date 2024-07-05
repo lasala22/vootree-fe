@@ -42,7 +42,7 @@ const filterOption = (input, option) => {
     option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
   );
 };
-export default function SearchBar() {
+export default function SearchBarHome() {
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [selectionData, setSelectionData] = useState([]);
   const [form] = Form.useForm();

@@ -1,9 +1,10 @@
 "use client";
-import Navbar from "@/components/nav";
-import React, { useEffect, useState } from "react";
-import styles from "./style.module.css";
-import SearchBar from "./components/searchBarHomePage";
+
+import NavbarHome from "@/components/nav";
 import { Layout, Spin } from "antd";
+import React, { useEffect, useState } from "react";
+import SearchBarHome from "./components/searchBarHomePage";
+import styles from "./style.module.css";
 export default function Layouts({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
@@ -33,9 +34,9 @@ export default function Layouts({ children }: { children: React.ReactNode }) {
         ) : (
           <>
             <header>
-              <Navbar bg={styles.header} logo="/logo_preview_rev_2.png" />
+              <NavbarHome bg={styles.header} logo="/logo_preview_rev_2.png" />
               <div className="w-full">
-                <SearchBar />
+                <SearchBarHome />
               </div>
             </header>
             <div className="mt-36">{children}</div>

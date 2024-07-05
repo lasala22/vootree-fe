@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 
-export default function Navbar({ bg, logo }) {
+export default function NavbarHome({ bg, logo }) {
   const [username, setUsername] = useState();
   const router = useRouter();
   useEffect(() => {

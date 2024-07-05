@@ -8,13 +8,14 @@ import Card from "./components/city";
 import CardHotel from "./components/card";
 import { useEffect, useState } from "react";
 import TweenOne, { TweenOneGroup } from "rc-tween-one";
-
+import { useTranslations } from "next-intl";
 export default function Page() {
+  const t = useTranslations();
   return (
     <>
       <div>
         <p className="font-bold text-3xl text-center text-blue-900">
-          VooTreeVeeVuu - Khám phá thế giới qua những cửa sổ của bạn
+          {t("home.title")}
         </p>
       </div>
       <br />

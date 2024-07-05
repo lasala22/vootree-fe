@@ -22,7 +22,7 @@
     },
     "noImplicitAny": false
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/middleware.js", "components/withAuth.js",],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/withAuth.js",],
   "exclude": ["node_modules"]
   
 }
