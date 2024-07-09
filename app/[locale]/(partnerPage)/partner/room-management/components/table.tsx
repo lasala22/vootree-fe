@@ -55,7 +55,7 @@ export default function Tables({
           key: item.id,
           name: item.hotel.hotelName,
           roomType: item.roomType,
-          typeName:item.roomType.typeName,
+          typeName: item.roomType.typeName,
           price: item.price,
           capacity: item.capacity,
           quantity: item.quantity,
@@ -65,10 +65,11 @@ export default function Tables({
           hotelId: item.hotel.id,
           roomFacilities: item.roomFacilities,
           roomStatus: item.status,
+
+          room_images: item.room_images,
         }));
         setData(fetchedData);
         // console.log(fetchedData);
-        
       })
       .catch((error) => {
         console.error("Error fetching data:", error);

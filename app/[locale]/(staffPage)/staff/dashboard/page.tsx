@@ -11,18 +11,18 @@ import {
   AppstoreOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import Bookings from "@/app/(staffPage)/staff/components/Bookings";
-import Dashboard from "@/app/(staffPage)/staff/components/Dashboard";
-import Profile from "@/app/(staffPage)/staff/components/Profile";
-import Customer from "@/app/(staffPage)/staff/components/Customer";
-import Partner from "@/app/(staffPage)/staff/components/Partner";
-import Hotelcensorship from "@/app/(staffPage)/staff/components/Hotelcensorship";
-import Hotels from "@/app/(staffPage)/staff/components/Hotels";
+import Bookings from "../components/Bookings";
+import Dashboard from "../components/Dashboard";
+import Profile from "../components/Profile";
+import Customer from "../components/Customer";
+import Partner from "../components/Partner";
+import Hotels from "../components/Hotels";
+import Hotelcensorship from "../components/Hotelcensorship";
+import Roomcensorship from "../components/Roomcensorship";
+import StatisticsHotel from "../components/StatisticsHotel";
+import StatisticsRoom from "../components/StatisticsRoom";
+import StatisticsRevenue from "../components/StatisticsRevenue";
 
-import StatisticsHotel from "@/app/(staffPage)/staff/components/StatisticsHotel";
-import StatisticsRoom from "@/app/(staffPage)/staff/components/StatisticsRoom";
-import StatisticsRevenue from "@/app/(staffPage)/staff/components/StatisticsRevenue";
-import Roomcensorship from "@/app/(staffPage)/staff/components/Roomcensorship";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {

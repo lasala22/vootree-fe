@@ -1,23 +1,23 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import axios from 'axios';
-import{jwtDecode} from 'jwt-decode';
-import 'chart.js/auto';
+import React, { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import "chart.js/auto";
 
 const StatisticsRoom = () => {
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedHotel, setSelectedHotel] = useState('');
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedHotel, setSelectedHotel] = useState("");
   const [roomBookingData, setRoomBookingData] = useState(null);
   const [availableYears, setAvailableYears] = useState([]);
   const [hotels, setHotels] = useState([]);
-
+  const [roomTypes, setRoomTypes] = useState([]);
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) {
-          throw new Error('Token not found');
+          throw new Error("Token not found");
         }
 
         // Giải mã token để lấy decodeJWT.id
@@ -25,24 +25,23 @@ const StatisticsRoom = () => {
         const userId = decodedToken.id;
 
         // Gọi API để lấy toàn bộ danh sách khách sạn
-        const response = await axios.get('http://localhost:8080/api/hotels');
+        const response = await axios.get("http://localhost:8080/api/hotels");
 
         const hotels = response.data;
 
         // Lọc danh sách khách sạn dựa trên userId
-        const filteredHotels = hotels.filter(hotel => hotel.user.id === userId);
-        
-        
+        const filteredHotels = hotels.filter(
+          (hotel) => hotel.user.id === userId
+        );
+
         setHotels(filteredHotels);
 
         // Set selectedHotel to the first hotel if available
         if (filteredHotels.length > 0 && !selectedHotel) {
           setSelectedHotel(filteredHotels[0].hotelName);
         }
-        
-        
       } catch (error) {
-        console.error('Error fetching hotels:', error);
+        console.error("Error fetching hotels:", error);
       }
     };
 
@@ -52,26 +51,33 @@ const StatisticsRoom = () => {
   useEffect(() => {
     const fetchBookingData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) {
-          throw new Error('Token not found');
+          throw new Error("Token not found");
         }
 
         // Giải mã token để lấy decodeJWT.id
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id;
 
-        const response = await axios.get('http://localhost:8080/api/bookings');
+        const response = await axios.get("http://localhost:8080/api/bookings");
         const bookings = response.data;
 
-        
-        
         // Lọc danh sách đặt phòng theo hotelOwnerId và selectedHotel
-        const filteredBookings = bookings.filter(booking => booking.hotelOwnerId === userId && booking.hotelName === selectedHotel);
-        
-        
+        const filteredBookings = bookings.filter(
+          (booking) =>
+            booking.hotelOwnerId === userId &&
+            booking.hotelName === selectedHotel
+        );
+
         // Get distinct years from booking dates
-        const years = [...new Set(filteredBookings.map(booking => new Date(booking.bookingDate).getFullYear()))].sort();
+        const years = [
+          ...new Set(
+            filteredBookings.map((booking) =>
+              new Date(booking.bookingDate).getFullYear()
+            )
+          ),
+        ].sort();
         setAvailableYears(years);
 
         // Set selectedYear to current year if availableYears is set and selectedYear is not already set
@@ -79,49 +85,37 @@ const StatisticsRoom = () => {
           setSelectedYear(new Date().getUTCFullYear().toString());
         }
 
+        // Get distinct room types from bookings
+        const types = [...new Set(bookings.map((booking) => booking.roomType))];
+        setRoomTypes(types);
+
         // Initialize room booking data structure
         const roomData = {};
 
         // Loop through bookings and populate roomData
-        filteredBookings.forEach(booking => {
+        filteredBookings.forEach((booking) => {
           const bookingDate = new Date(booking.bookingDate);
           const bookingYear = bookingDate.getFullYear();
           const bookingMonth = bookingDate.getMonth(); // Month is zero-indexed
 
           // Ensure the booking is within the selected year
-          if (bookingYear.toString() === selectedYear) {
+          if (bookingYear === parseInt(selectedYear)) {
             if (!roomData[bookingYear]) {
               roomData[bookingYear] = {
-                labels: [
-                  'January', 'February', 'March', 'April',
-                  'May', 'June', 'July', 'August',
-                  'September', 'October', 'November', 'December'
-                ], // Labels for months
-                datasets: [
-                  { label: 'Vip', data: new Array(12).fill(0) },
-                  { label: 'Default', data: new Array(12).fill(0) },
-                  { label: 'Premium', data: new Array(12).fill(0) },
-                  { label: 'Delux', data: new Array(12).fill(0) }
-                ]
+                labels: Array.from({ length: 12 }, (_, index) => index + 1), // Labels for months
+                datasets: types.map((type) => ({
+                  label: type,
+                  data: new Array(12).fill(0),
+                })),
               };
             }
 
             // Increment the count for the corresponding room type and month
-            switch (booking.roomType) {
-              case 'Vip':
-                roomData[bookingYear].datasets[0].data[bookingMonth]++;
-                break;
-              case 'Default':
-                roomData[bookingYear].datasets[1].data[bookingMonth]++;
-                break;
-              case 'Premium':
-                roomData[bookingYear].datasets[2].data[bookingMonth]++;
-                break;
-              case 'Delux':
-                roomData[bookingYear].datasets[3].data[bookingMonth]++;
-                break;
-              default:
-                break;
+            const roomTypeIndex = types.indexOf(booking.roomType);
+            if (roomTypeIndex !== -1) {
+              roomData[bookingYear].datasets[roomTypeIndex].data[
+                bookingMonth
+              ]++;
             }
           }
         });
@@ -129,7 +123,7 @@ const StatisticsRoom = () => {
         // Update state with the processed room data
         setRoomBookingData(roomData);
       } catch (error) {
-        console.error('Error fetching booking data:', error);
+        console.error("Error fetching booking data:", error);
       }
     };
 
@@ -143,7 +137,7 @@ const StatisticsRoom = () => {
   const handleHotelChange = (event) => {
     setSelectedHotel(event.target.value);
     console.log(event.target);
-    
+
     // Reset selectedYear when changing hotel
   };
 
@@ -151,7 +145,7 @@ const StatisticsRoom = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
@@ -177,22 +171,34 @@ const StatisticsRoom = () => {
       <h2>Room Booking Statistics</h2>
       <div>
         <label htmlFor="hotel-select">Select Hotel:</label>
-        <select id="hotel-select" value={selectedHotel} onChange={handleHotelChange}>
-          {hotels.map(hotel => (
-            <option key={hotel.id} value={hotel.hotelName}>{hotel.hotelName}</option>
+        <select
+          id="hotel-select"
+          value={selectedHotel}
+          onChange={handleHotelChange}
+        >
+          {hotels.map((hotel) => (
+            <option key={hotel.id} value={hotel.hotelName}>
+              {hotel.hotelName}
+            </option>
           ))}
         </select>
       </div>
       <div>
         <label htmlFor="year-select">Select Year:</label>
-        <select id="year-select" value={selectedYear} onChange={handleYearChange}>
-          {availableYears.map(year => (
-            <option key={year} value={year}>{year}</option>
+        <select
+          id="year-select"
+          value={selectedYear}
+          onChange={handleYearChange}
+        >
+          {availableYears.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
           ))}
         </select>
       </div>
       {roomBookingData[selectedYear] ? (
-        <div className='w-10/12 m-auto'>
+        <div className="w-10/12 m-auto">
           <Bar data={roomBookingData[selectedYear]} options={options} />
         </div>
       ) : (
