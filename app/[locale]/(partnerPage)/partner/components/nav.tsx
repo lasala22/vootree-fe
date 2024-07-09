@@ -39,24 +39,24 @@ export default function Navbar({ searchbar, logo }) {
     localStorage.removeItem("token");
     router.push("/login");
   };
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="/profile">
-          <a className=" font-semibold">Profile</a>
-        </a>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <button
-          type="button"
-          onClick={handleLogOut}
-          className="text-red-500 font-semibold"
-        >
-          Đăng Xuất
-        </button>
-      </Menu.Item>
-    </Menu>
-  );
+  // const menu = (
+  //   <Menu>
+  //     <Menu.Item key="0">
+  //       <a href="/profile">
+  //         <a className=" font-semibold">Profile</a>
+  //       </a>
+  //     </Menu.Item>
+  //     <Menu.Item key="1">
+  //       <button
+  //         type="button"
+  //         onClick={handleLogOut}
+  //         className="text-red-500 font-semibold"
+  //       >
+  //         Đăng Xuất
+  //       </button>
+  //     </Menu.Item>
+  //   </Menu>
+  // );
   return (
     <header className="bg-sky-600">
       <Disclosure as="nav">
@@ -158,7 +158,9 @@ export default function Navbar({ searchbar, logo }) {
                     </div>
                     {username ? (
                       <div className="flex items-center ">
-                        <Dropdown overlay={menu}>
+                        <Dropdown
+                        //overlay={menu}
+                        >
                           <Space wrap>
                             <Avatar
                               icon={<UserOutlined />}

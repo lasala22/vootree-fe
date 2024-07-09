@@ -12,8 +12,9 @@ import {
   ReconciliationOutlined,
   SolutionOutlined,
 } from "@ant-design/icons";
+import withAuth from "@/components/withAuth";
 
-export default function Page({ params }: { params: { id: string } }) {
+const Homepage = ({ params }: { params: { id: string } }) => {
   const id = params.id;
   const [daysCount, setDaysCount] = useState(0);
   const [rooms, setRooms] = useState(1);
@@ -24,6 +25,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const [fullName, setFullName] = useState();
   const [email, setEmail] = useState();
   const [phoneNum, setPhoneNum] = useState();
+  const [role, setRole] = useState();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -52,6 +54,7 @@ export default function Page({ params }: { params: { id: string } }) {
       const userId = decode?.user_id;
       const phoneNum = decode?.phoneNum;
       const email = decode?.email;
+      const role = decode?.roles[0];
       const fetchAPI = async () => {
         const response = await axios.get(
           `http://localhost:8080/api/users/${userId}`
@@ -65,6 +68,7 @@ export default function Page({ params }: { params: { id: string } }) {
       fetchAPI();
       setEmail(email);
       setPhoneNum(phoneNum);
+      setRole(role);
     }
   }, []);
   return (
@@ -74,7 +78,12 @@ export default function Page({ params }: { params: { id: string } }) {
           style={{ width: "65%" }}
           className="border p-5 rounded-lg shadow-lg"
         >
-          <CustomerInfo fullName={fullName} phoneNum={phoneNum} email={email} />
+          <CustomerInfo
+            fullName={fullName}
+            phoneNum={phoneNum}
+            email={email}
+            role={role}
+          />
           <div className="rounded-sm shadow-sm border w-full p-5 mt-5">
             <PriceInfo
               roomData={roomData}
@@ -127,4 +136,5 @@ export default function Page({ params }: { params: { id: string } }) {
       </div>
     </>
   );
-}
+};
+export default Homepage;

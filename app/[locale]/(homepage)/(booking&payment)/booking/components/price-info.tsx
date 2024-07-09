@@ -42,7 +42,10 @@ export default function PriceInfo({
       try {
         const decode = jwtDecode(token);
         const userId = decode?.user_id;
-        return userId; // Trả về id nếu cần
+        const role = decode?.roles[0];
+        console.log(userId, role);
+
+        return { userId, role }; // Trả về id nếu cần
       } catch (error) {
         console.error("Lỗi giải mã token:", error);
         return null;
@@ -69,8 +72,11 @@ export default function PriceInfo({
   };
 
   const handleBooking = async () => {
-    const userId = checkToken();
-    if (userId === null) {
+    const userId = checkToken()?.userId;
+    const role = checkToken()?.role;
+    console.log(userId, role);
+
+    if (userId === null || role !== "CUSTOMER") {
       localStorage.setItem("bookingHref", window.location.href);
       message.error("Bạn cần đăng nhập để truy cập.");
       router.push("/login");
