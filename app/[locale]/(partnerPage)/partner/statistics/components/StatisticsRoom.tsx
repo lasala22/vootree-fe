@@ -168,13 +168,26 @@ const StatisticsRoom = () => {
 
   return (
     <div>
-      <h2>Room Booking Statistics</h2>
+      <h2 className="font-semibold text-2xl text-center text-blue-900">
+        Room Booking Statistics
+      </h2>
+      <br />
       <div>
-        <label htmlFor="hotel-select">Select Hotel:</label>
+        <label htmlFor="hotel-select" className="font-semibold text-lg">
+          Select Hotel :
+        </label>
         <select
           id="hotel-select"
           value={selectedHotel}
           onChange={handleHotelChange}
+          style={{
+            width: "50%",
+            padding: "5px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "15px",
+            margin: "5px",
+          }}
         >
           {hotels.map((hotel) => (
             <option key={hotel.id} value={hotel.hotelName}>
@@ -184,11 +197,20 @@ const StatisticsRoom = () => {
         </select>
       </div>
       <div>
-        <label htmlFor="year-select">Select Year:</label>
+        <label htmlFor="year-select" className="font-semibold text-lg">
+          Select Year :{" "}
+        </label>
         <select
           id="year-select"
           value={selectedYear}
           onChange={handleYearChange}
+          style={{
+            padding: "5px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "15px",
+            margin: "10px",
+          }}
         >
           {availableYears.map((year) => (
             <option key={year} value={year}>
@@ -202,7 +224,18 @@ const StatisticsRoom = () => {
           <Bar data={roomBookingData[selectedYear]} options={options} />
         </div>
       ) : (
-        <p>No data available for the selected year</p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "200px",
+            fontSize: "18px",
+            fontWeight: "bold",
+          }}
+        >
+          <p>No data available for the selected year</p>
+        </div>
       )}
     </div>
   );
