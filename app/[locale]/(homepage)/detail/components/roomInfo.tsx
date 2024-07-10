@@ -34,8 +34,8 @@ export default function RoomInfo({ data }) {
               <Row className="mt-2">
                 <Col span={7} className="h-52">
                   <Image
-                    src={`/hotelImg/${item.room_images
-                      .map((img) => img.path)
+                    src={`http://localhost:8080/${item.room_images
+                      .map((img) => img.imageUrl)
                       .slice(0, 1)}`}
                     width={300}
                     height={235}

@@ -190,6 +190,7 @@ export default function PriceInfo({
     const checkIn = checkInDate;
     const checkOut = checkOutDate;
     const bookingData = {
+      userId: checkToken()?.userId,
       bookingId: bookingId,
       bookingDate: bookingDate,
       check_in_date: checkIn,

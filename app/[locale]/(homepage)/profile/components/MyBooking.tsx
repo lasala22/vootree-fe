@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Collapse, Row } from "antd";
+import { Button, Card, Col, Collapse, message, Row } from "antd";
 import dayjs from "dayjs";
 import CountdownTimer from "./CountdownTimer";
+import axios from "axios";
 
 const MyBooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -50,7 +51,33 @@ const MyBooking = () => {
     }
   };
 
-  const handlePayment = async (bookingId) => {};
+  const handlePayment = async (bookingData, bookingKey) => {
+    const paymentData = {
+      amount: bookingData.total_price.toString(),
+      ...bookingData,
+    };
+    const paymentValues = {
+      amount: bookingData.total_price.toString(),
+      bookingId: bookingData.bookingId,
+      userId: bookingData.userId,
+    };
+    localStorage.setItem("bookingInfo", JSON.stringify(paymentData));
+    const queryString = new URLSearchParams(paymentValues).toString();
+    try {
+      const payment = await axios.post(
+        `http://localhost:8080/api/payment/create?${queryString}`
+      );
+
+      console.log(payment.data.data);
+      if (payment.status === 200) {
+        const paymentUrl = payment.data.data;
+        window.location.href = paymentUrl;
+      }
+    } catch (error) {
+      console.error("Failed to create payment:", error);
+      message.error("Failed to create payment");
+    }
+  };
 
   return (
     <div className="p-10">
@@ -58,7 +85,7 @@ const MyBooking = () => {
         <p className="text-2xl font-semibold">Đang mua hàng</p>
       </div>
       <div className="mt-5">
-        {bookings.map((booking) => (
+        {bookings.map((booking: any) => (
           <Collapse
             key={booking.key}
             items={[
@@ -92,7 +119,7 @@ const MyBooking = () => {
                       <Button
                         type="text"
                         className="text-sky-600 font-bold hover:underline"
-                        onClick={() => handlePayment(booking.data.bookingId)}
+                        onClick={() => handlePayment(booking.data, booking.key)}
                       >
                         Tiếp tục thanh toán
                       </Button>
