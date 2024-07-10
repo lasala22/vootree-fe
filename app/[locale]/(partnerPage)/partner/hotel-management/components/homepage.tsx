@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState  } from "react";
+import React, { useCallback, useState } from "react";
 
 import Forms from "./form";
 import Tables from "./table";
@@ -11,7 +11,6 @@ export default function Homepage() {
   const [selectedRow, setSelectedRow] = useState<any | null>(null);
   const [reloadTable, setReloadTable] = useState(false);
   const [isFormDisabled, setIsFormDisabled] = useState(true);
-
 
   const handleRowSelect = (row: any) => {
     setSelectedRow(row);
@@ -28,17 +27,19 @@ export default function Homepage() {
       <div>
         <Row>
           <Col span={12}>
-            <span className="font-bold text-2xl">Trang quản lý khách sạn</span>
+            <span className="font-bold text-2xl ml-28">
+              Trang quản lý khách sạn
+            </span>
           </Col>
           <Col span={12} className="text-end">
             <Link href="/partner/hotel-create">
               <Button
                 type="primary"
                 size="large"
-                className="w-56 h-12 text-lg font-bold shadow-lg"
+                className="w-52 h-12 text-lg font-bold shadow-lg mr-28"
                 icon={
                   <PlusOutlined
-                    style={{ fontSize: "25px", fontWeight: "bold" }}
+                    style={{ fontSize: "20px", fontWeight: "bold" }}
                   />
                 }
                 iconPosition="end"
@@ -50,10 +51,14 @@ export default function Homepage() {
         </Row>
       </div>
       <div className="mt-10">
-        <Tables onRowSelect={handleRowSelect}  reloadTable={reloadTable} />
+        <Tables onRowSelect={handleRowSelect} reloadTable={reloadTable} />
       </div>
       <div className="mt-10 px-36">
-        <Forms selectedRow={selectedRow} onFormSubmit={handleFormSubmit} isFormDisabled={isFormDisabled}/>
+        <Forms
+          selectedRow={selectedRow}
+          onFormSubmit={handleFormSubmit}
+          isFormDisabled={isFormDisabled}
+        />
       </div>
       <footer className=" mt-5 justify-center flex"> @Made by DaoHehe</footer>
     </div>

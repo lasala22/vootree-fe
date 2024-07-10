@@ -1,5 +1,44 @@
 {
   "home": {
     "title": "VooTreeVeeVuu - Khám phá thế giới qua những cửa sổ của bạn"
+  },
+  "home_1": {
+    "title_1": "Cảm giác như ở nhà dù bạn đi đến đâu"
+  },
+  "home_2": {
+    "title_2": "Khám phá những chỗ nghỉ tuyệt vời dưới đây"
+  },
+  "home_3": {
+    "title_3": "Lý do nên đặt chỗ với VooTreeVeeVuu ?"
+  },
+  "homepage1": {
+    "text1": "Đáp ứng mọi nhu cầu của bạn"
+  },
+  "homepage2": {
+    "text2": " Bạn có thể tin chọn sản phẩm hoàn chỉnh và hướng dẫn du lịch của chúng tôi."
+  },
+  "homepage3": {
+    "text3": "Tùy chọn đặt chỗ linh hoạt"
+  },
+  "homepage4": {
+    "text4": " Bạn có thể chọn những nơi phù hợp với bạn, và gia đình của mình nhất chỉ cần vài cú click."
+  },
+  "homepage5": {
+    "text5": "Thanh toán an toàn và thuận tiện nhất"
+  },
+  "homepage6": {
+    "text6": "Tận hưởng nhiều cách thanh toán an toàn, bằng loại tiền thuận tiện nhất."
+  },
+  "home_4": {
+    "text": "Đăng kí nơi nghỉ của bạn"
+  },
+  "home_5": {
+    "text": "Tiếp cận hàng triệu khách hàng tiềm năng và nâng tầm doanh nghiệp của bạn với chúng tôi."
+  },
+  "home_6": {
+    "text": "Top 10 khu nghỉ dưỡng biển ẩn dật hàng đầu Việt Nam"
+  },
+  "footer": {
+    "text": "Luôn được cập nhật về các lời khuyên du lịch, đề xuất và khuyến mãi mới nhất."
   }
 }

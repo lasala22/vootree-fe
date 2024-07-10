@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
@@ -10,7 +10,16 @@ import {
   CheckSquareOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import {
+  Avatar,
+  Breadcrumb,
+  Dropdown,
+  Layout,
+  Menu,
+  Space,
+  Spin,
+  theme,
+} from "antd";
 import Bookings from "../components/Bookings";
 import Dashboard from "../components/Dashboard";
 import Profile from "../components/Profile";
@@ -22,6 +31,10 @@ import Roomcensorship from "../components/Roomcensorship";
 import StatisticsHotel from "../components/StatisticsHotel";
 import StatisticsRoom from "../components/StatisticsRoom";
 import StatisticsRevenue from "../components/StatisticsRevenue";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -47,7 +60,6 @@ const items = [
     getItem("Hotels censorship", "hotelcensorship1"),
     getItem("Rooms censorship", "roomcensorship1"),
   ]),
-  // getItem("Hotel censorship", "hotelcensorship1", <CheckSquareOutlined />),
   getItem("Statistics", "statistics1", <PieChartOutlined />, [
     getItem("Hotels", "hotelstatistics"),
     getItem("Rooms", "roomstatistics"),
@@ -57,6 +69,8 @@ const items = [
 
 const Sidebar2 = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [loading, setLoading] = useState(false); // State to manage loading spinner
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -66,10 +80,8 @@ const Sidebar2 = () => {
     { title: "Dashboard" },
   ]);
 
-  // keyPath: Một mảng chứa các key của các mục menu từ mục con đến mục cha.
-  // keyPath.reverse() đảo ngược mảng keyPath để có thứ tự từ mục cha đến mục con.
-
   const handleMenuClick = ({ key, keyPath }) => {
+    setLoading(true); // Start loading when a menu item is clicked
     const itemPath = keyPath.reverse();
     const breadcrumbPath = itemPath.map((key) => {
       const item = findMenuItem(items, key);
@@ -78,6 +90,11 @@ const Sidebar2 = () => {
     setSelectedKeys(itemPath);
 
     setBreadcrumbItems(breadcrumbPath);
+
+    // Simulate loading completion after 1 second (replace with actual data loading)
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
 
   const findMenuItem = (menuItems, key) => {
@@ -94,6 +111,28 @@ const Sidebar2 = () => {
     }
     return null;
   };
+  const [loadingPage, setLoadingPage] = useState(true);
+  useEffect(() => {
+    // Simulate loading for 1 second
+    const timer = setTimeout(() => {
+      setLoadingPage(false);
+    }, 1000);
+
+    return () => clearTimeout(timer); // Clear the timer when the component unmounts
+  }, []);
+
+  const [username, setUsername] = useState();
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodeToken = jwtDecode(token);
+      if (decodeToken && decodeToken.roles[0] == "STAFF") {
+        const use = decodeToken.sub;
+        setUsername(use);
+      }
+    }
+  }, []);
 
   const renderContent = () => {
     switch (selectedKeys[selectedKeys.length - 1]) {
@@ -123,63 +162,148 @@ const Sidebar2 = () => {
         return <Dashboard />;
     }
   };
-
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+  const menu = (
+    <Menu>
+      <Menu.Item key="0">
+        <Link href="/profile" prefetch>
+          <Link href="/profile" prefetch className=" font-semibold">
+            Profile
+          </Link>
+        </Link>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <button
+          type="button"
+          onClick={handleLogOut}
+          className="text-red-500 font-semibold"
+        >
+          Đăng Xuất
+        </button>
+      </Menu.Item>
+    </Menu>
+  );
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-          onClick={handleMenuClick}
-        />
-      </Sider>
-      <Layout>
-        <Header
+    <Layout style={{ minHeight: "100vh" }}>
+      {loadingPage ? (
+        <div
           style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        />
-
-        <Content
-          style={{
-            margin: "0 16px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
           }}
         >
-          <Breadcrumb style={{ margin: "16px 0" }} items={breadcrumbItems} />
-
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
           >
-            {renderContent()}
-          </div>
-        </Content>
+            <div className="demo-logo-vertical" />
+            <Menu
+              theme="dark"
+              defaultSelectedKeys={["1"]}
+              mode="inline"
+              items={items}
+              onClick={handleMenuClick}
+            />
+          </Sider>
+          <Layout>
+            <Header
+              style={{
+                padding: 0,
+                background: colorBgContainer,
+              }}
+            >
+              <div className="flex justify-between items-center">
+                {username ? (
+                  <div className="flex items-center justify-end w-full me-10">
+                    <Dropdown overlay={menu}>
+                      <Space wrap>
+                        <Avatar
+                          icon={<UserOutlined />}
+                          name={username}
+                          size="40"
+                          round={true}
+                          //className="cursor-pointer"
+                          alt="User Avatar"
+                        />
+                        <span className="text-blue-900 text-base font-medium ">
+                          {username}
+                        </span>
+                        {/* <DownOutlined /> */}
+                      </Space>
+                    </Dropdown>
+                  </div>
+                ) : (
+                  <div className="flex justify-end items-center w-full">
+                    <Link href="/login" prefetch>
+                      <button
+                        type="button"
+                        className="hover:bg-purple-950 hover:bg-opacity-40 text-white me-4 py-2 px-2 rounded border flex text-sm"
+                      >
+                        <UserIcon className="h-5 w-5 mr-1" />
+                        Đăng nhập
+                      </button>
+                    </Link>
+                    <Link href="/signup" prefetch>
+                      <button
+                        type="button"
+                        className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white py-2 px-2 ps-4 pe-4 rounded flex text-sm"
+                      >
+                        Đăng ký
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </Header>
 
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Vootreeveevuu Design ©{new Date().getFullYear()} Created by Vootree
-          Team
-        </Footer>
-      </Layout>
+            <Content style={{ margin: "0 16px" }}>
+              <Breadcrumb
+                style={{ margin: "16px 0" }}
+                items={breadcrumbItems}
+              />
+
+              <div
+                style={{
+                  padding: 24,
+                  minHeight: 360,
+                  background: colorBgContainer,
+                  borderRadius: borderRadiusLG,
+                }}
+              >
+                {loading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                    }}
+                  >
+                    <Spin size="large" />
+                  </div>
+                ) : (
+                  renderContent()
+                )}
+              </div>
+            </Content>
+
+            <Footer style={{ textAlign: "center" }}>
+              Vootreeveevuu Design ©{new Date().getFullYear()} Created by
+              Vootree Team
+            </Footer>
+          </Layout>
+        </>
+      )}
     </Layout>
   );
 };

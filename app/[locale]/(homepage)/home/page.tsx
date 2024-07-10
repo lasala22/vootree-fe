@@ -27,9 +27,7 @@ export default function Page() {
       <br />
       <hr className="w-9/12 h-0.5 m-auto bg-black" />
       <div>
-        <p className="font-bold text-xl mx-40 mt-3">
-          Cảm giác như ở nhà dù bạn đi đến đâu
-        </p>
+        <p className="font-bold text-xl mx-40 mt-3">{t("home_1.title_1")}</p>
       </div>
       <div className=" justify-center flex mx-3 ">
         <Card />
@@ -37,16 +35,12 @@ export default function Page() {
       <br />
       <hr className="w-9/12 h-0.5 m-auto bg-black" />
       <div className="mt-5 justify-center items-center ">
-        <h1 className="font-bold text-xl mx-40">
-          Khám phá những chỗ nghỉ tuyệt vời dưới đây
-        </h1>
+        <h1 className="font-bold text-xl mx-40">{t("home_2.title_2")}</h1>
         <CardHotel />
       </div>
       <br />
       <hr className="w-9/12 h-0.5 m-auto bg-black" />
-      <h1 className="font-bold text-xl mt-5 mx-44">
-        Lý do nên đặt chỗ với VooTreeVeeVuu?
-      </h1>
+      <h1 className="font-bold text-xl mt-5 mx-44">{t("home_3.title_3")}</h1>
       <div className="justify-center items-center flex mx-40">
         <div className="w-11/12 h-32 bg-sky-500 gap-5 mt-7 rounded-lg justify-between items-center flex px-10 ">
           <div className="w-4/12 h-24 bg-white rounded-md inline-flex py-2 px-1 border-gray-950">
@@ -59,11 +53,8 @@ export default function Page() {
               />
             </div>
             <div>
-              <h3 className="text-sm font-bold">Đáp ứng mọi nhu cầu của bạn</h3>
-              <p className="text-xs font-semibold">
-                Bạn có thể tin chọn sản phẩm hoàn chỉnh và hướng dẫn du lịch của
-                chúng tôi.
-              </p>
+              <h3 className="text-sm font-bold">{t("homepage1.text1")}</h3>
+              <p className="text-xs font-semibold">{t("homepage2.text2")}</p>
             </div>
           </div>
           <div className="w-4/12 h-24 bg-white rounded-md inline-flex py-2 px-1  border-gray-950">
@@ -71,11 +62,8 @@ export default function Page() {
               <Image src="/icon/search.png" width={100} height={100} alt="" />
             </div>
             <div>
-              <h3 className="text-sm font-bold">Tùy chọn đặt chỗ linh hoạt</h3>
-              <p className="text-xs font-semibold">
-                Bạn có thể chọn những nơi phù hợp với bạn, và gia đình của mình
-                nhất chỉ cần vài cú click.
-              </p>
+              <h3 className="text-sm font-bold">{t("homepage3.text3")}</h3>
+              <p className="text-xs font-semibold">{t("homepage4.text4")}</p>
             </div>
           </div>
           <div className="w-4/12 h-24 bg-white rounded-md inline-flex py-2 px-1 border-gray-950">
@@ -88,13 +76,8 @@ export default function Page() {
               />
             </div>
             <div>
-              <h3 className="text-sm font-bold">
-                Thanh toán an toàn và thuận tiện nhất
-              </h3>
-              <p className="text-xs font-semibold">
-                Tận hưởng nhiều cách thanh toán an toàn, bằng loại tiền thuận
-                tiện nhất.
-              </p>
+              <h3 className="text-sm font-bold">{t("homepage5.text5")}</h3>
+              <p className="text-xs font-semibold">{t("homepage6.text6")}</p>
             </div>
           </div>
         </div>
@@ -105,12 +88,9 @@ export default function Page() {
       <div className=" mt-5">
         <Row>
           <Col span={13}>
-            <p className="font-bold text-xl mx-44">Đăng kí nơi nghỉ của bạn</p>
+            <p className="font-bold text-xl mx-44">{t("home_4.text")}</p>
             <br />
-            <p className="font-semibold text-lg mx-44">
-              Tiếp cận hàng triệu khách hàng tiềm năng và nâng tầm doanh nghiệp
-              của bạn với chúng tôi.
-            </p>
+            <p className="font-semibold text-lg mx-44">{t("home_5.text")}</p>
           </Col>
           <Col span={11}>
             <img
@@ -124,9 +104,7 @@ export default function Page() {
       <hr className="w-9/12 h-0.5 m-auto bg-black" />
       <br />
       <div>
-        <p className="font-bold text-xl mx-44">
-          Top 10 Hidden Beach Resorts in Vietnam
-        </p>
+        <p className="font-bold text-xl mx-44">{t("home_6.text")}</p>
         <br />
         <iframe
           className="mx-auto"
@@ -151,10 +129,7 @@ export default function Page() {
       >
         <div className="w-6/12">
           <Row>
-            <strong className="text-3xl text-white">
-              Luôn được cập nhật về các lời khuyên du lịch, đề xuất và khuyến
-              mãi mới nhất.
-            </strong>
+            <strong className="text-3xl text-white">{t("footer.text")}</strong>
           </Row>
           <Form className="flex gap-4 mt-3">
             <FormItem className="w-5/6">

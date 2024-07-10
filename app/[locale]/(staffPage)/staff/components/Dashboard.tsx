@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic } from 'antd';
-import axios from 'axios';
-import StatisticsRevenue from './StatisticsRevenue';
-import HotelStatusDoughnutChart from './HotelStatusDoughnutChart';
+import React, { useEffect, useState } from "react";
+import { Row, Col, Card, Statistic } from "antd";
+import axios from "axios";
+import StatisticsRevenue from "./StatisticsRevenue";
+import HotelStatusDoughnutChart from "./HotelStatusDoughnutChart";
 
 const Dashboard = () => {
   const [customersCount, setCustomersCount] = useState(0);
@@ -14,44 +14,54 @@ const Dashboard = () => {
     const fetchUserData = async () => {
       try {
         // Fetch user data
-        const responseUsers = await axios.get('http://localhost:8080/api/accounts');
+        const responseUsers = await axios.get(
+          "http://localhost:8080/api/accounts"
+        );
         const users = responseUsers.data;
-        
+
         // Count customers and partners
-        const customersCount = users.filter(user => user.roles.some(role => role.name === 'CUSTOMER')).length;
-        const partnersCount = users.filter(user => user.roles.some(role => role.name === 'PARTNER')).length;
+        const customersCount = users.filter((user) =>
+          user.roles.some((role) => role.name === "CUSTOMER")
+        ).length;
+        const partnersCount = users.filter((user) =>
+          user.roles.some((role) => role.name === "PARTNER")
+        ).length;
 
         setCustomersCount(customersCount);
         setPartnersCount(partnersCount);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     };
 
     const fetchHotelsData = async () => {
       try {
         // Fetch hotels data
-        const responseHotels = await axios.get('http://localhost:8080/api/hotels');
+        const responseHotels = await axios.get(
+          "http://localhost:8080/api/hotels"
+        );
         const hotels = responseHotels.data;
-        
+
         // Set hotels count based on response length
         setHotelsCount(hotels.length);
       } catch (error) {
-        console.error('Error fetching hotels data:', error);
+        console.error("Error fetching hotels data:", error);
       }
     };
 
     const fetchBookingData = async () => {
       try {
         // Fetch booking data
-        const responseBookings = await axios.get('http://localhost:8080/api/bookings');
+        const responseBookings = await axios.get(
+          "http://localhost:8080/api/bookings"
+        );
         const bookings = responseBookings.data;
-        
+
         // Calculate total revenue for current month
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1; // Month is zero-indexed
         const currentYear = currentDate.getFullYear();
-        
+
         const totalRevenueThisMonth = bookings.reduce((total, booking) => {
           const bookingDate = new Date(booking.bookingDate);
           const bookingMonth = bookingDate.getMonth() + 1;
@@ -66,7 +76,7 @@ const Dashboard = () => {
 
         setTotalRevenueCurrentMonth(totalRevenueThisMonth);
       } catch (error) {
-        console.error('Error fetching booking data:', error);
+        console.error("Error fetching booking data:", error);
       }
     };
 
@@ -76,7 +86,10 @@ const Dashboard = () => {
   }, []);
 
   // Format totalRevenueCurrentMonth to VND currency
-  const formattedRevenue = totalRevenueCurrentMonth.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  const formattedRevenue = totalRevenueCurrentMonth.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
 
   return (
     <div>
@@ -122,8 +135,12 @@ const Dashboard = () => {
       </Row>
 
       <div className="mt-11 grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div><StatisticsRevenue /></div>
-        <div><HotelStatusDoughnutChart /></div>
+        <div>
+          <StatisticsRevenue />
+        </div>
+        <div>
+          <HotelStatusDoughnutChart />
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { FormOutlined, SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { log } from "console";
 
@@ -209,6 +209,11 @@ export default function Tables({
       key: "roomStatus",
       width: "10%",
       ...getColumnSearchProps("roomStatus"),
+      sorter: (a, b) => a.status.length - b.status.length,
+      sortDirections: ["descend", "ascend"],
+      render: (status: string) => (
+        <Tag color={status === "ACTIVE" ? "blue" : "red"}>{status}</Tag>
+      ),
     },
     {
       title: "",
@@ -225,7 +230,7 @@ export default function Tables({
   return (
     <>
       <div>
-        <div className="mb-3 mx-36 font-bold">
+        <div className="mb-3 mx-32 text-base font-bold">
           Current active accommodations
         </div>
         <div className="justify-center flex items-center">

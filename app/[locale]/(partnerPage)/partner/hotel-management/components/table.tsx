@@ -196,7 +196,7 @@ export default function Tables({
   return (
     <>
       <div>
-        <div className="mb-3 mx-36 font-bold">
+        <div className="mb-3 mx-32 text-base font-bold">
           Current active accommodations
         </div>
         <div className="justify-center flex items-center">
