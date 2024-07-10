@@ -16,11 +16,16 @@ import {
   TimePicker,
   message,
 } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { Upload } from "antd";
 import { format } from "date-fns";
 import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import type { UploadFile } from "antd";
+import type { UploadProps } from "antd";
+const { Dragger } = Upload;
 
 const formats = "HH:mm";
 const { Step } = Steps;
@@ -33,6 +38,8 @@ const MultiStepForm = () => {
   const [hotelFacilities, setHotelFacilities] = useState([]);
   const [roomFacilities, setRoomFacilities] = useState([]);
   const [userId, setUserId] = useState();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [roomList, setRoomList] = useState<UploadFile[]>([]);
   useEffect(() => {
     const token = localStorage.getItem("token");
     const decode = jwtDecode(token);
@@ -70,6 +77,88 @@ const MultiStepForm = () => {
     accommodationType: object;
     user: object;
   }
+
+  const props: UploadProps = {
+    name: "file",
+    multiple: true,
+    beforeUpload: (file) => false, // Ngăn tải lên tự động
+    // fileList: fileList, // Sử dụng trạng thái fileList hiện tại
+    onRemove: (file) => {
+      const newFileList = fileList.filter((item) => item.uid !== file.uid);
+      setFileList(newFileList);
+    },
+    onChange(info) {
+      let newFileList = [...info.fileList];
+
+      // Giới hạn số lượng file được tải lên
+      // newFileList = newFileList.slice(-10);
+
+      // Đọc từ phản hồi và hiển thị liên kết file
+      newFileList = newFileList.map((file) => {
+        if (file.response) {
+          // Component sẽ hiển thị file.url như một liên kết
+          file.url = file.response.url;
+        }
+        return file;
+      });
+
+      setFileList(newFileList);
+    },
+    onDrop(e) {
+      const files = Array.from(e.dataTransfer.files);
+      const newFiles = files.map((file) => ({
+        uid: file.uid,
+        name: file.name,
+        status: "done",
+        url: URL.createObjectURL(file),
+        originFileObj: file,
+      }));
+      console.log(newFiles);
+
+      setFileList([...fileList, ...newFiles]);
+    },
+  };
+
+  const propsRoom: UploadProps = {
+    name: "file",
+    multiple: true,
+    beforeUpload: (file) => false, // Ngăn tải lên tự động
+    // fileList: fileList, // Sử dụng trạng thái fileList hiện tại
+    onRemove: (file) => {
+      const newRoomList = roomList.filter((item) => item.uid !== file.uid);
+      setRoomList(newRoomList);
+    },
+    onChange(info) {
+      let newRoomList = [...info.fileList];
+
+      // Giới hạn số lượng file được tải lên
+      // newFileList = newFileList.slice(-10);
+
+      // Đọc từ phản hồi và hiển thị liên kết file
+      newRoomList = newRoomList.map((file) => {
+        if (file.response) {
+          // Component sẽ hiển thị file.url như một liên kết
+          file.url = file.response.url;
+        }
+        return file;
+      });
+
+      setRoomList(newRoomList);
+    },
+    onDrop(e) {
+      const files = Array.from(e.dataTransfer.files);
+      const newFiles = files.map((file) => ({
+        uid: file.uid,
+        name: file.name,
+        status: "done",
+        url: URL.createObjectURL(file),
+        originFileObj: file,
+      }));
+      console.log(newFiles);
+
+      setRoomList([...roomList, ...newFiles]);
+    },
+  };
 
   const complete = async () => {
     // const formatCheckInTime = formData.checkIn
@@ -122,6 +211,81 @@ const MultiStepForm = () => {
         filteredHotel
       );
       message.success("Bạn đã đăng kí thành công!");
+      // Kiểm tra status của phản hồi
+      // Sau khi tạo thành công, thực hiện một yêu cầu GET để lấy danh sách khách sạn
+      if (response.status === 200 || response.status === 201) {
+        const getHotelsResponse = await axios.get(
+          "http://localhost:8080/api/hotels"
+        );
+
+        const hotels = getHotelsResponse.data;
+        // Tìm khách sạn vừa được tạo
+        const createdHotel = hotels.find(
+          (hotel) =>
+            hotel.hotelName === formData.hotelName &&
+            hotel.address === formData.address
+        );
+
+        if (createdHotel) {
+          const hotelId = createdHotel.id;
+          const roomId = createdHotel.rooms[0].id;
+
+          console.log("ID Khách Sạn:", hotelId);
+          console.log("ID Phòng:", roomId);
+
+          // Filter out files that are already uploaded
+          const filesToUpdate = fileList.filter(
+            (file) => file.status !== "done"
+          );
+
+          if (filesToUpdate.length > 0) {
+            const formData = new FormData();
+            filesToUpdate.forEach((file) => {
+              formData.append("files", file.originFileObj || file);
+            });
+
+            // Upload new files for hotel
+            await axios.post(
+              `http://localhost:8080/api/hotels/${hotelId}/images`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            message.success("Image Hotel upload successful!");
+          }
+
+          // Upload room images
+          const filesRoomToUpdate = roomList.filter(
+            (file) => file.status !== "done"
+          );
+
+          if (filesRoomToUpdate.length > 0) {
+            const formData2 = new FormData();
+            filesRoomToUpdate.forEach((file) => {
+              formData2.append("files", file.originFileObj || file);
+            });
+
+            // Upload new files for room
+            await axios.post(
+              `http://localhost:8080/api/rooms/${roomId}/images`,
+              formData2,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            message.success("Image Room upload successful!");
+          }
+        } else {
+          console.error("Không tìm thấy khách sạn vừa tạo");
+        }
+      } else {
+        console.error("Đăng kí thành công nhưng không nhận được ID");
+      }
     } catch (error) {
       console.error("Failed to submit data:", error);
       message.error("Failed to submit data");
@@ -356,6 +520,42 @@ const MultiStepForm = () => {
                 <div className="border rounded-md p-2 mt-2">
                   <Form.Item name="stars">
                     <Rate defaultValue={0} />
+                  </Form.Item>
+                </div>
+              </div>
+
+              <div className="mt-10">
+                <span className="text-lg font-bold">Hình ảnh</span>
+                <p className="font-semibold">
+                  Thêm hình ảnh đại diện cho chỗ nghỉ của bạn
+                </p>
+                <div className="border rounded-md p-2 mt-2">
+                  <Form.Item
+                    name="images"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng tải lên ít nhất một hình ảnh!",
+                      },
+                    ]}
+                  >
+                    <Upload.Dragger
+                      {...props}
+                      listType="picture"
+                      // fileList={[...listHotelImg]}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">
+                        Click hoặc kéo thả hình ảnh vào đây để tải lên
+                      </p>
+                      <p className="ant-upload-hint">
+                        Hỗ trợ tải lên từng tập tin hoặc nhiều tập tin. Cấm
+                        nghiêm ngặt tải lên dữ liệu công ty hoặc các tập tin bị
+                        cấm khác.
+                      </p>
+                    </Upload.Dragger>
                   </Form.Item>
                 </div>
               </div>
@@ -721,6 +921,41 @@ const MultiStepForm = () => {
                         ))}
                       </Row>
                     </Checkbox.Group>
+                  </Form.Item>
+                </div>
+              </div>
+              <div className="mt-10">
+                <span className="text-lg font-bold">Hình ảnh</span>
+                <p className="font-semibold">
+                  Thêm hình ảnh đại diện cho phòng của bạn
+                </p>
+                <div className="border rounded-md p-2 mt-2">
+                  <Form.Item
+                    name="images"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng tải lên ít nhất một hình ảnh!",
+                      },
+                    ]}
+                  >
+                    <Upload.Dragger
+                      {...propsRoom}
+                      listType="picture"
+                      // fileList={[...listHotelImg]}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">
+                        Click hoặc kéo thả hình ảnh vào đây để tải lên
+                      </p>
+                      <p className="ant-upload-hint">
+                        Hỗ trợ tải lên từng tập tin hoặc nhiều tập tin. Cấm
+                        nghiêm ngặt tải lên dữ liệu công ty hoặc các tập tin bị
+                        cấm khác.
+                      </p>
+                    </Upload.Dragger>
                   </Form.Item>
                 </div>
               </div>
