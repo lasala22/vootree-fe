@@ -18,6 +18,10 @@ import axios from "axios";
 import TextArea from "antd/es/input/TextArea";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { InboxOutlined } from "@ant-design/icons";
+import type { UploadFile } from "antd";
+import type { UploadProps } from "antd";
+const { Dragger } = Upload;
 const { Option } = Select;
 
 export default function RoomCreate() {
@@ -31,12 +35,53 @@ export default function RoomCreate() {
     { id: string; typeName: string }[]
   >([]);
   const [hotelSelected, setHotelSelected] = useState(false);
-
+  const [roomList, setRoomList] = useState<UploadFile[]>([]);
   useEffect(() => {
     fetchData();
     getFacilities();
     fetchPropertyTypes();
   }, []);
+
+  const propsRoom: UploadProps = {
+    name: "file",
+    multiple: true,
+    beforeUpload: (file) => false, // Ngăn tải lên tự động
+    // fileList: fileList, // Sử dụng trạng thái fileList hiện tại
+    onRemove: (file) => {
+      const newRoomList = roomList.filter((item) => item.uid !== file.uid);
+      setRoomList(newRoomList);
+    },
+    onChange(info) {
+      let newRoomList = [...info.fileList];
+
+      // Giới hạn số lượng file được tải lên
+      // newFileList = newFileList.slice(-10);
+
+      // Đọc từ phản hồi và hiển thị liên kết file
+      newRoomList = newRoomList.map((file) => {
+        if (file.response) {
+          // Component sẽ hiển thị file.url như một liên kết
+          file.url = file.response.url;
+        }
+        return file;
+      });
+
+      setRoomList(newRoomList);
+    },
+    onDrop(e) {
+      const files = Array.from(e.dataTransfer.files);
+      const newFiles = files.map((file) => ({
+        uid: file.uid,
+        name: file.name,
+        status: "done",
+        url: URL.createObjectURL(file),
+        originFileObj: file,
+      }));
+      console.log(newFiles);
+
+      setRoomList([...roomList, ...newFiles]);
+    },
+  };
 
   const fetchData = async () => {
     try {
@@ -145,6 +190,34 @@ export default function RoomCreate() {
 
       // Xử lý response từ server (nếu cần)
       console.log("Server response:", response.data);
+
+      if (response.status === 200 || response.status === 201){
+        const roomId = response.data.id;
+
+        // Upload room images
+        const filesRoomToUpdate = roomList.filter(
+          (file) => file.status !== "done"
+        );
+
+        if (filesRoomToUpdate.length > 0) {
+          const formData2 = new FormData();
+          filesRoomToUpdate.forEach((file) => {
+            formData2.append("files", file.originFileObj || file);
+          });
+
+          // Upload new files for room
+          await axios.post(
+            `http://localhost:8080/api/rooms/${roomId}/images`,
+            formData2,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          message.success("Image Room upload successful!");
+        }
+      }
       // Thực hiện fetch lại dữ liệu khách sạn đã chọn sau khi thêm phòng thành công
      
       // Reset form sau khi submit thành công (nếu cần)
@@ -356,6 +429,41 @@ export default function RoomCreate() {
                 </Form.Item>
               </div>
             </div>
+            <div className="mt-10">
+                <span className="text-lg font-bold">Hình ảnh</span>
+                <p className="font-semibold">
+                  Thêm hình ảnh đại diện cho phòng của bạn
+                </p>
+                <div className="border rounded-md p-2 mt-2">
+                  <Form.Item
+                    name="images"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng tải lên ít nhất một hình ảnh!",
+                      },
+                    ]}
+                  >
+                    <Upload.Dragger
+                      {...propsRoom}
+                      listType="picture"
+                      // fileList={[...listHotelImg]}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">
+                        Click hoặc kéo thả hình ảnh vào đây để tải lên
+                      </p>
+                      <p className="ant-upload-hint">
+                        Hỗ trợ tải lên từng tập tin hoặc nhiều tập tin. Cấm
+                        nghiêm ngặt tải lên dữ liệu công ty hoặc các tập tin bị
+                        cấm khác.
+                      </p>
+                    </Upload.Dragger>
+                  </Form.Item>
+                </div>
+              </div>
             <Form.Item name="hotelId" style={{ display: "none" }}>
               <input type="hidden" value={selectedHotel} />
             </Form.Item>
