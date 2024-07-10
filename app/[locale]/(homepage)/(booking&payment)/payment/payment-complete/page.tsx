@@ -42,7 +42,7 @@ export default function Page() {
     const receiptInfo = {
       hotelName: data.hotelName,
       roomType: data.roomType,
-      cusEmail: "51542500a@gmail.com",
+      cusEmail: data.email,
       num_of_rooms: data.num_of_rooms,
       num_of_guests: data.num_of_guests,
       checkInDate: checkInDateFormat,
@@ -51,7 +51,7 @@ export default function Page() {
       hotelPhoneNum: data.hotelPhoneNum,
       checkInTime: data.checkInTime,
       checkOutTime: data.checkOutTime,
-      ownerEmail: "hvsd103@gmail.com",
+      ownerEmail: data.ownerEmail,
       cusFullName: data.fullName,
       cusPhoneNum: data.phoneNum,
     };

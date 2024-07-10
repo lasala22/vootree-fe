@@ -57,7 +57,7 @@ interface HotelData {
   };
   hotelImages: {
     id: number;
-    path: string;
+    imageUrl: string;
   }[];
   rooms: Room[];
   hotelFacilities: any[]; // Placeholder for any type
@@ -293,9 +293,11 @@ const Index = ({ checkedValues, priceRange }) => {
                     >
                       <Col span={6} className="">
                         <Image
-                          src={`/hotelImg/${item.hotelImages
-                            .map((img) => img.path)
-                            .slice(0, 1)}`}
+                          src={`http://localhost:8080${
+                            item.hotelImages.length > 0
+                              ? item.hotelImages[0].imageUrl
+                              : "/placeholder.jpg"
+                          }`}
                           layout="fill"
                           alt=""
                           className="rounded-l-sm"

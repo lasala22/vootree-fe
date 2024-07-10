@@ -9,6 +9,7 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Row,
   Select,
 } from "antd";
@@ -18,6 +19,7 @@ import Link from "next/link";
 import Image from "next/legacy/image";
 import dayjs from "dayjs";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 const { Option } = Select;
 
 const formItemLayout = {
@@ -54,6 +56,7 @@ const tailFormItemLayout = {
 const dateFormatList = ["DD/MM/YYYY", "DD-MM-YYYY"];
 
 export default function Page() {
+  const router = useRouter();
   const [form] = Form.useForm();
   const [role, setRole] = useState("CUSTOMER");
 
@@ -65,9 +68,10 @@ export default function Page() {
         newValues
       );
       if (response.data.success) {
-        console.log("success");
+        message.success("Đăng ký thành công!");
+        router.push("/login");
       } else {
-        console.error(response.data.error);
+        message.error("Đăng ký thất bại!");
       }
 
       console.log(newValues);

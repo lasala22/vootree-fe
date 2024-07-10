@@ -54,7 +54,7 @@ export default function HistoryBooking() {
     } else {
       console.error("Không tìm thấy token");
     }
-  }, [bookings]);
+  }, []);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {

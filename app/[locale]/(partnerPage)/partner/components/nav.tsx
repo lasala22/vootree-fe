@@ -19,7 +19,7 @@ import { useEffect, useState, Fragment } from "react";
 
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { Avatar, Dropdown, Space } from "antd";
+import { Avatar, Dropdown, Space, Menu as AntMenu } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 export default function Navbar({ searchbar, logo }) {
@@ -39,24 +39,24 @@ export default function Navbar({ searchbar, logo }) {
     localStorage.removeItem("token");
     router.push("/login");
   };
-  // const menu = (
-  //   <Menu>
-  //     <Menu.Item key="0">
-  //       <a href="/profile">
-  //         <a className=" font-semibold">Profile</a>
-  //       </a>
-  //     </Menu.Item>
-  //     <Menu.Item key="1">
-  //       <button
-  //         type="button"
-  //         onClick={handleLogOut}
-  //         className="text-red-500 font-semibold"
-  //       >
-  //         Đăng Xuất
-  //       </button>
-  //     </Menu.Item>
-  //   </Menu>
-  // );
+  const menu = (
+    <AntMenu>
+      <AntMenu.Item key="0">
+        <a href="/profile">
+          <a className=" font-semibold">Profile</a>
+        </a>
+      </AntMenu.Item>
+      <AntMenu.Item key="1">
+        <button
+          type="button"
+          onClick={handleLogOut}
+          className="text-red-500 font-semibold"
+        >
+          Đăng Xuất
+        </button>
+      </AntMenu.Item>
+    </AntMenu>
+  );
   return (
     <header className="bg-sky-600">
       <Disclosure as="nav">
@@ -158,9 +158,7 @@ export default function Navbar({ searchbar, logo }) {
                     </div>
                     {username ? (
                       <div className="flex items-center ">
-                        <Dropdown
-                        //overlay={menu}
-                        >
+                        <Dropdown overlay={menu}>
                           <Space wrap>
                             <Avatar
                               icon={<UserOutlined />}
@@ -170,7 +168,7 @@ export default function Navbar({ searchbar, logo }) {
                               className="cursor-pointer"
                               alt="User Avatar"
                             />
-                            <span className="text-blue-900 text-sm font-medium mr-2">
+                            <span className="text-white text-sm font-medium mr-2">
                               {username}
                             </span>
                           </Space>

@@ -10,7 +10,7 @@ export default function BookingInfo({
 }) {
   const hotelName = roomData ? roomData?.hotel?.hotelName : "Không tồn tại";
   const roomType = roomData?.roomType?.typeName;
-  const hotelImage = roomData?.hotel?.hotelImages[1]?.path;
+  const hotelImage = roomData?.hotel?.hotelImages[1]?.imageUrl;
   const roomPrice = roomData?.price;
   const capacity = roomData?.capacity;
   const [checkInDate, setCheckInDate] = useState("");
@@ -39,7 +39,11 @@ export default function BookingInfo({
     <>
       <Row className="h-24 ">
         <Col span={8}>
-          <Image src={`/hotelImg/${hotelImage}`} alt="" layout="fill" />
+          <Image
+            src={`http://localhost:8080${hotelImage}`}
+            alt=""
+            layout="fill"
+          />
         </Col>
         <Col span={16} className="px-4">
           <strong className="text-lg text-sky-600">{hotelName}</strong>

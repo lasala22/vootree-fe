@@ -37,7 +37,7 @@ interface HotelData {
   };
   hotelImages: {
     id: number;
-    path: string;
+    imageUrl: string;
   }[];
   rooms: Room[];
   hotelFacilities: any[]; // Placeholder for any type
@@ -53,7 +53,9 @@ export default function HotelInfo({ data }: HotelInfoProps) {
 
   useEffect(() => {
     if (data?.hotelImages?.length > 0) {
-      setImg(data.hotelImages.map((img) => `/hotelImg/${img.path}`));
+      setImg(
+        data.hotelImages.map((img) => `http://localhost:8080${img.imageUrl}`)
+      );
     }
   }, [data]);
 

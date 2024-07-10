@@ -4,6 +4,7 @@ import { Form, Input, Button, Steps, message } from "antd";
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 const { Step } = Steps;
 
 const ForgotPass = () => {
@@ -12,6 +13,7 @@ const ForgotPass = () => {
   const [form2] = Form.useForm();
   const [emailValidated, setEmailValidated] = useState(false);
   const [email, setEmail] = useState("");
+  const router = useRouter();
 
   const next = () => {
     form1
@@ -45,6 +47,7 @@ const ForgotPass = () => {
       )
       .then((response) => {
         message.success("Đặt lại mật khẩu thành công!");
+        router.push("/login");
         console.log("Mật khẩu mới:", newPassword);
       })
       .catch((error) => {

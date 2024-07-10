@@ -5,3 +5,26 @@
     background-color: #1E3A8A;
     background-size:cover;
 }
+.custom-carousel .slick-prev, .custom-carousel .slick-next {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    border-radius: 50%; /* Bo tròn góc */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+  
+  .custom-carousel .slick-prev::before, .custom-carousel .slick-next::before {
+    font-size: 30px;
+    color: white;
+  }
+  
+  .custom-carousel .slick-prev {
+    left: -60px; /* Điều chỉnh vị trí */
+  }
+  
+  .custom-carousel .slick-next {
+    right: -60px; /* Điều chỉnh vị trí */
+  }

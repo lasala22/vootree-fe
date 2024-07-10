@@ -5,11 +5,13 @@ import {
   AppstoreOutlined,
   FormOutlined,
   UnorderedListOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import MyProfile from "./components/MyProfile";
 import NewPass from "./components/NewPass";
 import HistoryBooking from "./components/HistoryBooking";
+import MyBooking from "./components/MyBooking";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -25,6 +27,7 @@ const items = [
   getItem("Change Password", "newpass1", <FormOutlined />),
 
   getItem("Purchase List", "historybooking1", <UnorderedListOutlined />),
+  getItem("My Booking", "myBooking", <BookOutlined />),
 ];
 
 const SidebarProfile = () => {
@@ -71,42 +74,19 @@ const SidebarProfile = () => {
         return <MyProfile />;
       case "historybooking1":
         return <HistoryBooking />;
-
+      case "myBooking":
+        return <MyBooking />;
       default:
         return <MyProfile />;
     }
   };
   return (
     <Layout>
-      {/* <Header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['1']}
-          items={items}
-          style={{
-            flex: 1,
-            minWidth: 0,
-          }}
-        />
-      </Header> */}
       <Content
         style={{
           padding: "0 300px",
         }}
       >
-        <Breadcrumb
-          style={{
-            margin: "16px 0",
-          }}
-          items={breadcrumbItems}
-        ></Breadcrumb>
         <Layout
           style={{
             padding: "24px 0",

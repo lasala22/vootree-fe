@@ -19,6 +19,7 @@ import { GoogleOutlined, FacebookOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 import "tailwindcss/tailwind.css";
+import { useRouter } from "next/navigation";
 const { Option } = Select;
 
 const formItemLayout = {
@@ -57,6 +58,7 @@ const dateFormatList = ["DD/MM/YYYY", "DD-MM-YYYY"];
 const SignupPartner = () => {
   const [form] = Form.useForm();
   const [roles, setRoles] = useState(["PARTNER"]);
+  const router = useRouter();
 
   const onFinish = async (values) => {
     const newValues = { ...values, roles };
@@ -71,6 +73,7 @@ const SignupPartner = () => {
       if (response && response.status === 200) {
         message.success("Registration successful!");
         console.log("success");
+        router.push("/login");
       } else {
         const errorMessage =
           response?.data?.error || "An unknown error occurred";

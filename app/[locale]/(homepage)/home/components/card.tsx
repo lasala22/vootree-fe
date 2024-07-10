@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Carousel, Col, Rate, Row, Skeleton, Spin, message } from "antd";
 import Image from "next/legacy/image";
 import Link from "next/link";
-
+import "@/app/[locale]/(homepage)/home/style.module.css";
 const formatNumber = (number) => {
   return number.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 };
@@ -46,21 +46,29 @@ export default function CardHotel() {
                     </Card>
                   </Col>
                 ))
-              : data.slice(0, 5).map((item) => (
+              : data?.slice(0, 5).map((item) => (
                   <Col md={12} lg={6} xs={24} key={item.id} className="mt-3">
                     <Link href={`/detail/${item.id}`}>
                       <Card
                         hoverable
                         style={{ width: 240 }}
                         cover={
-                          <Image
-                            src={`/hotelImg/${item.hotelImages
-                              .map((img) => img.path)
-                              .slice(0, 1)}`}
-                            width={240}
-                            height={150}
-                            alt="title"
-                          />
+                          <Skeleton
+                            loading={loading}
+                            active
+                            avatar={{ shape: "square", size: "large" }}
+                          >
+                            <Image
+                              src={`http://localhost:8080${
+                                item.hotelImages.length > 0
+                                  ? item.hotelImages[0].imageUrl
+                                  : "/placeholder.jpg"
+                              }`}
+                              width={240}
+                              height={150}
+                              alt="title"
+                            />
+                          </Skeleton>
                         }
                       >
                         <Rate disabled defaultValue={item.hotelStars} />

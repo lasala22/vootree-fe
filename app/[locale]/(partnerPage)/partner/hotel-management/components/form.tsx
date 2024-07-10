@@ -134,25 +134,27 @@ export default function Forms({
     if (sessionData) {
       const parsedData = JSON.parse(sessionData);
       form.setFieldsValue({
-        key: parsedData.key,
-        propertyName: parsedData.name,
-        address: parsedData.address,
-        status: parsedData.status,
-        stars: parsedData.hotelStars,
-        checkIn: dayjs(parsedData.checkInTime, "HH:mm"),
-        checkOut: dayjs(parsedData.checkOutTime, "HH:mm"),
-        description: parsedData.hotelDescription,
-        propertyType: parsedData.accommodationType.id,
-        facility: parsedData.hotelFacilities.map((f: any) => f.facility.facId),
+        key: parsedData?.key,
+        propertyName: parsedData?.name,
+        address: parsedData?.address,
+        status: parsedData?.status,
+        stars: parsedData?.hotelStars,
+        checkIn: dayjs(parsedData?.checkInTime, "HH:mm"),
+        checkOut: dayjs(parsedData?.checkOutTime, "HH:mm"),
+        description: parsedData?.hotelDescription,
+        propertyType: parsedData?.accommodationType.id,
+        facility: parsedData?.hotelFacilities?.map(
+          (f: any) => f.facility.facId
+        ),
 
-        hotelPhoneNum: parsedData.hotelPhoneNum,
-        city: parsedData.city,
-        userID: parsedData.userID,
+        hotelPhoneNum: parsedData?.hotelPhoneNum,
+        city: parsedData?.city,
+        userID: parsedData?.userID,
       });
       // Set hotel images state
       // setHotelImages(parsedData.hotelImages || []);
       setFileList(
-        parsedData.hotelImages.map((image: any) => ({
+        parsedData?.hotelImages?.map((image: any) => ({
           uid: image.id.toString(),
           name: image.imageName,
           url: `http://localhost:8080${image.imageUrl}`,

@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Row, message } from "antd";
+import { Button, Col, Divider, Modal, Row, message } from "antd";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
@@ -33,6 +33,8 @@ export default function PriceInfo({
   const [price, setPrice] = useState(0);
   const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [bookingId, setBookingId] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const router = useRouter();
 
   const checkToken = () => {
@@ -71,6 +73,17 @@ export default function PriceInfo({
     }).format(value);
   };
 
+  const saveBookingData = (data) => {
+    const timestamp = Date.now();
+    const key = `bookingData_${timestamp}`;
+    const expirationTime = timestamp + 45 * 60 * 1000; // 45 minutes in milliseconds
+    const dataWithExpiration = {
+      data: data,
+      expiration: expirationTime,
+    };
+    localStorage.setItem(key, JSON.stringify(dataWithExpiration));
+  };
+
   const handleBooking = async () => {
     const userId = checkToken()?.userId;
     const role = checkToken()?.role;
@@ -104,51 +117,100 @@ export default function PriceInfo({
         console.log(roomId);
         console.log(response.data.id);
         if (response.status === 201) {
-          const paymentValues = {
-            amount: totalPrice.toString(),
-            bookingId: response.data.id,
-            userId: userId,
-          };
-          const paymentObject = {
-            amount: totalPrice.toString(),
-            bookingId: response.data.id,
-            userId: userId,
-            bookingDate: bookingDate,
-            check_in_date: checkIn,
-            check_out_date: checkOut,
-            total_price: totalPrice,
-            num_of_rooms: rooms,
-            num_of_guests: guests,
-            email: email,
-            fullName: fullName,
-            phoneNum: phoneNum,
-            hotelName: hotelName,
-            roomType: roomType,
-            address: address,
-            checkInTime: checkInTime,
-            checkOutTime: checkOutTime,
-            hotelPhoneNum: hotelPhoneNum,
-            ownerEmail: ownerEmail,
-          };
-          localStorage.setItem("bookingInfo", JSON.stringify(paymentObject));
-          const queryString = new URLSearchParams(paymentValues).toString();
-          const payment = await axios.post(
-            `http://localhost:8080/api/payment/create?${queryString}`
-          );
-
-          console.log(payment.data.data);
-          if (payment.status === 200) {
-            const paymentUrl = payment.data.data;
-            console.log(payment.data);
-            window.location.href = paymentUrl;
-          }
-          message.success("Bạn đã đăng kí thành công!");
+          setBookingId(response.data.id);
+          showModal();
         }
       } catch (error) {
         console.error("Failed to submit data:", error);
         message.error("Failed to submit data");
       }
     }
+  };
+
+  const handlePayment = async () => {
+    const bookingDate = dayjs().format("YYYY-MM-DD");
+    const checkIn = checkInDate;
+    const checkOut = checkOutDate;
+    const paymentValues = {
+      amount: totalPrice.toString(),
+      bookingId: bookingId,
+      userId: checkToken()?.userId,
+    };
+    const paymentObject = {
+      amount: totalPrice.toString(),
+      bookingId: bookingId,
+      userId: checkToken()?.userId,
+      bookingDate: bookingDate,
+      check_in_date: checkIn,
+      check_out_date: checkOut,
+      total_price: totalPrice,
+      num_of_rooms: rooms,
+      num_of_guests: guests,
+      email: email,
+      fullName: fullName,
+      phoneNum: phoneNum,
+      hotelName: hotelName,
+      roomType: roomType,
+      address: address,
+      checkInTime: checkInTime,
+      checkOutTime: checkOutTime,
+      hotelPhoneNum: hotelPhoneNum,
+      ownerEmail: ownerEmail,
+    };
+    localStorage.setItem("bookingInfo", JSON.stringify(paymentObject));
+    const queryString = new URLSearchParams(paymentValues).toString();
+    try {
+      const payment = await axios.post(
+        `http://localhost:8080/api/payment/create?${queryString}`
+      );
+
+      console.log(payment.data.data);
+      if (payment.status === 200) {
+        const paymentUrl = payment.data.data;
+        console.log(payment.data);
+        window.location.href = paymentUrl;
+      }
+    } catch (error) {
+      console.error("Failed to create payment:", error);
+      message.error("Failed to create payment");
+    }
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    handlePayment();
+  };
+
+  const handleCancel = () => {
+    const bookingDate = dayjs().format("YYYY-MM-DD");
+    const checkIn = checkInDate;
+    const checkOut = checkOutDate;
+    const bookingData = {
+      bookingId: bookingId,
+      bookingDate: bookingDate,
+      check_in_date: checkIn,
+      check_out_date: checkOut,
+      total_price: totalPrice,
+      num_of_rooms: rooms,
+      num_of_guests: guests,
+      email: email,
+      fullName: fullName,
+      phoneNum: phoneNum,
+      hotelName: hotelName,
+      roomType: roomType,
+      address: address,
+      checkInTime: checkInTime,
+      checkOutTime: checkOutTime,
+      hotelPhoneNum: hotelPhoneNum,
+      ownerEmail: ownerEmail,
+    };
+    saveBookingData(bookingData);
+    setIsModalVisible(false);
+    message.info("Dữ liệu đã được lưu lại trong vòng 45 phút.");
   };
 
   return (
@@ -206,6 +268,16 @@ export default function PriceInfo({
           <strong className="text-xl">Tiếp tục thanh toán</strong>
         </Button>
       </Row>
+      <Modal
+        title="Xác nhận thanh toán"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Có"
+        cancelText="Không"
+      >
+        <p>Bạn có chắc chắn muốn tiếp tục thanh toán không?</p>
+      </Modal>
     </>
   );
 }
