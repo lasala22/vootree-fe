@@ -32,7 +32,7 @@ const CountdownTimer = ({ expiration }) => {
     <div>
       {remainingTime > 0 ? (
         <Tag color="#007ce8" className="text-semibold">
-          <p className="text-lg">
+          <p className="">
             Đang đợi chọn phương thức thanh toán • {formatTime(remainingTime)}
           </p>
         </Tag>

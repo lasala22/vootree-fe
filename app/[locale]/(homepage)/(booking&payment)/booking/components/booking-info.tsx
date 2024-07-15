@@ -2,15 +2,20 @@ import { Col, Divider, Image, Row, message } from "antd";
 
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import axios from "axios";
 export default function BookingInfo({
   roomData,
   checkInValue,
   checkOutValue,
   setDaysCount,
+  hotelData,
 }) {
-  const hotelName = roomData ? roomData?.hotel?.hotelName : "Không tồn tại";
+  // const hotelName = roomData ? roomData?.hotel?.hotelName : "Không tồn tại";
+  // const hotelImage = roomData?.hotel?.hotelImages[0]?.imageUrl;
+
+  const hotelImages = hotelData?.hotelImages[0];
+  const hotelName = hotelData?.hotelName;
   const roomType = roomData?.roomType?.typeName;
-  const hotelImage = roomData?.hotel?.hotelImages[1]?.imageUrl;
   const roomPrice = roomData?.price;
   const capacity = roomData?.capacity;
   const [checkInDate, setCheckInDate] = useState("");
@@ -40,9 +45,11 @@ export default function BookingInfo({
       <Row className="h-24 ">
         <Col span={8}>
           <Image
-            src={`http://localhost:8080${hotelImage}`}
+            src={`http://localhost:8080${hotelImages?.imageUrl}`}
             alt=""
-            layout="fill"
+            // width={170}
+            // height={110}
+            //layout="fill"
           />
         </Col>
         <Col span={16} className="px-4">

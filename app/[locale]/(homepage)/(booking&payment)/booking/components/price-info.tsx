@@ -157,6 +157,8 @@ export default function PriceInfo({
       hotelPhoneNum: hotelPhoneNum,
       ownerEmail: ownerEmail,
     };
+    console.log(paymentValues);
+
     localStorage.setItem("bookingInfo", JSON.stringify(paymentObject));
     const queryString = new URLSearchParams(paymentValues).toString();
     try {

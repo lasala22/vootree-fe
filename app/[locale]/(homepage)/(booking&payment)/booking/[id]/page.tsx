@@ -26,7 +26,7 @@ const Homepage = ({ params }: { params: { id: string } }) => {
   const [email, setEmail] = useState();
   const [phoneNum, setPhoneNum] = useState();
   const [role, setRole] = useState();
-
+  const [hotelData, setHotelData] = useState();
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const checkInValue = searchParams.get("checkIn") || "";
@@ -39,13 +39,20 @@ const Homepage = ({ params }: { params: { id: string } }) => {
       const response = await fetch(`http://localhost:8080/api/rooms/${id}`); // API backend trả về toàn bộ giá trị
       const allData = await response.json();
       setRoomData(allData); // Lưu trữ toàn bộ dữ liệu
+      if (response.status === 200) {
+        const response = await axios.get(
+          `http://localhost:8080/api/hotels/info/${id}`
+        );
+        setHotelData(response.data);
+      }
     };
     fetchData();
     setCheckInValue(checkInValue);
     setCheckOutValue(checkOutValue);
     setRooms(roomsToNum);
     setGuests(guestToNum);
-  }, [id]);
+    console.log(hotelData);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -103,6 +110,7 @@ const Homepage = ({ params }: { params: { id: string } }) => {
             <BookingInfo
               setDaysCount={setDaysCount}
               roomData={roomData}
+              hotelData={hotelData}
               checkInValue={checkInValue}
               checkOutValue={checkOutValue}
             />

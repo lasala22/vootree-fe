@@ -81,80 +81,97 @@ const MyBooking = () => {
 
   return (
     <div className="p-10">
-      <div>
-        <p className="text-2xl font-semibold">Đang mua hàng</p>
-      </div>
-      <div className="mt-5">
-        {bookings.map((booking: any) => (
-          <Collapse
-            key={booking.key}
-            items={[
-              {
-                showArrow: false,
-                key: `${booking.key}`,
-                label: (
-                  <div className="p-2 flex">
-                    <div className="w-6/12">
-                      <span className="text-lg text-sky-600 font-semibold">
-                        {booking.data.hotelName}
-                      </span>
-                      <p className="text-sky-500 font-semibold">
-                        Phòng: {booking.data.roomType}
-                      </p>
-                      <p className="text-stone-500 font-semibold">
-                        Mã đặt chỗ VooTreeVeeVuu:{" "}
-                        <span className="font-bold">
-                          {" "}
-                          {booking.data.bookingId}
-                        </span>
-                      </p>
-                      <div className="mt-2">
-                        <CountdownTimer expiration={booking.expiration} />
+      {bookings?.length > 0 ? (
+        <div className="border rounded-md shadow-md p-5">
+          <div>
+            <p className="text-2xl font-bold">Đang mua hàng</p>
+          </div>
+
+          <div className="mt-5 p-5">
+            {bookings.map((booking: any) => (
+              <Collapse
+                key={booking.key}
+                items={[
+                  {
+                    showArrow: false,
+                    key: `${booking.key}`,
+                    label: (
+                      <div className="p-2 flex">
+                        <div className="w-6/12">
+                          <span className="text-lg text-sky-600 font-semibold">
+                            {booking.data.hotelName}
+                          </span>
+                          <p className="text-sky-500 font-semibold">
+                            Phòng: {booking.data.roomType}
+                          </p>
+                          <p className="text-stone-500 font-semibold">
+                            Mã đặt chỗ VooTreeVeeVuu:{" "}
+                            <span className="font-bold">
+                              {" "}
+                              {booking.data.bookingId}
+                            </span>
+                          </p>
+                          <div className="mt-2">
+                            <CountdownTimer expiration={booking.expiration} />
+                          </div>
+                        </div>
+                        <div className="w-6/12 text-end items-center pt-5">
+                          <p className="text-red-500 text-lg font-bold">
+                            {formatPrice(booking.data.total_price)}
+                          </p>
+                          <Button
+                            type="text"
+                            className="text-sky-600 font-bold hover:underline"
+                            onClick={() =>
+                              handlePayment(booking.data, booking.key)
+                            }
+                          >
+                            Tiếp tục thanh toán
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="w-6/12 text-end items-center pt-5">
-                      <p className="text-red-500 text-lg font-bold">
-                        {formatPrice(booking.data.total_price)}
-                      </p>
-                      <Button
-                        type="text"
-                        className="text-sky-600 font-bold hover:underline"
-                        onClick={() => handlePayment(booking.data, booking.key)}
-                      >
-                        Tiếp tục thanh toán
-                      </Button>
-                    </div>
-                  </div>
-                ),
-                children: (
-                  <div className="font-semibold">
-                    <div>
-                      <div>
-                        <span>Ngày nhận/trả phòng:</span>{" "}
-                        <span className="text-sky-500">
-                          {dayjs(booking.data.check_in_date).format(
-                            "DD-MM-YYYY"
-                          )}{" "}
-                          /{" "}
-                          {dayjs(booking.data.check_out_date).format(
-                            "DD-MM-YYYY"
-                          )}
-                        </span>
+                    ),
+                    children: (
+                      <div className="font-semibold">
+                        <div>
+                          <div>
+                            <span>Ngày nhận/trả phòng:</span>{" "}
+                            <span className="text-sky-500">
+                              {dayjs(booking.data.check_in_date).format(
+                                "DD-MM-YYYY"
+                              )}{" "}
+                              /{" "}
+                              {dayjs(booking.data.check_out_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <span>Số người/phòng:</span>{" "}
+                          <span className="text-sky-500">
+                            {booking.data.num_of_guests} Người /{" "}
+                            {booking.data.num_of_rooms} Phòng
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="mt-2">
-                      <span>Số người/phòng:</span>{" "}
-                      <span className="text-sky-500">
-                        {booking.data.num_of_guests} Người /{" "}
-                        {booking.data.num_of_rooms} Phòng
-                      </span>
-                    </div>
-                  </div>
-                ),
-              },
-            ]}
-          />
-        ))}
+                    ),
+                  },
+                ]}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+      <div className="border rounded-md shadow-md p-5">
+        <div>
+          <p className="text-2xl font-bold">
+            Vé điện tử & phiếu thanh toán hiện hành
+          </p>
+        </div>
+        <div></div>
       </div>
     </div>
   );

@@ -115,7 +115,7 @@ const PendingTable = () => {
             }[];
           },
           room: {
-            hotel: { id: { toString: () => any } };
+            hotelId: { toString: () => any };
             id: { toString: () => any };
             roomType: { typeName: any };
             price: any;
@@ -124,7 +124,7 @@ const PendingTable = () => {
             roomSize: any;
           }
         ) => {
-          const hotelId = room.hotel.id.toString();
+          const hotelId = room.hotelId.toString();
           if (!acc[hotelId]) {
             acc[hotelId] = [];
           }

@@ -103,6 +103,9 @@ export default function Page() {
       currency: "VND",
     }).format(value);
   };
+
+  const handleDeleteBookingInfo = () => {};
+
   return (
     <>
       <div className="items-center justify-center flex p-10">
@@ -189,6 +192,7 @@ export default function Page() {
               <Link
                 href={"/home"}
                 className="text-blue-500 text-xl font-semibold hover:text-blue-400 hover:underline"
+                onClick={handleDeleteBookingInfo}
               >
                 Về trang chủ
               </Link>

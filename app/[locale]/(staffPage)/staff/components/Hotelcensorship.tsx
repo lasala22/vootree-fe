@@ -88,7 +88,9 @@ const Hotelcensorship = () => {
       try {
         const response = await axios.get("http://localhost:8080/api/hotels");
         const fetchedData = response.data
-          .filter((item) => item.status === "PENDING" && item.edit_status === "CREATE") // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
+          .filter(
+            (item) => item.status === "PENDING" && item.edit_status === "CREATE"
+          ) // Lọc chỉ giữ lại các khách sạn có trạng thái là "active"
           .map((item) => ({
             key: item.id.toString(),
             ...item,
@@ -105,25 +107,27 @@ const Hotelcensorship = () => {
       try {
         const response = await axios.get("http://localhost:8080/api/rooms");
         const fetchedRoomData = response.data
-        .filter((item) => item.status === "PENDING" && item.edit_status === "CREATE")
-        .reduce((acc, room) => {
-          const hotelId = room.hotel.id.toString();
-          if (!acc[hotelId]) {
-            acc[hotelId] = [];
-          }
-          acc[hotelId].push({
-            key: room.id.toString(),
-            roomNumber: room.id,
-            roomType: room.roomType.typeName,
-            price: room.price,
-            capacity: room.capacity,
-            quantity: room.quantity,
-            roomSize: room.roomSize,
-            edit_status:room.edit_status
-          });
+          .filter(
+            (item) => item.status === "PENDING" && item.edit_status === "CREATE"
+          )
+          .reduce((acc, room) => {
+            const hotelId = room.hotelId.toString();
+            if (!acc[hotelId]) {
+              acc[hotelId] = [];
+            }
+            acc[hotelId].push({
+              key: room.id.toString(),
+              roomNumber: room.id,
+              roomType: room.roomType.typeName,
+              price: room.price,
+              capacity: room.capacity,
+              quantity: room.quantity,
+              roomSize: room.roomSize,
+              edit_status: room.edit_status,
+            });
 
-          return acc;
-        }, {});
+            return acc;
+          }, {});
         setRoomsData(fetchedRoomData);
         // console.log( fetchedRoomData);
       } catch (error) {
@@ -322,42 +326,42 @@ const Hotelcensorship = () => {
     {
       title: "Address",
       dataIndex: "address",
-      
+
       editable: false,
       ...getColumnSearchProps("address"),
     },
     {
       title: "City",
       dataIndex: "city",
-      
+
       editable: false,
       ...getColumnSearchProps("city"),
     },
     {
       title: "Stars",
       dataIndex: "hotelStars",
-      
+
       editable: false,
       ...getColumnSearchProps("hotelStars"),
     },
     {
       title: "Phone Number",
       dataIndex: "hotelPhoneNum",
-      
+
       editable: false,
       ...getColumnSearchProps("hotelPhoneNum"),
     },
     {
       title: "checkInTime",
       dataIndex: "checkInTime",
-      
+
       editable: false,
       ...getColumnSearchProps("checkInTime"),
     },
     {
       title: "checkOutTime",
       dataIndex: "checkOutTime",
-      
+
       editable: false,
       ...getColumnSearchProps("checkOutTime"),
     },
@@ -460,7 +464,7 @@ const Hotelcensorship = () => {
       {
         title: "Edit Status",
         dataIndex: "edit_status",
-        
+
         editable: false,
       },
       {
@@ -508,7 +512,7 @@ const Hotelcensorship = () => {
           defaultExpandedRowKeys: ["0"],
         }}
         scroll={{
-          x:2000,
+          x: 2000,
           y: 600,
         }}
       />

@@ -67,7 +67,7 @@ export default function Page() {
         "http://localhost:8080/api/auth/register",
         newValues
       );
-      if (response.data.success) {
+      if (response.status === 200) {
         message.success("Đăng ký thành công!");
         router.push("/login");
       } else {

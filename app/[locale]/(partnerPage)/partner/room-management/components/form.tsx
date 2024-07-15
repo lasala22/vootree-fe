@@ -242,8 +242,27 @@ export default function Forms_Room({
   };
 
   const onFinish = async (values: any) => {
+    // // Filter out files that are already uploaded
+    // const filesToUpdate = fileList.filter((file) => file.status !== "done");
+    // console.log("crazy" + JSON.stringify(filesToUpdate));
+    // const formData = new FormData();
+    // if (filesToUpdate.length > 0) {
+    //   filesToUpdate.forEach((file) => {
+    //     formData.append("files", file.originFileObj || file);
+    //   });
+    // }
+    // console.log(formData);
+    // formData.append("roomDTO",JSON.stringify({..values,
+    //   //   capacity: values.roomCapacity,
+    // //   price: values.roomPrice,
+    // //   quantity: values.roomQuantity,
+    // //   roomTypeId: values.roomType,
+    // //   status: values.roomStatus,
+    // }))
+
     // Change 'propertyName' to 'hotelName' in the values object
     const updatedValues = {
+      // ...formData,
       ...values,
       capacity: values.roomCapacity,
       price: values.roomPrice,
@@ -251,7 +270,7 @@ export default function Forms_Room({
       roomTypeId: values.roomType,
       status: values.roomStatus,
     };
-    console.log(updatedValues);
+    console.log("formData", JSON.stringify(values.roomFacilities));
 
     try {
       const response = await axios.put(
@@ -264,6 +283,7 @@ export default function Forms_Room({
       // Filter out files that are already uploaded
       const filesToUpdate = fileList.filter((file) => file.status !== "done");
       console.log("crazy" + JSON.stringify(filesToUpdate));
+      console.log("list file", fileList);
       if (filesToUpdate.length > 0) {
         const formData = new FormData();
         filesToUpdate.forEach((file) => {
@@ -423,13 +443,13 @@ export default function Forms_Room({
                 </Form.Item>
               </Col>
             </Row>
-            <Row gutter={24}>
+            {/* <Row gutter={24}>
               <Col span={24}>
                 <Form.Item label="Description" name="description">
                   <TextArea rows={4} disabled={isFormDisabled} />
                 </Form.Item>
               </Col>
-            </Row>
+            </Row> */}
             <Row gutter={24}>
               <Col span={24}>
                 <Form.Item<FieldType>

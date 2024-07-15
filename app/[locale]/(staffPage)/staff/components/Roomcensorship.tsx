@@ -88,7 +88,9 @@ const Roomcensorship = () => {
       try {
         const response = await axios.get("http://localhost:8080/api/rooms");
         const fetchedData = response.data
-          .filter((item) => item.status === "PENDING" && item.edit_status === "UPDATE") // Lọc các tài khoản có role là "CUSTOMER"
+          .filter(
+            (item) => item.status === "PENDING" && item.edit_status === "UPDATE"
+          ) // Lọc các tài khoản có role là "CUSTOMER"
           .map((item, index) => ({
             key: item.id.toString(),
             capacity: item.capacity,
@@ -97,7 +99,7 @@ const Roomcensorship = () => {
             roomSize: item.roomSize,
             typename: item.roomType.typeName,
             serveBreakfast: item.serveBreakfast,
-            hotelName: item.hotel.hotelName,
+            hotelName: item.hotelName,
             roomFacilities: item.roomFacilities,
             status: item.status,
             ...item,
@@ -130,7 +132,10 @@ const Roomcensorship = () => {
         `Saving data for key ${key} to:`,
         `http://localhost:8080/api/accounts/update/${key}`
       );
-      await axios.put(`http://localhost:8080/api/rooms/staff/update/${key}`, row);
+      await axios.put(
+        `http://localhost:8080/api/rooms/staff/update/${key}`,
+        row
+      );
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -353,7 +358,7 @@ const Roomcensorship = () => {
     {
       title: "Edit Status",
       dataIndex: "edit_status",
-      
+
       editable: false,
     },
     {

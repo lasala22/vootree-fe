@@ -53,7 +53,7 @@ export default function Tables({
       .then((response) => {
         const fetchedData = response.data.map((item: any, index: number) => ({
           key: item.id,
-          name: item.hotel.hotelName,
+          name: item.hotelName,
           roomType: item.roomType,
           typeName: item.roomType.typeName,
           price: item.price,
@@ -62,7 +62,7 @@ export default function Tables({
           roomSize: item.roomSize,
           description: item.description,
           serveBreakfast: item.serveBreakfast,
-          hotelId: item.hotel.id,
+          hotelId: item.hotelId,
           roomFacilities: item.roomFacilities,
           roomStatus: item.status,
 

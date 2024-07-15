@@ -81,7 +81,7 @@ export default function HotelInfo({ data }: HotelInfoProps) {
             <strong className="text-xl">{data.hotelName}</strong>
             <div className="mt-2 flex">
               <Tag color="#2db7f5">{type}</Tag>
-              <Rate disabled defaultValue={stars} />
+              <Rate disabled value={stars} />
             </div>
             <div className="flex mt-2">
               <MapPinIcon className="h-6 w-6 text-sky-600 flex" />

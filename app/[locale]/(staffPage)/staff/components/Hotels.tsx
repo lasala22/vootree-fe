@@ -107,7 +107,7 @@ const Hotels = () => {
       try {
         const response = await axios.get("http://localhost:8080/api/rooms");
         const fetchedRoomData = response.data.reduce((acc, room) => {
-          const hotelId = room.hotel.id.toString();
+          const hotelId = room.hotelId.toString();
           if (!acc[hotelId]) {
             acc[hotelId] = [];
           }
@@ -419,22 +419,20 @@ const Hotels = () => {
     //   if (column.dataIndex) {
     //     // Lấy đối tượng filterDropdownProps từ getColumnSearchProps
     //     const { filterDropdownProps } = getColumnSearchProps(column.dataIndex);
-        
+
     //     // Lấy clearFilters từ filterDropdownProps
     //     const { clearFilters } = filterDropdownProps;
-        
+
     //     // Gọi clearFilters để xóa bộ lọc của cột
     //     clearFilters();
     //   }
     // });
-  
+
     // Sau đó set lại searchText và searchedColumn về giá trị mặc định
     setSearchText("");
     setSearchedColumn("");
   };
-  
-  
-  
+
   const expandedRowRender = (record) => {
     const columns = [
       // {
@@ -451,7 +449,11 @@ const Hotels = () => {
         title: "Giá",
         dataIndex: "price",
         key: "price",
-        render: (text) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(text),
+        render: (text) =>
+          new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }).format(text),
       },
       {
         title: "Sức chứa",

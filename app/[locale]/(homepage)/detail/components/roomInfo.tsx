@@ -1,7 +1,7 @@
 import { UserIcon } from "@heroicons/react/24/outline";
 import { Button, Card, Col, Row } from "antd";
 import Image from "next/legacy/image";
-import React from "react";
+import React, { useEffect } from "react";
 import RoomFacilities from "./roomFacilities";
 import { url } from "inspector";
 import Link from "next/link";
@@ -9,6 +9,10 @@ import Link from "next/link";
 export default function RoomInfo({ data }) {
   const validateRoom = data?.rooms?.length > 0;
   const validateImg = data?.rooms?.room_images?.length > 0;
+
+  useEffect(() => {
+    console.log(data?.rooms);
+  });
 
   const formatNumber = (number) => {
     return number?.toLocaleString("vi-VN", {
@@ -34,7 +38,7 @@ export default function RoomInfo({ data }) {
               <Row className="mt-2">
                 <Col span={7} className="h-52">
                   <Image
-                    src={`http://localhost:8080/${item.room_images
+                    src={`http://localhost:8080${item.room_images
                       .map((img) => img.imageUrl)
                       .slice(0, 1)}`}
                     width={300}
