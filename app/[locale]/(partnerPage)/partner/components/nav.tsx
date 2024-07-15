@@ -42,7 +42,7 @@ export default function Navbar({ searchbar, logo }) {
   const menu = (
     <AntMenu>
       <AntMenu.Item key="0">
-        <a href="/profile">
+        <a href="/partner/profile">
           <a className=" font-semibold">Profile</a>
         </a>
       </AntMenu.Item>
