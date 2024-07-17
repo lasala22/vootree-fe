@@ -2,7 +2,7 @@
 import { Anchor, Card, message } from "antd";
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  useCallback } from "react";
 import HotelInfo from "../components/hotelInfo";
 import PolicyInfo from "../components/policyInfo";
 import RateInfo from "../components/rateInfo";
@@ -24,35 +24,39 @@ const gridStyle: React.CSSProperties = {
 export default function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const [data, setData] = useState([]);
-  useEffect(() => {
+  const [roomsQuantity, setRoomsQuantity] = useState("");
+  const [hotelid, setHotelid] = useState("");
+ 
+  const fetchData = useCallback(async () => {
     const searchParams = new URLSearchParams(window.location.search);
     const searchValue = searchParams.get("search");
     const checkInValue = searchParams.get("checkIn");
     const checkOutValue = searchParams.get("checkOut");
     const guestsValue = searchParams.get("guests");
-    const roomsValue = searchParams.get("rooms");
-    const fetchData = async () => {
-      const response = await axios.get(
-        `http://localhost:8080/api/hotels/${id}`,
-        {
-          params: {
-            id: id,
-            city: searchValue,
-            hotelName: searchValue,
-            capacity: guestsValue,
-            checkinDate: checkInValue,
-            checkoutDate: checkOutValue,
-            rooms: roomsValue,
-          },
-        }
-      ); // API backend trả về toàn bộ giá trị
-      const allData = await response.data;
-
-      setData(allData); // Lưu trữ toàn bộ dữ liệu
-    };
-
-    fetchData();
+    const roomsValue = searchParams.get("rooms") || "";
+    const response = await axios.get(
+      `http://localhost:8080/api/hotels/${id}`,
+      {
+        params: {
+          id: id,
+          city: searchValue,
+          hotelName: searchValue,
+          capacity: guestsValue,
+          checkinDate: checkInValue,
+          checkoutDate: checkOutValue,
+          rooms: roomsValue,
+        },
+      }
+    ); // API backend trả về toàn bộ giá trị
+    const allData = await response.data;
+    setHotelid(id);
+    setData(allData); // Lưu trữ toàn bộ dữ liệu
+    setRoomsQuantity(roomsValue);
   }, [id]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <>
@@ -107,7 +111,7 @@ export default function Page({ params }: { params: { id: string } }) {
           }}
           className="mt-10 "
         >
-          <RoomInfo data={data} />
+          <RoomInfo data={data} roomsQuantity={roomsQuantity} fetchData={fetchData} hotelid={hotelid}/>
         </div>
         <div
           id="part-3"

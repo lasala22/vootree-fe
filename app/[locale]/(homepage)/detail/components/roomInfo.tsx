@@ -1,14 +1,16 @@
 import { UserIcon } from "@heroicons/react/24/outline";
-import { Button, Card, Col, Row } from "antd";
+import { Button, Card, Col, message, Row } from "antd";
 import Image from "next/legacy/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import RoomFacilities from "./roomFacilities";
 import { url } from "inspector";
 import Link from "next/link";
+import axios from "axios";
 
-export default function RoomInfo({ data }) {
+export default function RoomInfo({ data, roomsQuantity, fetchData, hotelid }) {
   const validateRoom = data?.rooms?.length > 0;
   const validateImg = data?.rooms?.room_images?.length > 0;
+  const [availableRooms, setAvailableRooms] = useState();
 
   useEffect(() => {
     console.log(data?.rooms);
@@ -21,6 +23,78 @@ export default function RoomInfo({ data }) {
       maximumFractionDigits: 0,
     });
   };
+
+  const handleButtonClick = async (item) => {
+    // const availableRooms = data?.rooms?.availableRooms
+    // try {
+    //   await fetchData(); // Chờ fetchData hoàn thành
+    //   // Sau khi fetchData đã hoàn thành, kiểm tra điều kiện
+    //   if (roomsQuantity <= availableRooms) {
+    //     console.log(availableRooms);
+    //     const query = new URLSearchParams(window.location.search).toString();
+    //     window.location.href = `/booking/${availableRooms}?${query}`;
+    //   } else {
+    //     alert("Not enough available rooms");
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching data:", error);
+    //   Xử lý lỗi khi fetchData không thành công
+    // }
+
+    try {
+      // await fetchData(); // Chờ fetchData hoàn thành
+      // Sau khi fetchData đã hoàn thành, kiểm tra điều kiện
+
+      const fetchDataRoom = async () => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const searchValue = searchParams.get("search");
+        const checkInValue = searchParams.get("checkIn");
+        const checkOutValue = searchParams.get("checkOut");
+        const guestsValue = searchParams.get("guests");
+        const roomsValue = searchParams.get("rooms") || "";
+        const response = await axios.get(
+          `http://localhost:8080/api/hotels/${hotelid}`,
+          {
+            params: {
+              id: hotelid,
+              city: searchValue,
+              hotelName: searchValue,
+              capacity: guestsValue,
+              checkinDate: checkInValue,
+              checkoutDate: checkOutValue,
+              rooms: roomsValue,
+            },
+          }
+        ); // API backend trả về toàn bộ giá trị
+        const allData = await response.data;
+
+        const rooms = allData.rooms;
+        const room = rooms.filter((room) => room.id == item.id);
+        console.log(room);
+        if(room === undefined){
+          message.error("Not enough available rooms")
+        }else{
+          const available = room[0]?.availableRooms;
+          console.log(available);
+          if (roomsQuantity > available || available === undefined) {
+            message.error("Not enough available rooms")
+          } else {
+            // alert("Not enough available rooms");
+            console.log(available);
+            const query = new URLSearchParams(window.location.search).toString();
+            window.location.href = `/booking/${item.id}?${query}`;
+          }
+        }
+       
+      };
+
+      fetchDataRoom();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    
+  };
+
   return (
     <div
       className="mx-52 border h-full p-5 shadow-lg"
@@ -112,9 +186,9 @@ export default function RoomInfo({ data }) {
                       <Card.Grid
                         hoverable={false}
                         style={{ width: "20%" }}
-                        className="items-center text-start justify-center flex"
+                        className="flex flex-col items-center text-start justify-center"
                       >
-                        <Link
+                        {/* <Link
                           href={{
                             pathname: `/booking/${item.id}`,
                             query: {
@@ -123,16 +197,19 @@ export default function RoomInfo({ data }) {
                               ),
                             },
                           }}
+                        > */}
+                        <Button
+                          size="large"
+                          type="primary"
+                          danger
+                          onClick={() => handleButtonClick(item)}
                         >
-                          <Button
-                            size="large"
-                            type="primary"
-                            danger
-                            //href={}
-                          >
-                            Chọn phòng
-                          </Button>
-                        </Link>
+                          Chọn phòng
+                        </Button>
+                        {/* </Link> */}
+                        <strong className="my-2 text-orange-600 text-sm">
+                          Chỉ còn {item.availableRooms} phòng
+                        </strong>
                       </Card.Grid>
                     </Card>
                   </div>
