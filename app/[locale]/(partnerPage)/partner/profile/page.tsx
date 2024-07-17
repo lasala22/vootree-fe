@@ -17,6 +17,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import moment from "moment";
 import { jwtDecode } from "jwt-decode";
+import withAuth from "@/components/withAuth";
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -631,4 +632,4 @@ const PartnerProfile = () => {
   );
 };
 
-export default PartnerProfile;
+export default withAuth(PartnerProfile, "PARTNER");

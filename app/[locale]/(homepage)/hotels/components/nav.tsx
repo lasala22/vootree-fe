@@ -104,7 +104,7 @@ export default function Navbar({ bg, searchbar, logo }) {
                           Hợp tác với chúng tôi
                         </Link>
                         <Link
-                          href="/booking"
+                          href="/profile?tab=myBooking"
                           className="  hover:bg-gray-700 hover:bg-opacity-55 hover:  rounded-md px-3 py-2 text-sm font-medium"
                         >
                           Khách sạn đang đặt

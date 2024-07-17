@@ -5,8 +5,9 @@ import Tables_Room from "./components/table";
 import { Button, Col, Row, Spin } from "antd";
 import Link from "next/link";
 import { PlusOutlined } from "@ant-design/icons";
+import withAuth from "@/components/withAuth";
 
-export default function Page() {
+const Page = () => {
   const [selectedRow, setSelectedRow] = useState<any | null>(null);
   const [reloadTable, setReloadTable] = useState(false);
   const [isFormDisabled, setIsFormDisabled] = useState(true);
@@ -86,4 +87,5 @@ export default function Page() {
       )}
     </div>
   );
-}
+};
+export default withAuth(Page, "PARTNER");

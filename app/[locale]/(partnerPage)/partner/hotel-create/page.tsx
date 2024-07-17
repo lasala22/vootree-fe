@@ -25,6 +25,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { UploadFile } from "antd";
 import type { UploadProps } from "antd";
+import withAuth from "@/components/withAuth";
 const { Dragger } = Upload;
 
 const formats = "HH:mm";
@@ -40,10 +41,13 @@ const MultiStepForm = () => {
   const [userId, setUserId] = useState();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [roomList, setRoomList] = useState<UploadFile[]>([]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const decode = jwtDecode(token);
-    setUserId(decode?.user_id);
+    if (token) {
+      const decode = jwtDecode(token);
+      setUserId(decode?.user_id);
+    }
 
     const getFacilities = async () => {
       const response = await fetch("http://localhost:8080/api/facilities"); // API backend trả về toàn bộ giá trị
@@ -1112,4 +1116,4 @@ const MultiStepForm = () => {
   );
 };
 
-export default MultiStepForm;
+export default withAuth(MultiStepForm, "PARTNER");

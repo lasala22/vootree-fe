@@ -55,7 +55,7 @@ export default function SearchBarHome() {
         const filteredHotelName = data.map((item) => item.hotelName);
         const citySet = new Set(data.map((item) => item.city));
         const hotelCities = [...citySet];
-        const combinedData = filteredHotelName.concat(hotelCities);
+        const combinedData = hotelCities.concat(filteredHotelName);
         setSelectionData(combinedData);
         setFilteredOptions(combinedData.slice(0, 10));
       } catch (error) {

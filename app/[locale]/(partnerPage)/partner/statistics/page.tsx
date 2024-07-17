@@ -4,10 +4,11 @@ import { Layout, Menu, Spin } from "antd";
 import { LineChartOutlined, BarChartOutlined } from "@ant-design/icons";
 import StatisticsHotel from "./components/StatisticsHotel";
 import StatisticsRoom from "./components/StatisticsRoom";
+import withAuth from "@/components/withAuth";
 
 const { Sider, Content } = Layout;
 
-export default function Page() {
+const Page = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMenu, setSelectedMenu] = useState("1");
 
@@ -72,4 +73,5 @@ export default function Page() {
       )}
     </Layout>
   );
-}
+};
+export default withAuth(Page, "PARTNER");

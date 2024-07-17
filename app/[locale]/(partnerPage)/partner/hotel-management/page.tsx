@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { Spin } from "antd";
 import Homepage from "./components/homepage";
+import withAuth from "@/components/withAuth";
 
-export default function Page() {
+const Page = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,4 +34,5 @@ export default function Page() {
       )}
     </div>
   );
-}
+};
+export default withAuth(Page, "PARTNER");

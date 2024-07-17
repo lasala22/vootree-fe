@@ -48,6 +48,31 @@ export default function Page() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/oauth2/authorization/google`
+      );
+      localStorage.setItem("token", response.data.token);
+      const decodeToken = jwtDecode(response.data.token);
+      const tokenRole = decodeToken?.roles;
+      if (tokenRole[0] == "PARTNER") {
+        router.push("/partner/home");
+      } else if (tokenRole[0] == "CUSTOMER") {
+        const redirectToBooking = localStorage.getItem("bookingHref");
+        if (redirectToBooking) {
+          localStorage.removeItem("bookingHref");
+          router.push(redirectToBooking);
+        } else {
+          router.push("/home");
+        }
+      }
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center bg-blue-900  p-4">
@@ -184,15 +209,16 @@ export default function Page() {
               </p>
               <div className="flex justify-center mt-2">
                 <a
-                  href="#"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900 mr-4 flex items-center"
+                  onClick={handleGoogleLogin}
+                  // href="http://localhost:8080/oauth2/authorization/google"
+                  className="text-sm font-medium text-gray-700 hover:text-sky-600 mr-4 flex items-center"
                 >
                   <GoogleOutlined className="mr-1" />
                   Login with Google
                 </a>
                 <a
-                  href="#"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center"
+                  href="http://localhost:8080/oauth2/authorization/facebook"
+                  className="text-sm font-medium text-gray-700 hover:text-sky-600 flex items-center"
                 >
                   <FacebookOutlined className="mr-1" />
                   Login with Facebook
@@ -201,6 +227,7 @@ export default function Page() {
               <div className="mt-2">
                 <a
                   href="#"
+                  onClick={handelCancel}
                   className="text-xs text-gray-600 hover:text-gray-800 mr-2"
                 >
                   Privacy Policy

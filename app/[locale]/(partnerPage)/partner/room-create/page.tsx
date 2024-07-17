@@ -21,10 +21,11 @@ import React, { useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd";
 import type { UploadProps } from "antd";
+import withAuth from "@/components/withAuth";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-export default function RoomCreate() {
+const RoomCreate = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -191,7 +192,7 @@ export default function RoomCreate() {
       // Xử lý response từ server (nếu cần)
       console.log("Server response:", response.data);
 
-      if (response.status === 200 || response.status === 201){
+      if (response.status === 200 || response.status === 201) {
         const roomId = response.data.id;
 
         // Upload room images
@@ -219,7 +220,7 @@ export default function RoomCreate() {
         }
       }
       // Thực hiện fetch lại dữ liệu khách sạn đã chọn sau khi thêm phòng thành công
-     
+
       // Reset form sau khi submit thành công (nếu cần)
       form.resetFields();
 
@@ -234,7 +235,6 @@ export default function RoomCreate() {
     }
   };
 
-  
   return (
     <>
       <div className="p-20 px-40">
@@ -430,40 +430,39 @@ export default function RoomCreate() {
               </div>
             </div>
             <div className="mt-10">
-                <span className="text-lg font-bold">Hình ảnh</span>
-                <p className="font-semibold">
-                  Thêm hình ảnh đại diện cho phòng của bạn
-                </p>
-                <div className="border rounded-md p-2 mt-2">
-                  <Form.Item
-                    name="images"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng tải lên ít nhất một hình ảnh!",
-                      },
-                    ]}
+              <span className="text-lg font-bold">Hình ảnh</span>
+              <p className="font-semibold">
+                Thêm hình ảnh đại diện cho phòng của bạn
+              </p>
+              <div className="border rounded-md p-2 mt-2">
+                <Form.Item
+                  name="images"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng tải lên ít nhất một hình ảnh!",
+                    },
+                  ]}
+                >
+                  <Upload.Dragger
+                    {...propsRoom}
+                    listType="picture"
+                    // fileList={[...listHotelImg]}
                   >
-                    <Upload.Dragger
-                      {...propsRoom}
-                      listType="picture"
-                      // fileList={[...listHotelImg]}
-                    >
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">
-                        Click hoặc kéo thả hình ảnh vào đây để tải lên
-                      </p>
-                      <p className="ant-upload-hint">
-                        Hỗ trợ tải lên từng tập tin hoặc nhiều tập tin. Cấm
-                        nghiêm ngặt tải lên dữ liệu công ty hoặc các tập tin bị
-                        cấm khác.
-                      </p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </div>
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">
+                      Click hoặc kéo thả hình ảnh vào đây để tải lên
+                    </p>
+                    <p className="ant-upload-hint">
+                      Hỗ trợ tải lên từng tập tin hoặc nhiều tập tin. Cấm nghiêm
+                      ngặt tải lên dữ liệu công ty hoặc các tập tin bị cấm khác.
+                    </p>
+                  </Upload.Dragger>
+                </Form.Item>
               </div>
+            </div>
             <Form.Item name="hotelId" style={{ display: "none" }}>
               <input type="hidden" value={selectedHotel} />
             </Form.Item>
@@ -481,4 +480,5 @@ export default function RoomCreate() {
       </div>
     </>
   );
-}
+};
+export default withAuth(RoomCreate, "PARTNER");

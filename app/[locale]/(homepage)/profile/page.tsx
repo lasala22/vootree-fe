@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   UserOutlined,
   AppstoreOutlined,
@@ -12,6 +12,7 @@ import MyProfile from "./components/MyProfile";
 import NewPass from "./components/NewPass";
 import HistoryBooking from "./components/HistoryBooking";
 import MyBooking from "./components/MyBooking";
+import withAuth from "@/components/withAuth";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -25,7 +26,6 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem("Profile", "profile1", <UserOutlined />),
   getItem("Change Password", "newpass1", <FormOutlined />),
-
   getItem("Purchase List", "historybooking1", <UnorderedListOutlined />),
   getItem("My Booking", "myBooking", <BookOutlined />),
 ];
@@ -35,10 +35,31 @@ const SidebarProfile = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const [selectedKeys, setSelectedKeys] = useState(["profile1"]);
+  const getDefaultSelectedKey = () => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab && items.some((item) => item.key === tab)) {
+      return tab;
+    }
+    return "profile1";
+  };
+
+  const [selectedKeys, setSelectedKeys] = useState([getDefaultSelectedKey()]);
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { title: "Profile" },
   ]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab) {
+      setSelectedKeys([tab]);
+      const item = findMenuItem(items, tab);
+      if (item) {
+        setBreadcrumbItems([{ title: item.label }]);
+      }
+    }
+  }, []);
 
   const handleMenuClick = ({ key, keyPath }) => {
     const itemPath = keyPath.reverse();
@@ -47,7 +68,6 @@ const SidebarProfile = () => {
       return { title: item.label };
     });
     setSelectedKeys(itemPath);
-
     setBreadcrumbItems(breadcrumbPath);
   };
 
@@ -102,8 +122,7 @@ const SidebarProfile = () => {
           >
             <Menu
               mode="inline"
-              defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
+              defaultSelectedKeys={selectedKeys}
               style={{
                 height: "100%",
               }}
@@ -129,4 +148,4 @@ const SidebarProfile = () => {
     </Layout>
   );
 };
-export default SidebarProfile;
+export default withAuth(SidebarProfile, "CUSTOMER");

@@ -111,7 +111,7 @@ export default function NavbarHome({ bg, logo }) {
                         </Link>
                         <Link
                           prefetch
-                          href="/booking"
+                          href="/profile?tab=myBooking"
                           className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                         >
                           Khách sạn đang đặt
@@ -181,7 +181,7 @@ export default function NavbarHome({ bg, logo }) {
                     Danh sách khách sạn
                   </Link> */}
                   <Link
-                    href="/home"
+                    href="/profile?tab=myBooking"
                     className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium block"
                   >
                     Hợp tác với chúng tôi

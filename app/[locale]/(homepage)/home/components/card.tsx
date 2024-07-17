@@ -4,9 +4,16 @@ import { Card, Carousel, Col, Rate, Row, Skeleton, Spin, message } from "antd";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import "@/app/[locale]/(homepage)/home/style.module.css";
+import dayjs from "dayjs";
+
 const formatNumber = (number) => {
   return number.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 };
+
+const checkInValue = dayjs().format("YYYY-MM-DD");
+const checkOutValue = dayjs().add(1, "day").format("YYYY-MM-DD");
+const guestsValue = "1";
+const roomsValue = "1";
 
 export default function CardHotel() {
   const [data, setData] = useState([]);
@@ -48,7 +55,18 @@ export default function CardHotel() {
                 ))
               : data?.slice(0, 5).map((item) => (
                   <Col md={12} lg={6} xs={24} key={item.id} className="mt-3">
-                    <Link href={`/detail/${item.id}`}>
+                    <Link
+                      href={{
+                        pathname: `/detail/${item.id}`,
+                        query: {
+                          search: item?.hotelName,
+                          checkIn: checkInValue,
+                          checkOut: checkOutValue,
+                          guests: guestsValue,
+                          rooms: roomsValue,
+                        },
+                      }}
+                    >
                       <Card
                         hoverable
                         style={{ width: 240 }}
@@ -80,7 +98,7 @@ export default function CardHotel() {
                         </div>
                         <strong>
                           {formatNumber(
-                            item.rooms.reduce(
+                            item?.rooms?.reduce(
                               (min, room) => Math.min(min, room.price),
                               Infinity
                             )

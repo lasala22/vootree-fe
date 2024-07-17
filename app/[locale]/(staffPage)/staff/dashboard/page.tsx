@@ -35,6 +35,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "@heroicons/react/24/outline";
+import withAuth from "@/components/withAuth";
 
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -307,4 +308,4 @@ const Sidebar2 = () => {
     </Layout>
   );
 };
-export default Sidebar2;
+export default withAuth(Sidebar2, "STAFF");
