@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import type { UploadFile } from "antd";
 import type { UploadProps } from "antd";
 import withAuth from "@/components/withAuth";
+import { useRouter } from "next/navigation";
 const { Dragger } = Upload;
 
 const formats = "HH:mm";
@@ -33,7 +34,7 @@ const { Step } = Steps;
 const { TextArea } = Input;
 const MultiStepForm = () => {
   const [current, setCurrent] = useState(0);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState([]);
   const [form] = Form.useForm();
   const [facilities, setFacilities] = useState([]);
   const [hotelFacilities, setHotelFacilities] = useState([]);
@@ -41,7 +42,7 @@ const MultiStepForm = () => {
   const [userId, setUserId] = useState();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [roomList, setRoomList] = useState<UploadFile[]>([]);
-
+  const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -234,9 +235,6 @@ const MultiStepForm = () => {
           const hotelId = createdHotel.id;
           const roomId = createdHotel.rooms[0].id;
 
-          console.log("ID Khách Sạn:", hotelId);
-          console.log("ID Phòng:", roomId);
-
           // Filter out files that are already uploaded
           const filesToUpdate = fileList.filter(
             (file) => file.status !== "done"
@@ -287,6 +285,7 @@ const MultiStepForm = () => {
         } else {
           console.error("Không tìm thấy khách sạn vừa tạo");
         }
+        router.push("/partner/home");
       } else {
         console.error("Đăng kí thành công nhưng không nhận được ID");
       }
@@ -294,8 +293,6 @@ const MultiStepForm = () => {
       console.error("Failed to submit data:", error);
       message.error("Failed to submit data");
     }
-
-    console.log("Form Data:", formData);
   };
 
   const status = "PENDING";

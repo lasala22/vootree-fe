@@ -8,6 +8,7 @@ import {
   Button,
   Image,
   Spin,
+  message,
 } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import React, { useEffect, useState } from "react";
@@ -98,24 +99,26 @@ export default function SearchBarHome() {
 
     if (values.search) {
       params.append("search", values.search);
-    }
-    if (values.date) {
-      params.append("checkIn", dayjs(values.date[0]).format("YYYY-MM-DD"));
-      params.append("checkOut", dayjs(values.date[1]).format("YYYY-MM-DD"));
-    }
-    if (values.guests) {
-      params.append("guests", values.guests);
-    }
-    if (values.rooms) {
-      params.append("rooms", values.rooms);
-    }
+      if (values.date) {
+        params.append("checkIn", dayjs(values.date[0]).format("YYYY-MM-DD"));
+        params.append("checkOut", dayjs(values.date[1]).format("YYYY-MM-DD"));
+      }
+      if (values.guests) {
+        params.append("guests", values.guests);
+      }
+      if (values.rooms) {
+        params.append("rooms", values.rooms);
+      }
 
-    const queryString = params.toString();
-    const newUrl = `/hotels?${queryString}`;
+      const queryString = params.toString();
+      const newUrl = `/hotels?${queryString}`;
 
-    // Điều hướng đến URL mới và reload lại trang
-    window.location.assign(newUrl);
-    // window.location.reload();
+      // Điều hướng đến URL mới và reload lại trang
+      window.location.assign(newUrl);
+      // window.location.reload();
+    } else {
+      message.warning("Vui lòng nhập địa điểm, khách sạn!");
+    }
   };
 
   return (

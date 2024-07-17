@@ -25,26 +25,7 @@ export default function RoomInfo({ data, roomsQuantity, fetchData, hotelid }) {
   };
 
   const handleButtonClick = async (item) => {
-    // const availableRooms = data?.rooms?.availableRooms
-    // try {
-    //   await fetchData(); // Chờ fetchData hoàn thành
-    //   // Sau khi fetchData đã hoàn thành, kiểm tra điều kiện
-    //   if (roomsQuantity <= availableRooms) {
-    //     console.log(availableRooms);
-    //     const query = new URLSearchParams(window.location.search).toString();
-    //     window.location.href = `/booking/${availableRooms}?${query}`;
-    //   } else {
-    //     alert("Not enough available rooms");
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching data:", error);
-    //   Xử lý lỗi khi fetchData không thành công
-    // }
-
     try {
-      // await fetchData(); // Chờ fetchData hoàn thành
-      // Sau khi fetchData đã hoàn thành, kiểm tra điều kiện
-
       const fetchDataRoom = async () => {
         const searchParams = new URLSearchParams(window.location.search);
         const searchValue = searchParams.get("search");
@@ -71,28 +52,28 @@ export default function RoomInfo({ data, roomsQuantity, fetchData, hotelid }) {
         const rooms = allData.rooms;
         const room = rooms.filter((room) => room.id == item.id);
         console.log(room);
-        if(room === undefined){
-          message.error("Not enough available rooms")
-        }else{
+        if (room === undefined) {
+          message.error("Not enough available rooms");
+        } else {
           const available = room[0]?.availableRooms;
           console.log(available);
           if (roomsQuantity > available || available === undefined) {
-            message.error("Not enough available rooms")
+            message.error("Not enough available rooms");
           } else {
             // alert("Not enough available rooms");
             console.log(available);
-            const query = new URLSearchParams(window.location.search).toString();
+            const query = new URLSearchParams(
+              window.location.search
+            ).toString();
             window.location.href = `/booking/${item.id}?${query}`;
           }
         }
-       
       };
 
       fetchDataRoom();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    
   };
 
   return (

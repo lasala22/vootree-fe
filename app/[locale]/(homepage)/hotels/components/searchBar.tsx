@@ -48,7 +48,7 @@ export default function SearchBar() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [filteredOptions, setFilteredOptions] = useState([]);
-  const [selectionData, setSelectionData] = useState([]);
+  const [selectionData, setSelectionData] = useState({});
   const [form] = Form.useForm();
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +58,9 @@ export default function SearchBar() {
         const filteredHotelName = data.map((item) => item.hotelName);
         const citySet = new Set(data.map((item) => item.city));
         const hotelCities = [...citySet];
+        if (window.location.pathname.startsWith("/detail")) {
+          setSelectionData(hotelCities);
+        }
         const combinedData = filteredHotelName.concat(hotelCities);
         setSelectionData(combinedData);
         setFilteredOptions(combinedData.slice(0, 10));
@@ -117,7 +120,8 @@ export default function SearchBar() {
     let newUrl;
 
     if (window.location.pathname.startsWith("/detail")) {
-      newUrl = `${window.location.pathname}?${queryString}`;
+      //newUrl = `${window.location.pathname}?${queryString}`;
+      newUrl = `/hotels?${queryString}`;
     } else {
       newUrl = `/hotels?${queryString}`;
     }

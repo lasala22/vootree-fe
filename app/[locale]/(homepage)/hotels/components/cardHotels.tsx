@@ -41,6 +41,8 @@ interface Room {
 }
 
 interface HotelData {
+  length: number;
+  filter(arg0: (item: any) => any): HotelData;
   id: string;
   address: string;
   hotelName: string;
@@ -61,7 +63,7 @@ interface HotelData {
   }[];
   rooms: Room[];
   hotelFacilities: any[]; // Placeholder for any type
-  listRating: any[]; // Placeholder for any type
+  ratings: any[]; // Placeholder for any type
 }
 
 const Index = ({ checkedValues, priceRange }) => {
@@ -219,7 +221,7 @@ const Index = ({ checkedValues, priceRange }) => {
   //Load more data
   const handleLoadMore = async () => {
     if (hasMoreData) {
-      const newData = data.slice(
+      const newData = data?.slice(
         visibleData.length,
         visibleData.length + pageSize
       );
@@ -274,93 +276,96 @@ const Index = ({ checkedValues, priceRange }) => {
           {isData ? (
             <List
               dataSource={visibleData}
-              renderItem={(item) => (
-                <List.Item key={item.id}>
-                  <Link
-                    href={{
-                      pathname: `/detail/${item.id}`,
-                      query: {
-                        ...Object.fromEntries(
-                          new URLSearchParams(window.location.search)
-                        ),
-                      },
-                    }}
-                    className="w-full"
-                  >
-                    <Row
-                      gutter={24}
-                      className="p-3 border h-56 hover:shadow-md rounded-md"
+              renderItem={(item) => {
+                const searchParams = new URLSearchParams(
+                  window.location.search
+                );
+                searchParams.set("search", item.hotelName);
+                const queryParam = Object.fromEntries(searchParams);
+                return (
+                  <List.Item key={item.id}>
+                    <Link
+                      href={{
+                        pathname: `/detail/${item.id}`,
+                        query: queryParam,
+                      }}
+                      className="w-full"
                     >
-                      <Col span={6} className="">
-                        <Image
-                          src={`http://localhost:8080${
-                            item.hotelImages.length > 0
-                              ? item.hotelImages[0].imageUrl
-                              : "/placeholder.jpg"
-                          }`}
-                          layout="fill"
-                          alt=""
-                          className="rounded-l-sm"
-                        />
-                      </Col>
-                      <Col span={13} className=" pt-2">
-                        <Typography.Title level={4}>
-                          {item.hotelName}
-                        </Typography.Title>
-                        <Typography.Paragraph className="flex">
-                          <MapPinIcon className="h-6 w-6 text-sky-600 flex" />
-                          {item.address}
-                        </Typography.Paragraph>
-                        <Rate disabled defaultValue={item.hotelStars} />
-                        <Typography.Paragraph className="mt-2">
-                          {item.hotelDescription}
-                        </Typography.Paragraph>
-                      </Col>
-                      <Col span={5} className=" justify-end pt-2">
-                        <Typography.Paragraph className="text-sky-700 font-bold flex gap-1 text-lg justify-end">
-                          <div>
-                            <Image
-                              src="/icon/paper-plane.png"
-                              width={25}
-                              height={20}
-                              alt=""
-                            />
+                      <Row
+                        gutter={24}
+                        className="p-3 border h-56 hover:shadow-md rounded-md"
+                      >
+                        <Col span={6} className="">
+                          <Image
+                            src={`http://localhost:8080${
+                              item.hotelImages.length > 0
+                                ? item.hotelImages[0].imageUrl
+                                : "/placeholder.jpg"
+                            }`}
+                            layout="fill"
+                            alt=""
+                            className="rounded-l-sm"
+                          />
+                        </Col>
+                        <Col span={13} className=" pt-2">
+                          <Typography.Title level={4}>
+                            {item.hotelName}
+                          </Typography.Title>
+                          <Typography.Paragraph className="flex">
+                            <MapPinIcon className="h-6 w-6 text-sky-600 flex" />
+                            {item.address}
+                          </Typography.Paragraph>
+                          <Rate disabled defaultValue={item.hotelStars} />
+                          <Typography.Paragraph className="mt-2">
+                            {item.hotelDescription}
+                          </Typography.Paragraph>
+                        </Col>
+                        <Col span={5} className=" justify-end pt-2">
+                          <Typography.Paragraph className="text-sky-700 font-bold flex gap-1 text-lg justify-end">
+                            <div>
+                              <Image
+                                src="/icon/paper-plane.png"
+                                width={25}
+                                height={20}
+                                alt=""
+                              />
+                            </div>
+                            {item?.ratings?.length > 0
+                              ? (
+                                  item.ratings.reduce(
+                                    (sum, rate) => sum + rate.rate,
+                                    0
+                                  ) / item.ratings.length
+                                ).toFixed(1)
+                              : ""}
+                          </Typography.Paragraph>
+                          <div className="justify-end items-end block mt-16 text-end">
+                            <Typography.Paragraph
+                              type="danger"
+                              className="font-bold text-xl"
+                            >
+                              {formatNumber(
+                                item.rooms.reduce(
+                                  (min, room) => Math.min(min, room.price),
+                                  Infinity
+                                )
+                              )}
+                            </Typography.Paragraph>
+                            <Typography.Paragraph className="-mt-5 text-xs">
+                              Chưa bao gồm thuế và phí
+                            </Typography.Paragraph>
                           </div>
-                          {item?.ratings?.length > 0
-                            ? (
-                                item.ratings.reduce(
-                                  (sum, rate) => sum + rate.rate,
-                                  0
-                                ) / item.ratings.length
-                              ).toFixed(1)
-                            : ""}
-                        </Typography.Paragraph>
-                        <div className="justify-end items-end block mt-16 text-end">
-                          <Typography.Paragraph
-                            type="danger"
-                            className="font-bold text-xl"
-                          >
-                            {formatNumber(
-                              item.rooms.reduce(
-                                (min, room) => Math.min(min, room.price),
-                                Infinity
-                              )
-                            )}
-                          </Typography.Paragraph>
-                          <Typography.Paragraph className="-mt-5 text-xs">
-                            Chưa bao gồm thuế và phí
-                          </Typography.Paragraph>
-                        </div>
-                        <div className="justify-end items-end flex">
-                          <Button type="primary" danger>
-                            Chọn phòng
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Link>
-                </List.Item>
-              )}
+                          <div className="justify-end items-end flex">
+                            <Button type="primary" danger>
+                              Chọn phòng
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Link>
+                  </List.Item>
+                );
+              }}
               loading={loading}
             />
           ) : (

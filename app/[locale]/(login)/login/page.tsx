@@ -227,7 +227,6 @@ export default function Page() {
               <div className="mt-2">
                 <a
                   href="#"
-                  onClick={handelCancel}
                   className="text-xs text-gray-600 hover:text-gray-800 mr-2"
                 >
                   Privacy Policy
