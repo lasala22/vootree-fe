@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "@heroicons/react/24/outline";
 import HotelUpdate from "../components/HotelUpdate";
+import withAuth from "@/components/withAuth";
 
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
