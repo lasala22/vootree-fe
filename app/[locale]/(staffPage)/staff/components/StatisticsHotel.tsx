@@ -82,11 +82,13 @@ const StatisticsHotel = () => {
   return (
     <div>
       <div style={{ display: 'flex', gap:'10px', marginBottom: '20px' }}>
+        Month:
         <Select value={selectedMonth} onChange={value => setSelectedMonth(value)}>
           {Array.from({ length: 12 }, (_, i) => (
             <Option key={i + 1} value={String(i + 1).padStart(2, '0')}>{i + 1}</Option>
           ))}
         </Select>
+        Year:
         <Select value={selectedYear} onChange={value => setSelectedYear(value)}>
           {availableYears.map(year => (
             <Option key={year} value={year}>{year}</Option>

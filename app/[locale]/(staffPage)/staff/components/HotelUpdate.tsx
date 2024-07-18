@@ -14,19 +14,6 @@ import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-// const originData = [];
-// for (let i = 0; i < 100; i++) {
-//   originData.push({
-//     key: i.toString(),
-//     firstname: `Edward ${i}`,
-//     lastname: `Smith ${i}`,
-//     email: `edward${i}@example.com`,
-//     phoneNum: `123-456-789${i}`,
-//     gender: i % 2 === 0 ? "Male" : "Female",
-//     age: 32 + i,
-//     status: i % 2 === 0 ? "active" : "inactive",
-//   });
-// }
 
 const EditableCell = ({
   editing, // Xác định xem ô này có đang ở chế độ chỉnh sửa hay không
@@ -77,31 +64,23 @@ const EditableCell = ({
   );
 };
 
-const Roomcensorship = () => {
+const HotelUpdate = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
+  const [roomsData, setRoomsData] = useState({});
 
   useEffect(() => {
-    // Fetch data from API
+    // Fetch hotels data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/rooms");
+        const response = await axios.get("http://localhost:8080/api/hotels");
         const fetchedData = response.data
           .filter(
             (item) => item.status === "PENDING" && item.edit_status === "UPDATE"
-          ) // Lọc các tài khoản có role là "CUSTOMER"
-          .map((item, index) => ({
+          ) 
+          .map((item) => ({
             key: item.id.toString(),
-            capacity: item.capacity,
-            price: item.price,
-            quantity: item.quantity,
-            roomSize: item.roomSize,
-            typename: item.roomType.typeName,
-            serveBreakfast: item.serveBreakfast,
-            hotelName: item.hotelName,
-            roomFacilities: item.roomFacilities,
-            status: item.status,
             ...item,
           }));
         setData(fetchedData);
@@ -110,12 +89,24 @@ const Roomcensorship = () => {
         console.error("Error fetching data: ", error);
       }
     };
+
+    
+
     fetchData();
+    
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
+      hotelName: "",
+      address: "",
+      city: "",
+      hotelStars: "",
+      hotelPhoneNum: "",
+      checkInTime: "",
+      checkOutTime: "",
+      status: "",
       ...record,
     });
     setEditingKey(record.key);
@@ -130,13 +121,13 @@ const Roomcensorship = () => {
       console.log(row);
       console.log(
         `Saving data for key ${key} to:`,
-        `http://localhost:8080/api/accounts/update/${key}`
+        `http://localhost:8080/api/hotels/staff/update/${key}`
       );
       await axios.put(
-        `http://localhost:8080/api/rooms/staff/update/${key}`,
+        `http://localhost:8080/api/hotels/staff/update/${key}`,
         row
       );
-      const newData = [...data];
+      const newData = [...data].filter((item) => item.status === "PENDING");
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
         const item = newData[index];
@@ -144,7 +135,6 @@ const Roomcensorship = () => {
           ...item,
           ...row,
         });
-        console.log(newData);
         setData(newData);
         setEditingKey("");
       } else {
@@ -291,74 +281,51 @@ const Roomcensorship = () => {
       ...getColumnSearchProps("hotelName"),
     },
     {
-      title: "RoomType",
-      dataIndex: "typename",
-      fixed: "left",
+      title: "Address",
+      dataIndex: "address",
+
       editable: false,
-      ...getColumnSearchProps("roomType"),
+      ...getColumnSearchProps("address"),
     },
     {
-      title: "Capacity",
-      dataIndex: "capacity",
+      title: "City",
+      dataIndex: "city",
 
       editable: false,
-      ...getColumnSearchProps("capacity"),
+      ...getColumnSearchProps("city"),
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
+      title: "Stars",
+      dataIndex: "hotelStars",
 
       editable: false,
-      ...getColumnSearchProps("quantity"),
+      ...getColumnSearchProps("hotelStars"),
     },
     {
-      title: "Serve Breakfast",
-      dataIndex: "serveBreakfast",
+      title: "Phone Number",
+      dataIndex: "hotelPhoneNum",
 
       editable: false,
-      filters: [
-        { text: "Yes", value: true },
-        { text: "No", value: false },
-      ],
-      onFilter: (value, record) => record.serveBreakfast === value,
-      render: (serveBreakfast) => (serveBreakfast ? "Yes" : "No"), // Correct rendering logic
-    },
-
-    {
-      title: "Room Size",
-      dataIndex: "roomSize",
-
-      editable: false,
-      ...getColumnSearchProps("roomSize"),
-      sorter: (a, b) => a.roomSize - b.roomSize,
-      sortDirections: ["descend", "ascend"],
+      ...getColumnSearchProps("hotelPhoneNum"),
     },
     {
-      title: "Price",
-      dataIndex: "price",
+      title: "checkInTime",
+      dataIndex: "checkInTime",
 
       editable: false,
-      ...getColumnSearchProps("price"),
-      render: (text) =>
-        new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(text),
+      ...getColumnSearchProps("checkInTime"),
     },
-
     {
-      title: "Room Facilities",
-      dataIndex: "roomFacilities",
+      title: "checkOutTime",
+      dataIndex: "checkOutTime",
 
       editable: false,
-      //   ...getColumnSearchProps("roomFacilities", true),
-      render: (roomFacilities) =>
-        roomFacilities.map((facility) => facility.facility.facName).join(", "),
+      ...getColumnSearchProps("checkOutTime"),
     },
     {
       title: "Edit Status",
       dataIndex: "edit_status",
-
+      fixed: "right",
       editable: false,
     },
     {
@@ -415,19 +382,15 @@ const Roomcensorship = () => {
   });
 
   const clearFiltersAndSorters = () => {
-    // Xóa tất cả các filters
+    // Xóa tất cả các filters và sorters bằng cách đặt lại giá trị state
     setSearchText("");
     setSearchedColumn("");
 
-    // Xóa tất cả các sorters
-    // Cập nhật lại state của data để hiển thị lại dữ liệu gốc
-    // Lấy dữ liệu gốc
-    // let newData = [...originData];
-
-    // Cập nhật lại state của data để hiển thị lại dữ liệu gốc
-    // setData(newData);
-    // console.log(newData);
+    // Gọi hàm handleSearch với selectedKeys là mảng rỗng để xóa bộ lọc
+    const selectedKeys = [];
+    handleSearch(selectedKeys, () => {}, searchedColumn);
   };
+
 
   return (
     <Form form={form} component={false}>
@@ -451,6 +414,7 @@ const Roomcensorship = () => {
         pagination={{
           onChange: cancel,
         }}
+        
         scroll={{
           x: 2000,
           y: 600,
@@ -459,4 +423,4 @@ const Roomcensorship = () => {
     </Form>
   );
 };
-export default Roomcensorship;
+export default HotelUpdate;
