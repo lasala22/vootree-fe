@@ -9,6 +9,7 @@ import {
   Select,
   Button,
   Space,
+  message,
 } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
@@ -190,6 +191,68 @@ const Hotelcensorship = () => {
       }
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
+    }
+  };
+
+  const acceptHotel = async (key) => {
+    try {
+      const row = { id: key,  status: "ACTIVE" };
+      console.log(row);
+      console.log(
+        `Saving data for key ${key} to:`,
+        `http://localhost:8080/api/hotels/staff/accept/${key}`
+      );
+      await axios.put(
+        `http://localhost:8080/api/hotels/staff/accept/${key}`,
+        row
+      );
+      message.success("Request accepted!")
+      const newData = [...data].filter((item) => item.status === "PENDING");
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          status: "ACTIVE",
+        });
+        setData(newData);
+      } else {
+        newData.push(row);
+        setData(newData);
+      }
+    } catch (errInfo) {
+      console.log("Accept Failed:", errInfo);
+    }
+  };
+
+  const rejectHotel = async (key) => {
+    try {
+      const row = { id: key, status: "REJECTED"};
+      console.log(row);
+      console.log(
+        `Saving data for key ${key} to:`,
+        `http://localhost:8080/api/hotels/staff/reject/${key}`
+      );
+      await axios.put(
+        `http://localhost:8080/api/hotels/staff/reject/${key}`,
+        row
+      );
+      message.success("Request rejected!")
+      const newData = [...data].filter((item) => item.status === "PENDING");
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          status: "REJECTED",
+        });
+        setData(newData);
+      } else {
+        newData.push(row);
+        setData(newData);
+      }
+    } catch (errInfo) {
+      console.log("Reject Failed:", errInfo);
     }
   };
 
@@ -384,31 +447,24 @@ const Hotelcensorship = () => {
       title: "operation",
       dataIndex: "operation",
       fixed: "right",
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            onClick={() => edit(record)}
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            onClick={() => acceptHotel(record.key)}
+            disabled={record.status !== "PENDING"}
           >
-            Edit
-          </Typography.Link>
-        );
-      },
+            Accept
+          </Button>
+          <Button
+            type="primary" danger
+            onClick={() => rejectHotel(record.key)}
+            disabled={record.status !== "PENDING"}
+          >
+            Reject
+          </Button>
+        </Space>
+      ),
     },
   ];
   const mergedColumns = columns.map((col) => {

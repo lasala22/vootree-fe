@@ -9,6 +9,7 @@ import {
   Select,
   Button,
   Space,
+  message
 } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
@@ -117,6 +118,11 @@ const HotelUpdate = () => {
   const save = async (key) => {
     try {
       const row1 = await form.validateFields();
+      if (row1.status !== "ACTIVE") {
+        // console.error("Error: Hotel status must be 'ACTIVE' to save.");
+        message.error("Hotel status must be 'ACTIVE' to save.");
+        return; // Exit the function if status is not "ACTIVE"
+      }
       const row = { ...row1, id: key };
       console.log(row);
       console.log(

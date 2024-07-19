@@ -130,7 +130,7 @@ const Roomcensorship = () => {
       // Check if status is "ACTIVE" before proceeding
     if (row1.status !== "ACTIVE") {
       // console.error("Error: Hotel status must be 'ACTIVE' to save.");
-      message.error("Hotel status must be 'ACTIVE' to save.");
+      message.error("Room status must be 'ACTIVE' to save.");
       return; // Exit the function if status is not "ACTIVE"
     }
       const row = { ...row1, id: key };
