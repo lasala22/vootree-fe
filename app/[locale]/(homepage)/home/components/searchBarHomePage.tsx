@@ -17,6 +17,7 @@ import type { GetProps } from "antd";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
 import { url } from "inspector";
+import { useTranslations } from "next-intl";
 
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { Option } = Select;
@@ -47,7 +48,7 @@ export default function SearchBarHome() {
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [selectionData, setSelectionData] = useState([]);
   const [form] = Form.useForm();
-
+  const t = useTranslations();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -135,11 +136,11 @@ export default function SearchBarHome() {
         }}
       >
         <p className="text-5xl font-bold text-white mx-12 pt-16">
-          Căn nhà hoàn hảo <br />
-          cho chuyến đi đặc biệt <br />
+          {t("home.searchTitle1")} <br />
+          {t("home.searchTitle2")} <br />
         </p>
         <p className="text-xl font-semibold text-white mx-16 pt-2">
-          Khám phá nhà nghỉ dưỡng thơ mộng khắp thế giới
+          {t("home.subTitle")}
         </p>
         <div className="max-w-3xl h-56 bg-white mx-auto mt-6 border-4 border-yellow-400 rounded-lg ">
           <div className="relative">
@@ -149,10 +150,7 @@ export default function SearchBarHome() {
               layout="vertical"
               onFinish={onFinish}
             >
-              <Form.Item<FieldType>
-                label="Thành phố, địa điểm hoặc tên khách sạn:"
-                name="search"
-              >
+              <Form.Item<FieldType> label={t("search.place")} name="search">
                 <Select
                   size="large"
                   className=" font-normal"
@@ -173,7 +171,7 @@ export default function SearchBarHome() {
               </Form.Item>
               <div className="justify-between flex">
                 <Form.Item<FieldType>
-                  label="Ngày nhận phòng, ngày trả phòng"
+                  label={t("search.bookingDate")}
                   name="date"
                 >
                   <RangePicker
@@ -183,7 +181,7 @@ export default function SearchBarHome() {
                   />
                 </Form.Item>
 
-                <Form.Item<FieldType> label="Số lượng khách" name="guests">
+                <Form.Item<FieldType> label={t("search.guests")} name="guests">
                   <InputNumber
                     size="large"
                     className=" w-40"
@@ -193,7 +191,7 @@ export default function SearchBarHome() {
                     max={10}
                   />
                 </Form.Item>
-                <Form.Item<FieldType> label="Số lượng phòng" name="rooms">
+                <Form.Item<FieldType> label={t("search.rooms")} name="rooms">
                   <InputNumber
                     size="large"
                     className=" w-40 "

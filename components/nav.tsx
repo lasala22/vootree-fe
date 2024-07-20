@@ -15,10 +15,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
+import LanguageSwitcher from "./language-switcher";
+import { useTranslations } from "next-intl";
 
-export default function NavbarHome({ bg, logo }) {
+export default function NavbarHome({ logo, bg }) {
   const [username, setUsername] = useState();
   const router = useRouter();
+  const t = useTranslations();
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -87,7 +90,7 @@ export default function NavbarHome({ bg, logo }) {
                         href="/home"
                         className="text-white hover:bg-gray-700 hover:bg-opacity-55  rounded-md px-3 py-2 text-sm font-medium"
                       >
-                        Trang chủ
+                        {t("nav.home")}
                       </Link>
                       {/* <Link
                         href="/hotels"
@@ -107,17 +110,18 @@ export default function NavbarHome({ bg, logo }) {
                           href="/partner/signup"
                           className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                         >
-                          Hợp tác với chúng tôi
+                          {t("nav.partner")}
                         </Link>
                         <Link
                           prefetch
                           href="/profile?tab=myBooking"
                           className="text-white hover:bg-gray-700 hover:bg-opacity-55 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                         >
-                          Khách sạn đang đặt
+                          {t("nav.booking")}
                         </Link>
                       </div>
                     </div>
+
                     {username ? (
                       <div className="flex items-center ">
                         <Dropdown overlay={menu}>
@@ -146,7 +150,7 @@ export default function NavbarHome({ bg, logo }) {
                             className=" hover:bg-purple-950 hover:bg-opacity-40 text-white me-4   py-2 px-2 rounded border flex text-sm"
                           >
                             <UserIcon className="h-5 w-5   mr-1" />
-                            Đăng nhập
+                            {t("nav.login")}
                           </button>
                         </Link>
                         <Link href="/signup" prefetch>
@@ -154,7 +158,7 @@ export default function NavbarHome({ bg, logo }) {
                             type="button"
                             className="bg-sky-600 hover:bg-blue-700 hover:bg-opacity-40 font-bold text-white  py-2 px-2 ps-4 pe-4 rounded flex text-sm"
                           >
-                            Đăng ký
+                            {t("nav.signUp")}
                           </button>
                         </Link>
                       </div>

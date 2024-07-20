@@ -1,25 +1,38 @@
 "use client";
 
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { Switch } from "antd";
+import { useEffect, useState } from "react";
 
 const LanguageSwitcher = ({ locale }: { locale: string }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const switchLanguage = (lang: string) => {
+  const [checked, setChecked] = useState(locale === "en");
+
+  const switchLanguage = (checked: boolean) => {
+    const lang = checked ? "en" : "vi";
     const params = new URLSearchParams(searchParams.toString());
-    router.push(`/${lang}${pathname}?${params.toString()}`);
+    let newPath = `/${lang}${pathname}`;
+    if (!checked) {
+      newPath = pathname.startsWith("/en") ? pathname.slice(3) : pathname;
+    }
+    router.push(`${newPath}?${params.toString()}`);
   };
+
+  useEffect(() => {
+    setChecked(locale === "en");
+  }, [locale]);
 
   return (
     <div>
-      <button onClick={() => switchLanguage("vi")} disabled={locale === "vi"}>
-        Tiếng Việt
-      </button>
-      <button onClick={() => switchLanguage("en")} disabled={locale === "en"}>
-        English
-      </button>
+      <Switch
+        checked={checked}
+        onChange={switchLanguage}
+        checkedChildren="English"
+        unCheckedChildren="Tiếng Việt"
+      />
     </div>
   );
 };

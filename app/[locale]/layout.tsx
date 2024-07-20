@@ -1,16 +1,10 @@
+import LanguageSwitcher from "@/components/language-switcher";
+import NavbarHome from "@/components/nav";
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer";
-import { useRouter } from "next/router";
-import { getMessages } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
-import { useEffect, useState } from "react";
-import NavbarHome from "@/components/nav";
-import SearchBarHome from "./(homepage)/home/components/searchBarHomePage";
-import Navbar from "./(homepage)/hotels/components/nav";
-import HeaderLayout from "@/components/header";
-import LanguageSwitcher from "@/components/language-switcher";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   LockOutlined,
@@ -27,22 +27,26 @@ export default function Page() {
         "http://localhost:8080/api/auth/login",
         values
       );
-      localStorage.setItem("token", response.data.token);
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
 
-      const decodeToken = jwtDecode(response.data.token);
-      const tokenRole = decodeToken?.roles;
-      if (tokenRole[0] == "PARTNER") {
-        router.push("/partner/home");
-      } else if (tokenRole[0] == "CUSTOMER") {
-        const redirectToBooking = localStorage.getItem("bookingHref");
-        if (redirectToBooking) {
-          localStorage.removeItem("bookingHref");
-          router.push(redirectToBooking);
-        } else {
-          router.push("/home");
+        const decodeToken = jwtDecode(response.data.token);
+        const tokenRole = decodeToken?.roles;
+        if (tokenRole[0] == "PARTNER") {
+          router.push("/partner/home");
+        } else if (tokenRole[0] == "CUSTOMER") {
+          const redirectToBooking = localStorage.getItem("bookingHref");
+          if (redirectToBooking) {
+            localStorage.removeItem("bookingHref");
+            router.push(redirectToBooking);
+          } else {
+            router.push("/home");
+          }
         }
+        console.log(response);
+      } else {
+        message.warning("Sai tài khoản hoặc mật khẩu!");
       }
-      console.log(response);
     } catch (error) {
       console.error(error);
     }

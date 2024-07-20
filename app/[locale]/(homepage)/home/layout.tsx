@@ -5,6 +5,7 @@ import { Layout, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import SearchBarHome from "./components/searchBarHomePage";
 import styles from "./style.module.css";
+import Footer from "@/components/footer";
 export default function Layouts({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +41,7 @@ export default function Layouts({ children }: { children: React.ReactNode }) {
               </div>
             </header>
             <div className="mt-36">{children}</div>
+            <Footer />
           </>
         )}
       </Layout>

@@ -1,6 +1,14 @@
 {
   "home": {
-    "title": "VooTreeVeeVuu - Explore the world through your windows"
+    "title": "VooTreeVeeVuu - Explore the world through your windows",
+    "search": {
+      "title1": "Special house",
+      "title2": "for special vacation",
+      "subTitle": "Discover the perfect house around the world"
+    },
+    "searchTitle1": "Special House",
+    "searchTitle2": "for special vacation",
+    "subTitle": "Discover the perfect house around the world"
   },
   "home_1": {
     "title_1": "Home is where the heart is"
@@ -40,5 +48,18 @@
   },
   "footer": {
     "text": "Stay up-to-date with the latest travel tips, recommendations, and deals."
+  },
+  "nav": {
+    "home": "Home",
+    "partner": "Work with us",
+    "booking": "Booking Hotel",
+    "login": "Login",
+    "signUp": "Sign Up"
+  },
+  "search": {
+    "place": "Hotel or Places",
+    "bookingDate": "Check in date, check out date",
+    "guests": "Guest(s)",
+    "rooms": "Room(s)"
   }
 }

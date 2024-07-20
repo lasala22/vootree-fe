@@ -1,6 +1,14 @@
 {
   "home": {
-    "title": "VooTreeVeeVuu - Khám phá thế giới qua những cửa sổ của bạn"
+    "title": "VooTreeVeeVuu - Khám phá thế giới qua những cửa sổ của bạn",
+    "search": {
+      "title1": "Căn nhà hoàn hảo",
+      "title2": "cho chuyến đi đặc biệt",
+      "subTitle": "Khám phá nhà nghỉ dưỡng thơ mộng khắp thế giới"
+    },
+    "searchTitle1": "Căn nhà hoàn hảo",
+    "searchTitle2": "cho chuyến đi đặc biệt",
+    "subTitle": "Khám phá nhà nghỉ dưỡng thơ mộng khắp thế giới"
   },
   "home_1": {
     "title_1": "Cảm giác như ở nhà dù bạn đi đến đâu"
@@ -40,5 +48,18 @@
   },
   "footer": {
     "text": "Luôn được cập nhật về các lời khuyên du lịch, đề xuất và khuyến mãi mới nhất."
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "partner": "Hợp tác với chúng tôi",
+    "booking": "Khách sạn đang đặt",
+    "login": "Đăng nhập",
+    "signUp": "Đăng ký"
+  },
+  "search": {
+    "place": "Thành phố, địa điểm hoặc tên khách sạn:",
+    "bookingDate": "Ngày nhận phòng, ngày trả phòng",
+    "guests": "Số lượng khách",
+    "rooms": "Số lượng phòng"
   }
 }
