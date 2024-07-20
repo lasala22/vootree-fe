@@ -27,7 +27,7 @@ import Customer from "../components/Customer";
 import Partner from "../components/Partner";
 import Hotels from "../components/Hotels";
 import Hotelcensorship from "../components/Hotelcensorship";
-import Roomcensorship from "../components/Roomcensorship";
+import RoomUpdate from "../components/RoomUpdate";
 import StatisticsHotel from "../components/StatisticsHotel";
 import StatisticsRoom from "../components/StatisticsRoom";
 import StatisticsRevenue from "../components/StatisticsRevenue";
@@ -35,6 +35,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "@heroicons/react/24/outline";
+import HotelUpdate from "../components/HotelUpdate";
 import withAuth from "@/components/withAuth";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -59,7 +60,8 @@ const items = [
   ]),
   getItem("Censorship", "censorship1", <CheckSquareOutlined />, [
     getItem("Hotels censorship", "hotelcensorship1"),
-    getItem("Rooms censorship", "roomcensorship1"),
+    getItem("Rooms upadate", "roomupdate1"),
+    getItem("Hotels upadate", "hotelupdate1"),
   ]),
   getItem("Statistics", "statistics1", <PieChartOutlined />, [
     getItem("Hotels", "hotelstatistics"),
@@ -151,8 +153,10 @@ const Sidebar2 = () => {
         return <Bookings />;
       case "hotelcensorship1":
         return <Hotelcensorship />;
-      case "roomcensorship1":
-        return <Roomcensorship />;
+      case "roomupdate1":
+        return <RoomUpdate />;
+      case "hotelupdate1":
+        return <HotelUpdate />;
       case "hotelstatistics":
         return <StatisticsHotel />;
       case "roomstatistics":
@@ -308,4 +312,4 @@ const Sidebar2 = () => {
     </Layout>
   );
 };
-export default withAuth(Sidebar2, "STAFF");
+export default Sidebar2;

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import axios from 'axios';
-import 'chart.js/auto';
+import React, { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
+import axios from "axios";
+import "chart.js/auto";
 
 const StatisticsRoom = () => {
-  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedYear, setSelectedYear] = useState("");
   const [roomBookingData, setRoomBookingData] = useState(null);
   const [availableYears, setAvailableYears] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
@@ -12,11 +12,17 @@ const StatisticsRoom = () => {
   useEffect(() => {
     const fetchBookingData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/bookings');
+        const response = await axios.get("http://localhost:8080/api/bookings");
         const bookings = response.data;
 
         // Get distinct years from booking dates
-        const years = [...new Set(bookings.map(booking => new Date(booking.bookingDate).getFullYear()))].sort();
+        const years = [
+          ...new Set(
+            bookings.map((booking) =>
+              new Date(booking.bookingDate).getFullYear()
+            )
+          ),
+        ].sort();
         setAvailableYears(years);
 
         // Set selectedYear to current year if availableYears is set and selectedYear is not already set
@@ -25,14 +31,14 @@ const StatisticsRoom = () => {
         }
 
         // Get distinct room types from bookings
-        const types = [...new Set(bookings.map(booking => booking.roomType))];
+        const types = [...new Set(bookings.map((booking) => booking.roomType))];
         setRoomTypes(types);
 
         // Initialize room booking data structure
         const roomData = {};
 
         // Loop through bookings and populate roomData
-        bookings.forEach(booking => {
+        bookings.forEach((booking) => {
           const bookingDate = new Date(booking.bookingDate);
           const bookingYear = bookingDate.getFullYear();
           const bookingMonth = bookingDate.getMonth(); // Month is zero-indexed
@@ -42,17 +48,19 @@ const StatisticsRoom = () => {
             if (!roomData[bookingYear]) {
               roomData[bookingYear] = {
                 labels: Array.from({ length: 12 }, (_, index) => index + 1), // Labels for months
-                datasets: types.map(type => ({
+                datasets: types.map((type) => ({
                   label: type,
-                  data: new Array(12).fill(0)
-                }))
+                  data: new Array(12).fill(0),
+                })),
               };
             }
 
             // Increment the count for the corresponding room type and month
             const roomTypeIndex = types.indexOf(booking.roomType);
             if (roomTypeIndex !== -1) {
-              roomData[bookingYear].datasets[roomTypeIndex].data[bookingMonth]++;
+              roomData[bookingYear].datasets[roomTypeIndex].data[
+                bookingMonth
+              ]++;
             }
           }
         });
@@ -60,7 +68,7 @@ const StatisticsRoom = () => {
         // Update state with the processed room data
         setRoomBookingData(roomData);
       } catch (error) {
-        console.error('Error fetching booking data:', error);
+        console.error("Error fetching booking data:", error);
       }
     };
 
@@ -75,11 +83,21 @@ const StatisticsRoom = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
         text: `Monthly Room Booking Statistics for the Year ${selectedYear}`,
+      },
+    },
+    scales: {
+      y: {
+        suggestedMin: 0, // Để trục y bắt đầu từ 0
+        beginAtZero: true, // Đảm bảo bắt đầu từ 0 nếu không có dữ liệu
+        ticks: {
+          stepSize: 1, // Đặt bước là 1 để chỉ hiển thị số nguyên trên trục y
+          precision: 0, // Số chữ số thập phân sẽ được hiển thị là 0
+        },
       },
     },
   };
@@ -90,12 +108,14 @@ const StatisticsRoom = () => {
     <div>
       <h2>Room Booking Statistics</h2>
       <select value={selectedYear} onChange={handleChange}>
-        {availableYears.map(year => (
-          <option key={year} value={year}>{year}</option>
+        {availableYears.map((year) => (
+          <option key={year} value={year}>
+            {year}
+          </option>
         ))}
       </select>
       {roomBookingData[selectedYear] ? (
-        <div className='w-10/12 m-auto'>
+        <div className="w-10/12 m-auto">
           <Bar data={roomBookingData[selectedYear]} options={options} />
         </div>
       ) : (

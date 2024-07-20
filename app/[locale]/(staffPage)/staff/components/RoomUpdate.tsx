@@ -14,6 +14,7 @@ import {
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
+
 // const originData = [];
 // for (let i = 0; i < 100; i++) {
 //   originData.push({
@@ -77,23 +78,31 @@ const EditableCell = ({
   );
 };
 
-const Hotelcensorship = () => {
+const Roomcensorship = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
-  const [roomsData, setRoomsData] = useState({});
 
   useEffect(() => {
-    // Fetch hotels data from API
+    // Fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/hotels");
+        const response = await axios.get("http://localhost:8080/api/rooms");
         const fetchedData = response.data
           .filter(
-            (item) => item.status === "PENDING" && item.edit_status === "CREATE"
-          )
-          .map((item) => ({
+            (item) => item.status === "PENDING" && item.edit_status === "UPDATE"
+          ) // Lọc các tài khoản có role là "CUSTOMER"
+          .map((item, index) => ({
             key: item.id.toString(),
+            capacity: item.capacity,
+            price: item.price,
+            quantity: item.quantity,
+            roomSize: item.roomSize,
+            typename: item.roomType.typeName,
+            serveBreakfast: item.serveBreakfast,
+            hotelName: item.hotelName,
+            roomFacilities: item.roomFacilities,
+            status: item.status,
             ...item,
           }));
         setData(fetchedData);
@@ -102,55 +111,12 @@ const Hotelcensorship = () => {
         console.error("Error fetching data: ", error);
       }
     };
-
-    // Fetch room data from API
-    const fetchRoomData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/rooms");
-        const fetchedRoomData = response.data
-          .filter(
-            (item) => item.status === "PENDING" && item.edit_status === "CREATE"
-          )
-          .reduce((acc, room) => {
-            const hotelId = room.hotelId.toString();
-            if (!acc[hotelId]) {
-              acc[hotelId] = [];
-            }
-            acc[hotelId].push({
-              key: room.id.toString(),
-              roomNumber: room.id,
-              roomType: room.roomType.typeName,
-              price: room.price,
-              capacity: room.capacity,
-              quantity: room.quantity,
-              roomSize: room.roomSize,
-              edit_status: room.edit_status,
-            });
-
-            return acc;
-          }, {});
-        setRoomsData(fetchedRoomData);
-        // console.log( fetchedRoomData);
-      } catch (error) {
-        console.error("Error fetching room data: ", error);
-      }
-    };
-
     fetchData();
-    fetchRoomData();
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
-      hotelName: "",
-      address: "",
-      city: "",
-      hotelStars: "",
-      hotelPhoneNum: "",
-      checkInTime: "",
-      checkOutTime: "",
-      status: "",
       ...record,
     });
     setEditingKey(record.key);
@@ -161,18 +127,23 @@ const Hotelcensorship = () => {
   const save = async (key) => {
     try {
       const row1 = await form.validateFields();
-
+      // Check if status is "ACTIVE" before proceeding
+      if (row1.status !== "ACTIVE") {
+        // console.error("Error: Hotel status must be 'ACTIVE' to save.");
+        message.error("Room status must be 'ACTIVE' to save.");
+        return; // Exit the function if status is not "ACTIVE"
+      }
       const row = { ...row1, id: key };
       console.log(row);
       console.log(
         `Saving data for key ${key} to:`,
-        `http://localhost:8080/api/hotels/staff/update/${key}`
+        `http://localhost:8080/api/accounts/update/${key}`
       );
       await axios.put(
-        `http://localhost:8080/api/hotels/staff/update/${key}`,
+        `http://localhost:8080/api/rooms/staff/update/${key}`,
         row
       );
-      const newData = [...data].filter((item) => item.status === "PENDING");
+      const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
         const item = newData[index];
@@ -180,6 +151,7 @@ const Hotelcensorship = () => {
           ...item,
           ...row,
         });
+        console.log(newData);
         setData(newData);
         setEditingKey("");
       } else {
@@ -189,68 +161,6 @@ const Hotelcensorship = () => {
       }
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
-    }
-  };
-
-  const acceptHotel = async (key) => {
-    try {
-      const row = { id: key, status: "ACTIVE" };
-      console.log(row);
-      console.log(
-        `Saving data for key ${key} to:`,
-        `http://localhost:8080/api/hotels/staff/accept/${key}`
-      );
-      await axios.put(
-        `http://localhost:8080/api/hotels/staff/accept/${key}`,
-        row
-      );
-      message.success("Request accepted!");
-      const newData = [...data].filter((item) => item.status === "PENDING");
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          status: "ACTIVE",
-        });
-        setData(newData);
-      } else {
-        newData.push(row);
-        setData(newData);
-      }
-    } catch (errInfo) {
-      console.log("Accept Failed:", errInfo);
-    }
-  };
-
-  const rejectHotel = async (key) => {
-    try {
-      const row = { id: key, status: "REJECTED" };
-      console.log(row);
-      console.log(
-        `Saving data for key ${key} to:`,
-        `http://localhost:8080/api/hotels/staff/reject/${key}`
-      );
-      await axios.put(
-        `http://localhost:8080/api/hotels/staff/reject/${key}`,
-        row
-      );
-      message.success("Request rejected!");
-      const newData = [...data].filter((item) => item.status === "PENDING");
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          status: "REJECTED",
-        });
-        setData(newData);
-      } else {
-        newData.push(row);
-        setData(newData);
-      }
-    } catch (errInfo) {
-      console.log("Reject Failed:", errInfo);
     }
   };
 
@@ -388,51 +298,74 @@ const Hotelcensorship = () => {
       ...getColumnSearchProps("hotelName"),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-
+      title: "RoomType",
+      dataIndex: "typename",
+      fixed: "left",
       editable: false,
-      ...getColumnSearchProps("address"),
+      ...getColumnSearchProps("roomType"),
     },
     {
-      title: "City",
-      dataIndex: "city",
+      title: "Capacity",
+      dataIndex: "capacity",
 
       editable: false,
-      ...getColumnSearchProps("city"),
+      ...getColumnSearchProps("capacity"),
     },
     {
-      title: "Stars",
-      dataIndex: "hotelStars",
+      title: "Quantity",
+      dataIndex: "quantity",
 
       editable: false,
-      ...getColumnSearchProps("hotelStars"),
+      ...getColumnSearchProps("quantity"),
     },
     {
-      title: "Phone Number",
-      dataIndex: "hotelPhoneNum",
+      title: "Serve Breakfast",
+      dataIndex: "serveBreakfast",
 
       editable: false,
-      ...getColumnSearchProps("hotelPhoneNum"),
+      filters: [
+        { text: "Yes", value: true },
+        { text: "No", value: false },
+      ],
+      onFilter: (value, record) => record.serveBreakfast === value,
+      render: (serveBreakfast) => (serveBreakfast ? "Yes" : "No"), // Correct rendering logic
+    },
+
+    {
+      title: "Room Size",
+      dataIndex: "roomSize",
+
+      editable: false,
+      ...getColumnSearchProps("roomSize"),
+      sorter: (a, b) => a.roomSize - b.roomSize,
+      sortDirections: ["descend", "ascend"],
     },
     {
-      title: "checkInTime",
-      dataIndex: "checkInTime",
+      title: "Price",
+      dataIndex: "price",
 
       editable: false,
-      ...getColumnSearchProps("checkInTime"),
+      ...getColumnSearchProps("price"),
+      render: (text) =>
+        new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(text),
     },
+
     {
-      title: "checkOutTime",
-      dataIndex: "checkOutTime",
+      title: "Room Facilities",
+      dataIndex: "roomFacilities",
 
       editable: false,
-      ...getColumnSearchProps("checkOutTime"),
+      //   ...getColumnSearchProps("roomFacilities", true),
+      render: (roomFacilities) =>
+        roomFacilities.map((facility) => facility.facility.facName).join(", "),
     },
     {
       title: "Edit Status",
       dataIndex: "edit_status",
-      fixed: "right",
+
       editable: false,
     },
     {
@@ -445,25 +378,31 @@ const Hotelcensorship = () => {
       title: "operation",
       dataIndex: "operation",
       fixed: "right",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="primary"
-            onClick={() => acceptHotel(record.key)}
-            disabled={record.status !== "PENDING"}
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Typography.Link
+              onClick={() => save(record.key)}
+              style={{
+                marginRight: 8,
+              }}
+            >
+              Save
+            </Typography.Link>
+            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <a>Cancel</a>
+            </Popconfirm>
+          </span>
+        ) : (
+          <Typography.Link
+            disabled={editingKey !== ""}
+            onClick={() => edit(record)}
           >
-            Accept
-          </Button>
-          <Button
-            type="primary"
-            danger
-            onClick={() => rejectHotel(record.key)}
-            disabled={record.status !== "PENDING"}
-          >
-            Reject
-          </Button>
-        </Space>
-      ),
+            Edit
+          </Typography.Link>
+        );
+      },
     },
   ];
   const mergedColumns = columns.map((col) => {
@@ -483,64 +422,18 @@ const Hotelcensorship = () => {
   });
 
   const clearFiltersAndSorters = () => {
-    // Xóa tất cả các filters và sorters bằng cách đặt lại giá trị state
+    // Xóa tất cả các filters
     setSearchText("");
     setSearchedColumn("");
 
-    // Gọi hàm handleSearch với selectedKeys là mảng rỗng để xóa bộ lọc
-    const selectedKeys = [];
-    handleSearch(selectedKeys, () => {}, searchedColumn);
-  };
-  const expandedRowRender = (record) => {
-    const columns = [
-      // {
-      //   title: "Số phòng",
-      //   dataIndex: "roomNumber",
-      //   key: "roomNumber",
-      // },
-      {
-        title: "Loại phòng",
-        dataIndex: "roomType",
-        key: "roomType",
-      },
-      {
-        title: "Giá",
-        dataIndex: "price",
-        key: "price",
-      },
-      {
-        title: "Sức chứa",
-        dataIndex: "capacity",
-        key: "capacity",
-      },
+    // Xóa tất cả các sorters
+    // Cập nhật lại state của data để hiển thị lại dữ liệu gốc
+    // Lấy dữ liệu gốc
+    // let newData = [...originData];
 
-      {
-        title: "Số lượng",
-        dataIndex: "quantity",
-        key: "quantity",
-      },
-      {
-        title: "Edit Status",
-        dataIndex: "edit_status",
-
-        editable: false,
-      },
-      {
-        title: "Diện tích",
-        dataIndex: "roomSize",
-        key: "roomSize",
-        render: (text) => `${text} m²`,
-      },
-    ];
-    // Log dữ liệu dataSource
-    console.log("Data source for expanded row:", roomsData[record.key]);
-    return (
-      <Table
-        columns={columns}
-        dataSource={roomsData[record.key]}
-        pagination={false}
-      />
-    );
+    // Cập nhật lại state của data để hiển thị lại dữ liệu gốc
+    // setData(newData);
+    // console.log(newData);
   };
 
   return (
@@ -565,10 +458,6 @@ const Hotelcensorship = () => {
         pagination={{
           onChange: cancel,
         }}
-        expandable={{
-          expandedRowRender,
-          defaultExpandedRowKeys: ["0"],
-        }}
         scroll={{
           x: 2000,
           y: 600,
@@ -577,4 +466,4 @@ const Hotelcensorship = () => {
     </Form>
   );
 };
-export default Hotelcensorship;
+export default Roomcensorship;
