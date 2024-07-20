@@ -53,7 +53,8 @@ export default function CardHotel() {
                     </Card>
                   </Col>
                 ))
-              : data?.slice(0, 5).map((item) => (
+              : data.length > 0
+              ? data?.slice(0, 5).map((item) => (
                   <Col md={12} lg={6} xs={24} key={item.id} className="mt-3">
                     <Link
                       href={{
@@ -108,7 +109,8 @@ export default function CardHotel() {
                       </Card>
                     </Link>
                   </Col>
-                ))}
+                ))
+              : "No Data"}
           </Carousel>
         </Row>
       </div>
