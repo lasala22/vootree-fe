@@ -312,4 +312,4 @@ const Sidebar2 = () => {
     </Layout>
   );
 };
-export default Sidebar2;
+export default withAuth(Sidebar2,"STAFF");

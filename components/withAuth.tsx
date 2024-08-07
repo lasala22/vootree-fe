@@ -5,10 +5,14 @@ import { redirect } from "next/navigation";
 import { message } from "antd";
 
 const withAuth = (WrappedComponent: any, requiredRole: any) => {
+  const path = window.location.pathname;
   const ComponentWithAuth = (props) => {
     useEffect(() => {
       const role = getRoleFromToken();
-      if (role !== requiredRole) {
+      if (role !== requiredRole && path.startsWith("/staff")) {
+        message.error("Vui lòng đăng nhập để tiếp tục");
+        redirect("/staff/login");
+      }else if(role !== requiredRole){
         message.error("Vui lòng đăng nhập để tiếp tục");
         redirect("/login");
       }

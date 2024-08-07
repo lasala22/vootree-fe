@@ -161,6 +161,7 @@ export default function PriceInfo({
 
     localStorage.setItem("bookingInfo", JSON.stringify(paymentObject));
     const queryString = new URLSearchParams(paymentValues).toString();
+    
     try {
       const payment = await axios.post(
         `http://localhost:8080/api/payment/create?${queryString}`
